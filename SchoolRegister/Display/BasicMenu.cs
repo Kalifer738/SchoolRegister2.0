@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Display
 {
-    public partial class Form1 : Form
+    public partial class BasicMenu : Form
     {
-        public Form1()
+        public BasicMenu()
         {
             InitializeComponent();
         }

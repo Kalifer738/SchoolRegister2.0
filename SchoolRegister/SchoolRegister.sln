@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Display", "Display\Display.csproj", "{A112DDD4-1803-43F8-B0EF-AC25274EFB67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers", "Controllers\Controllers.csproj", "{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controllers", "Controllers\Controllers.csproj", "{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserControlsLibrary", "UserControlsLibrary\UserControlsLibrary.csproj", "{0F601BAC-4204-4E8B-AC05-C507496F4AD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
