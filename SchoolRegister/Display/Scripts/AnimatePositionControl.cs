@@ -208,6 +208,7 @@ namespace AnimateControl
             }
             UpdateControl();
         }
+
         private void MoveNegativeY(object sender, EventArgs e)
         {
             if (finishedMovingY)
@@ -236,6 +237,7 @@ namespace AnimateControl
             }
             UpdateControl();
         }
+
         private void MovePositiveY(object sender, EventArgs e)
         {
             if (finishedMovingY)

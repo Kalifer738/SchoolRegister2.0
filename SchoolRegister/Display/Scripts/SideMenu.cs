@@ -132,8 +132,6 @@ namespace KonstantinControls
                 item.Parent = menu;
             }
         }
-
-        //Change how the location is got, so its in reletion to the panels.
         private void InicializeClassButton(Form currentForm) 
         {
             menuButton = new PictureBox();
@@ -142,7 +140,8 @@ namespace KonstantinControls
             menuButton.Size = new Size(38, 25);
 
             ResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
-            menuButton.Image = ((Image)(resources.GetObject("SideMenuButtonPicture.png")));
+            //menuButton.Image = ((Image)(resources.GetObject("SideMenuButtonPicture.png")));
+            MessageBox.Show("SideMenu.cs line 143, fix resource manager in order to add image to the button");
 
             menuButton.Click += TriggerMenu;
             menuButton.MouseEnter += TriggerResizeMenuButton;
