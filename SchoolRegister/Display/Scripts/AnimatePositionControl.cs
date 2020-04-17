@@ -12,6 +12,9 @@ namespace AnimateControl
     {
         private Control controlToBeAnimated;
 
+        private Action onActiveAnimationFinish;
+        private Action onStartingAnimationBegin;
+
         private Point updatedPosition;
 
         private Point originalLocation;
@@ -28,6 +31,44 @@ namespace AnimateControl
         private int numberOfTicks;
 
         private bool currentlyActive;
+
+        public Action OnActiveAnimationFinish
+        {
+            get 
+            {
+                return onActiveAnimationFinish;
+            }
+            set
+            {
+                onActiveAnimationFinish = value;
+            }
+        }
+        public Action OnStartingAnimationBegin
+        {
+            get
+            {
+                return onStartingAnimationBegin;
+            }
+            set
+            {
+                onStartingAnimationBegin = value;
+            }
+        }
+
+        /// <summary>
+        /// Current state of the animation.
+        /// </summary>
+        public bool CurrentPositionIsTheActiveOne 
+        {
+            get
+            {
+                return currentPositionIsTheActiveOne;
+            }
+            private set
+            {
+                currentPositionIsTheActiveOne = value;
+            }
+        }
 
         /// <summary>
         /// Shows wheater the animation is currently running or not.
@@ -131,6 +172,7 @@ namespace AnimateControl
                 finishedMovingY = false;
                 if (currentPositionIsTheActiveOne)
                 {
+                    OnStartingAnimationBegin.Invoke();
                     originalPositionAnimation.Start();
                 }
                 else
@@ -150,6 +192,24 @@ namespace AnimateControl
             updatedPosition = controlToBeAnimated.Location;
             CurrentlyActive = false;
             Trigger();
+        }
+
+        /// <summary>
+        /// Teleport the control to the original position.
+        /// </summary>
+        public void MoveToActivePosition()
+        {
+            currentPositionIsTheActiveOne = true;
+            controlToBeAnimated.Location = activeLocation;
+        }
+
+        /// <summary>
+        /// Teleport the contorl to the starting position.
+        /// </summary>
+        public void MoveToStartingPosition()
+        {
+            currentPositionIsTheActiveOne = false;
+            controlToBeAnimated.Location = originalLocation;
         }
 
         private void MoveNegativeX(object sender, EventArgs e)
@@ -275,6 +335,10 @@ namespace AnimateControl
                 originalPositionAnimation.Stop();
                 currentPositionIsTheActiveOne = !currentPositionIsTheActiveOne;
                 CurrentlyActive = false;
+                if (currentPositionIsTheActiveOne)
+                {
+                    OnActiveAnimationFinish.Invoke();
+                }
             }
             controlToBeAnimated.Location = updatedPosition;
             numberOfTicks++;

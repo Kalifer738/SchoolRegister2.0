@@ -22,7 +22,7 @@ namespace Display
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            sideMenu = new SideMenu(this, false);
+            sideMenu = new SideMenu(this, true);
         }
     }
 }

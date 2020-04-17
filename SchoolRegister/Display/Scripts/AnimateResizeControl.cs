@@ -34,6 +34,21 @@ namespace AnimateControl
         private bool currentlyActive;
 
         /// <summary>
+        /// Current state of the animation.
+        /// </summary>
+        public bool CurrentSizeIsTheActiveOne
+        {
+            get
+            {
+                return currentSizeIsTheActiveOne;
+            }
+            private set
+            {
+                currentSizeIsTheActiveOne = value;
+            }
+        }
+
+        /// <summary>
         /// Shows wheater the animation is currently running or not.
         /// </summary>
         public bool CurrentlyActive
