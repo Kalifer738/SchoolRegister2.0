@@ -16,7 +16,7 @@ namespace Display
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BasicMenu());
+            Application.Run(new MainMenu());
         }
     }
 }

@@ -117,37 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEQAAAAzCAYAAAAuNK7LAAABcGlDQ1BpY2MAACjPlZG9S8NAGMaffki1
-        VjroIOKQoYpIC0VBHKWCXapDW8GqS3JNWiFJwyVFiqvg4lBwEF38GvwPdBVcFQRBEUQc/Av8WqTE95pC
-        i+jgHZf3x3N5Xu6eA/wZnRl2MAkYpsOz6ZS0VFiWQi8IogdhRDEuM9uaz83l8ef4vINP1NuE6IX/jd6i
-        ajPA1008xSzuEM8QZ9YdS/A28QAry0XiQ+I4pwMSXwld8fhZcMnjd8E8n52lu4meUqmDlQ5mZW4QjxHH
-        DL3KWucRN4mo5mKO6hCtYdjIIo0UJCioYg06HCSompTZ775k07eACnkYfS3UwMlRQpm8cVKr1FWlqpGu
-        0tRRE7n/zNPWJie87pEU0PXkum8jQGgHaNRd9+vIdRvHQOARuDDb/grlNP1Ber2txQ6A6CZwdtnWlF3g
-        fAsYfLBkLjelAC2/pgGvp0BfAei/AcIrXlatfZzcA/kNeqJrYG8fGKX/o6vf0aJn9cG6doYAAAAJcEhZ
-        cwAAHsIAAB7CAW7QdT4AAADOSURBVGhD7ZpLCsJAEAVHvP9BvIQH8HMPV64Uwf97YwiTSW9cCXYVFITJ
-        ZJFmugOdLgMreZDnxlNge7/1m7022m9/tXcjl7KylV68y6d8JfMhHaCdXMh64QXfiB74d/3eF+kMWUsC
-        IicBIWW6lDEU1aaoAgAAAAAAAABkhAZR13W/yai9lkW3EfeythAdrWhTNq+yNpkJyEefkqMkIIPjCaGG
-        dDXE8JXhNwQAAAAAAAAAJIcGEcP/o7NJZmbdGf6fOAsIKdOljKGo1qJayhvN/9Yygg+DhAAAAABJRU5E
-        rkJggg==
-</value>
-  </data>
-  <data name="pictureBox1.InitialImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEQAAAAzCAYAAAAuNK7LAAABcGlDQ1BpY2MAACjPlZG9S8NAGMaffki1
-        VjroIOKQoYpIC0VBHKWCXapDW8GqS3JNWiFJwyVFiqvg4lBwEF38GvwPdBVcFQRBEUQc/Av8WqTE95pC
-        i+jgHZf3x3N5Xu6eA/wZnRl2MAkYpsOz6ZS0VFiWQi8IogdhRDEuM9uaz83l8ef4vINP1NuE6IX/jd6i
-        ajPA1008xSzuEM8QZ9YdS/A28QAry0XiQ+I4pwMSXwld8fhZcMnjd8E8n52lu4meUqmDlQ5mZW4QjxHH
-        DL3KWucRN4mo5mKO6hCtYdjIIo0UJCioYg06HCSompTZ775k07eACnkYfS3UwMlRQpm8cVKr1FWlqpGu
-        0tRRE7n/zNPWJie87pEU0PXkum8jQGgHaNRd9+vIdRvHQOARuDDb/grlNP1Ber2txQ6A6CZwdtnWlF3g
-        fAsYfLBkLjelAC2/pgGvp0BfAei/AcIrXlatfZzcA/kNeqJrYG8fGKX/o6vf0aJn9cG6doYAAAAJcEhZ
-        cwAAHsIAAB7CAW7QdT4AAADOSURBVGhD7ZpLCsJAEAVHvP9BvIQH8HMPV64Uwf97YwiTSW9cCXYVFITJ
-        ZJFmugOdLgMreZDnxlNge7/1m7022m9/tXcjl7KylV68y6d8JfMhHaCdXMh64QXfiB74d/3eF+kMWUsC
-        IicBIWW6lDEU1aaoAgAAAAAAAABkhAZR13W/yai9lkW3EfeythAdrWhTNq+yNpkJyEefkqMkIIPjCaGG
-        dDXE8JXhNwQAAAAAAAAAJIcGEcP/o7NJZmbdGf6fOAsIKdOljKGo1qJayhvN/9Yygg+DhAAAAABJRU5E
-        rkJggg==
-</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="SideMenuButtonPicture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SideMenuButtonPicture.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

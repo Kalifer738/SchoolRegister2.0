@@ -7,14 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AnimateControl;
+using KonstantinControls;
 
 namespace Display
 {
-    public partial class BasicMenu : Form
+    public partial class MainMenu : Form
     {
-        public BasicMenu()
+        SideMenu sideMenu;
+        public MainMenu()
         {
             InitializeComponent();
+        }
+
+        private void MainMenu_Load(object sender, EventArgs e)
+        {
+            sideMenu = new SideMenu(this, false);
         }
     }
 }
