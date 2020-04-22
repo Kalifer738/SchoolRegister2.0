@@ -47,9 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\AnimatePositionControl.cs" />
-    <Compile Include="Animation\AnimateResizeControl.cs" />
+    <Compile Include="Animation\AnimateSizeControl.cs" />
     <Compile Include="Animation\RotateImage.cs" />
     <Compile Include="Controller Handaler\DisplayHandaler.cs" />
+    <Compile Include="Controls\MockControl.cs" />
     <Compile Include="MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>

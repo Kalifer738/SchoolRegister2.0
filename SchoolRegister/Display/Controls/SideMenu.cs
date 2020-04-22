@@ -10,9 +10,9 @@ namespace KonstantinControls
     {
         AnimatePositionControl menuOpenCloseMenuAnimation;
 
-        AnimateResizeControl menuButtonGrowShrinkAnimation;
+        AnimateSizeControl menuButtonGrowShrinkAnimation;
 
-        AnimateResizeControl classSelectionmenu;
+        AnimateSizeControl classSelectionmenu;
 
         Panel menuPanel;
 
@@ -57,11 +57,11 @@ namespace KonstantinControls
             SetControlsCorrectOrder();
 
             menuOpenCloseMenuAnimation = new AnimatePositionControl(menuPanel, new Point(menuPanel.Location.X - (menuPanel.Width - 60), 0), 0);
-            menuButtonGrowShrinkAnimation = new AnimateResizeControl(menuCloseOpenButton, new Size(menuCloseOpenButton.Size.Width + 10, menuCloseOpenButton.Size.Height + 10), 0, true);
-            classSelectionmenu = new AnimateResizeControl(currentClassGFX, new Size(currentClassGFX.Size.Width, currentClassGFX.Height + 500), 5, false);
+            menuButtonGrowShrinkAnimation = new AnimateSizeControl(menuCloseOpenButton, new Size(menuCloseOpenButton.Size.Width + 10, menuCloseOpenButton.Size.Height + 10), 0, true);
+            classSelectionmenu = new AnimateSizeControl(currentClassGFX, new Size(currentClassGFX.Size.Width, currentClassGFX.Height + 500), 5, false);
 
-            menuOpenCloseMenuAnimation.OnActiveAnimationFinish += ExtendButtonLabel;
-            menuOpenCloseMenuAnimation.OnStartingAnimationBegin += CollapseButtonLabel;
+            menuOpenCloseMenuAnimation.OnActiveAnimationEnds += ExtendButtonLabel;
+            menuOpenCloseMenuAnimation.OnDefaultAnimationStarts += CollapseButtonLabel;
 
             if (!opened)
             {

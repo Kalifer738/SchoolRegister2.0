@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserControlsLibrary", "UserControlsLibrary\UserControlsLibrary.csproj", "{0F601BAC-4204-4E8B-AC05-C507496F4AD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTests", "NUnitTests\NUnitTests.csproj", "{AFC1B019-96F1-4256-ADEC-5FC515938B63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFC1B019-96F1-4256-ADEC-5FC515938B63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFC1B019-96F1-4256-ADEC-5FC515938B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFC1B019-96F1-4256-ADEC-5FC515938B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFC1B019-96F1-4256-ADEC-5FC515938B63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

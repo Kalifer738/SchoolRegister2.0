@@ -8,12 +8,14 @@ using System.Windows.Forms;
 
 namespace AnimateControl
 {
-    class AnimatePositionControl
+    public class AnimatePositionControl
     {
         private Control controlToBeAnimated;
 
-        private Action onActiveAnimationFinish;
-        private Action onStartingAnimationBegin;
+        private Action onActiveAnimationStarts;
+        private Action onActiveAnimationEnds;
+        private Action onDefaultAnimationStarts;
+        private Action onDefaultAnimationEnds;
 
         private Point updatedPosition;
 
@@ -32,26 +34,48 @@ namespace AnimateControl
 
         private bool currentlyActive;
 
-        public Action OnActiveAnimationFinish
-        {
-            get 
-            {
-                return onActiveAnimationFinish;
-            }
-            set
-            {
-                onActiveAnimationFinish = value;
-            }
-        }
-        public Action OnStartingAnimationBegin
+        public Action OnActiveAnimationStarts
         {
             get
             {
-                return onStartingAnimationBegin;
+                return onActiveAnimationStarts;
             }
             set
             {
-                onStartingAnimationBegin = value;
+                onActiveAnimationStarts = value;
+            }
+        }
+        public Action OnActiveAnimationEnds
+        {
+            get 
+            {
+                return onActiveAnimationEnds;
+            }
+            set
+            {
+                onActiveAnimationEnds = value;
+            }
+        }
+        public Action OnDefaultAnimationStarts
+        {
+            get
+            {
+                return onDefaultAnimationStarts;
+            }
+            set
+            {
+                onDefaultAnimationStarts = value;
+            }
+        }
+        public Action OnDefaultAnimationEnds
+        {
+            get
+            {
+                return onDefaultAnimationEnds;
+            }
+            set
+            {
+                onDefaultAnimationEnds = value;
             }
         }
 
@@ -172,11 +196,12 @@ namespace AnimateControl
                 finishedMovingY = false;
                 if (currentPositionIsTheActiveOne)
                 {
-                    OnStartingAnimationBegin.Invoke();
+                    OnDefaultAnimationStarts.Invoke();
                     originalPositionAnimation.Start();
                 }
                 else
                 {
+                    OnActiveAnimationStarts.Invoke();
                     activePositionAnimation.Start();
                 }
             }
@@ -337,7 +362,11 @@ namespace AnimateControl
                 CurrentlyActive = false;
                 if (currentPositionIsTheActiveOne)
                 {
-                    OnActiveAnimationFinish.Invoke();
+                    OnActiveAnimationEnds.Invoke();
+                }
+                else
+                {
+                    OnDefaultAnimationEnds.Invoke();
                 }
             }
             controlToBeAnimated.Location = updatedPosition;

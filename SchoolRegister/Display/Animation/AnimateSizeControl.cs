@@ -9,9 +9,14 @@ using System.Windows.Forms;
 
 namespace AnimateControl
 {
-    class AnimateResizeControl
+    public class AnimateSizeControl
     {
         private Control controlToBeAnimated;
+
+        private Action onActiveAnimationStarts;
+        private Action onActiveAnimationEnds;
+        private Action onDefaultAnimationStarts;
+        private Action onDefaultAnimationEnds;
 
         Point centerPointOfControl;
         Point updatedPoint;
@@ -32,6 +37,51 @@ namespace AnimateControl
 
         private bool keepControlCetered;
         private bool currentlyActive;
+
+        public Action OnActiveAnimationStarts
+        {
+            get
+            {
+                return onActiveAnimationStarts;
+            }
+            set
+            {
+                onActiveAnimationStarts = value;
+            }
+        }
+        public Action OnActiveAnimationEnds
+        {
+            get
+            {
+                return onActiveAnimationEnds;
+            }
+            set
+            {
+                onActiveAnimationEnds = value;
+            }
+        }
+        public Action OnDefaultAnimationStarts
+        {
+            get
+            {
+                return onDefaultAnimationStarts;
+            }
+            set
+            {
+                onDefaultAnimationStarts = value;
+            }
+        }
+        public Action OnDefaultAnimationEnds
+        {
+            get
+            {
+                return onDefaultAnimationEnds;
+            }
+            set
+            {
+                onDefaultAnimationEnds = value;
+            }
+        }
 
         /// <summary>
         /// Current state of the animation.
@@ -83,7 +133,7 @@ namespace AnimateControl
         /// <param name="ActiveSize">The specified size of the control when the animation is active.</param>
         /// <param name="StartingSpeed">The starting speed of the animation.</param>
         /// <param name="KeepControlCetered">Wheater to try and keep the contorl in the same positon as its being resized</param>
-        public AnimateResizeControl(Control ControlToBeAnimated, Size ActiveSize, int StartingSpeed, bool KeepControlCetered)
+        public AnimateSizeControl(Control ControlToBeAnimated, Size ActiveSize, int StartingSpeed, bool KeepControlCetered)
         {
             controlToBeAnimated = ControlToBeAnimated;
             activeSize = ActiveSize;

@@ -13,7 +13,6 @@ namespace Controllers
     class Controller
     {
         ModelHandeling model = new ModelHandeling();
-        DisplayLogicHandeling displayHandeling = new DisplayLogicHandeling();
         DataHandeling data = new DataHandeling();
     }
 }
