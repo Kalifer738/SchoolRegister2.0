@@ -69,16 +69,6 @@ namespace KonstantinControls
             }
         }
 
-        private void CollapseButtonLabel()
-        {
-            borders[5].Size = new Size(1, 43);
-        }
-
-        private void ExtendButtonLabel()
-        {
-            borders[5].Size = new Size(1, menuPanel.Height);
-        }
-
         private void InicializePanel(Form currentForm)
         {
             menuPanel = new Panel();
@@ -175,10 +165,12 @@ namespace KonstantinControls
             menuCloseOpenButton.Image = SideMenuResources.SideMenuButtonPicture;
 
             menuCloseOpenButton.Click += CloseOpenSideMenu;
+            menuCloseOpenButton.DoubleClick += CloseOpenSideMenu;
             menuCloseOpenButton.MouseEnter += ResizeMenuButton;
             menuCloseOpenButton.MouseLeave += ResizeMenuButton;
 
             menuCloseOpenButtonGFX.Click += CloseOpenSideMenu;
+            menuCloseOpenButtonGFX.DoubleClick += CloseOpenSideMenu;
             menuCloseOpenButtonGFX.MouseEnter += ResizeMenuButton;
             menuCloseOpenButtonGFX.MouseLeave += ResizeMenuButton;
 
@@ -286,6 +278,7 @@ namespace KonstantinControls
             currentClassGFX.Parent = MenuPanel;
             currentClassGFX.SendToBack();
             currentClassGFX.Click += OpenCloseClassSelection;
+            currentClassGFX.DoubleClick += OpenCloseClassSelection;
             #endregion
 
             #region Current Class
@@ -302,6 +295,7 @@ namespace KonstantinControls
             currentClass.Parent = currentClassGFX;
             currentClass.BringToFront();
             currentClass.Click += OpenCloseClassSelection;
+            currentClass.DoubleClick += OpenCloseClassSelection;
             #endregion
 
 
@@ -339,6 +333,16 @@ namespace KonstantinControls
         private void OpenCloseClassSelection(object sender, EventArgs e)
         {
             classSelectionmenu.TriggerNow();
+        }
+
+        private void CollapseButtonLabel()
+        {
+            borders[5].Size = new Size(1, 43);
+        }
+
+        private void ExtendButtonLabel()
+        {
+            borders[5].Size = new Size(1, menuPanel.Height);
         }
 
         private void AddGrades(object sender, EventArgs e)

@@ -46,8 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Scripts\AnimatePositionControl.cs" />
-    <Compile Include="Scripts\AnimateResizeControl.cs" />
+    <Compile Include="Animation\AnimatePositionControl.cs" />
+    <Compile Include="Animation\AnimateResizeControl.cs" />
+    <Compile Include="Animation\RotateImage.cs" />
+    <Compile Include="Controller Handaler\DisplayHandaler.cs" />
     <Compile Include="MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -56,7 +58,7 @@
     </Compile>
     <Compile Include="DisplayData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\SideMenu.cs" />
+    <Compile Include="Controls\SideMenu.cs" />
     <Compile Include="SideMenuResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
