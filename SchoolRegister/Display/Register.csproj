@@ -52,6 +52,7 @@
     <Compile Include="Controller\ControllerHandaler.cs" />
     <Compile Include="Controls\MockControl.cs" />
     <Compile Include="Data\DataHandaler.cs" />
+    <Compile Include="Display\DisplayHandaler.cs" />
     <Compile Include="MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>

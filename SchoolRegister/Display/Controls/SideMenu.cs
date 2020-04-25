@@ -8,6 +8,11 @@ namespace KonstantinControls
 {
     class SideMenu
     {
+        Action onAddGrades;
+        Action onAddStudent;
+        Action onSettings;
+        Action onExitApplication;
+
         AnimatePositionControl menuOpenCloseMenuAnimation;
 
         AnimateSizeControl menuButtonGrowShrinkAnimation;
@@ -26,6 +31,51 @@ namespace KonstantinControls
         Label menuCloseOpenButtonGFX;
 
         Label[] sideMenuOptions;
+
+        public Action OnAddGrades
+        {
+            get
+            {
+                return onAddGrades;
+            }
+            set
+            {
+                onAddGrades += value;
+            }
+        }
+        public Action OnAddStudent
+        {
+            get
+            {
+                return onAddStudent;
+            }
+            set
+            {
+                onAddStudent += value;
+            }
+        }
+        public Action OnSettings
+        {
+            get
+            {
+                return onSettings;
+            }
+            set
+            {
+                onSettings += value;
+            }
+        }
+        public Action OnExitApplication
+        {
+            get
+            {
+                return onExitApplication;
+            }
+            set
+            {
+                onExitApplication += value;
+            }
+        }
 
         /// <summary>
         /// Represents the panel that holds all the controls for the side menu.
@@ -347,7 +397,10 @@ namespace KonstantinControls
 
         private void AddGrades(object sender, EventArgs e)
         {
-            MessageBox.Show("Adding grades not implemented", "Not Implemented");
+            if (OnAddGrades != null)
+            {
+                OnAddGrades.Invoke();
+            }
         }
         private void AddClassNote(object sender, EventArgs e)
         {
@@ -355,15 +408,24 @@ namespace KonstantinControls
         }
         private void AddStudent(object sender, EventArgs e)
         {
-            MessageBox.Show("Adding students not implemented", "Not Implemented");
+            if (OnAddStudent != null)
+            {
+                OnAddStudent.Invoke();
+            }
         }
         private void Settings(object sender, EventArgs e)
         {
-            MessageBox.Show("Settings not implemented", "Not Implemented");
+            if (OnSettings != null)
+            {
+                OnSettings.Invoke();
+            }
         }
         private void ExitApplication(object sender, EventArgs e)
         {
-            MessageBox.Show("Exiting is not implemented", "Not Implemented");
+            if (OnExitApplication != null)
+            {
+                OnExitApplication.Invoke();
+            }
         }
     }
 }

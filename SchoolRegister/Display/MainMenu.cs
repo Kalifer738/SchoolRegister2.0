@@ -10,12 +10,14 @@ using System.Windows.Forms;
 using AnimateControl;
 using Register.Animation;
 using KonstantinControls;
+using Display.Display;
+using Display.Controller;
 
 namespace Register
 {
     public partial class MainMenu : Form
     {
-        SideMenu sideMenu;
+        ControllerHandaler controllerHandaler;
         public MainMenu()
         {
             InitializeComponent();
@@ -23,15 +25,7 @@ namespace Register
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            sideMenu = new SideMenu(this, true);
-            RotateImage.Test(this);
-            this.MouseWheel += RandomizeImage;
-        }
-
-        private void RandomizeImage(object sender, MouseEventArgs e)
-        {
-            Bitmap randomImage = RotateImage.MakeRandomImage((Bitmap)RotateImage.myPictureBox.Image);
-            RotateImage.myPictureBox.Image = randomImage;
+            controllerHandaler = new ControllerHandaler(this);
         }
     }
 }
