@@ -3,17 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Display", "Display\Display.csproj", "{A112DDD4-1803-43F8-B0EF-AC25274EFB67}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controllers", "Controllers\Controllers.csproj", "{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Register", "Display\Register.csproj", "{A112DDD4-1803-43F8-B0EF-AC25274EFB67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserControlsLibrary", "UserControlsLibrary\UserControlsLibrary.csproj", "{0F601BAC-4204-4E8B-AC05-C507496F4AD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTests", "NUnitTests\NUnitTests.csproj", "{AFC1B019-96F1-4256-ADEC-5FC515938B63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTests", "NUnitTests\NUnitTests.csproj", "{AFC1B019-96F1-4256-ADEC-5FC515938B63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,18 +19,6 @@ Global
 		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CA9AAD1-A193-4110-B0C5-EA03360C6A56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53022D3C-1C3E-4F5C-9093-F024DF6D6BFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D6574A5-026A-40B7-B0E0-FA0F040E8C8C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F601BAC-4204-4E8B-AC05-C507496F4AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU

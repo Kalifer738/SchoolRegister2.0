@@ -8,10 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AnimateControl;
-using Display.Animation;
+using Register.Animation;
 using KonstantinControls;
 
-namespace Display
+namespace Register
 {
     public partial class MainMenu : Form
     {

@@ -196,13 +196,23 @@ namespace AnimateControl
                 finishedMovingY = false;
                 if (currentPositionIsTheActiveOne)
                 {
-                    OnDefaultAnimationStarts.Invoke();
-                    originalPositionAnimation.Start();
+                    if (originalPositionAnimation != null)
+                    {
+                        originalPositionAnimation.Start();
+                    }
                 }
                 else
                 {
+                        activePositionAnimation.Start();
+                }
+
+                if (OnActiveAnimationStarts != null)
+                {
                     OnActiveAnimationStarts.Invoke();
-                    activePositionAnimation.Start();
+                }
+                if (OnDefaultAnimationStarts != null)
+                {
+                    OnDefaultAnimationStarts.Invoke();
                 }
             }
         }
@@ -360,11 +370,11 @@ namespace AnimateControl
                 originalPositionAnimation.Stop();
                 currentPositionIsTheActiveOne = !currentPositionIsTheActiveOne;
                 CurrentlyActive = false;
-                if (currentPositionIsTheActiveOne)
+                if (currentPositionIsTheActiveOne && onActiveAnimationEnds != null)
                 {
                     OnActiveAnimationEnds.Invoke();
                 }
-                else
+                else if (OnDefaultAnimationEnds != null)
                 {
                     OnDefaultAnimationEnds.Invoke();
                 }

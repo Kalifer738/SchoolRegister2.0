@@ -1,4 +1,4 @@
-﻿namespace Display
+﻿namespace Register
 {
     partial class MainMenu
     {
