@@ -46,11 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animation\AnimatePositionControl.cs" />
-    <Compile Include="Animation\AnimateSizeControl.cs" />
-    <Compile Include="Animation\RotateImage.cs" />
-    <Compile Include="Controller Handaler\DisplayHandaler.cs" />
+    <Compile Include="AnimateControls\AnimatePositionControl.cs" />
+    <Compile Include="AnimateControls\AnimateSizeControl.cs" />
+    <Compile Include="AnimateControls\RotateImage.cs" />
+    <Compile Include="Controller\ControllerHandaler.cs" />
     <Compile Include="Controls\MockControl.cs" />
+    <Compile Include="Data\DataHandaler.cs" />
     <Compile Include="MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,6 +59,7 @@
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayData.cs" />
+    <Compile Include="Model\ModelHandaler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\SideMenu.cs" />
     <Compile Include="SideMenuResources.Designer.cs">
