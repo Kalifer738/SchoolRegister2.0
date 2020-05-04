@@ -404,7 +404,7 @@ namespace KonstantinControls
         }
         private void AddClassNote(object sender, EventArgs e)
         {
-            MessageBox.Show("Adding class notes not implemented", "Not Implemented");
+
         }
         private void AddStudent(object sender, EventArgs e)
         {

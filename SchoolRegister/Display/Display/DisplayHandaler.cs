@@ -25,8 +25,12 @@ namespace Display.Display
             }
         }
 
-        public DisplayHandaler(Form mainMenu)
+        public DisplayHandaler(Form mainMenu, bool debugging)
         {
+            if (debugging)
+            {
+                return;
+            }
             this.mainForm = mainMenu;
             AddControls();
         }

@@ -15,11 +15,12 @@ namespace Display.Controller
         DataHandaler dataHandaler;
         ModelHandaler modelHandaler;
         DisplayHandaler displayHandaler;
-        public ControllerHandaler(Form currentForm)
+
+        public ControllerHandaler(Form currentForm, bool debugging)
         {
             dataHandaler = new DataHandaler();
             modelHandaler = new ModelHandaler();
-            displayHandaler = new DisplayHandaler(currentForm);
+            displayHandaler = new DisplayHandaler(currentForm, debugging);
         }
     }
 }

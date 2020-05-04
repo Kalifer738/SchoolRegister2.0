@@ -382,5 +382,13 @@ namespace AnimateControl
             controlToBeAnimated.Location = updatedPosition;
             numberOfTicks++;
         }
+
+        public override string ToString()
+        {
+            return $"Positon- X:{updatedPosition.X} Y:{updatedPosition.Y} {Environment.NewLine}" +
+                   $"Active Animation Running: {originalPositionAnimation.Enabled} {Environment.NewLine}" +
+                   $"Original Animation Running: {activePositionAnimation.Enabled} {Environment.NewLine}" +
+                   $"Number of moves: {numberOfTicks}";
+        }
     }
 }

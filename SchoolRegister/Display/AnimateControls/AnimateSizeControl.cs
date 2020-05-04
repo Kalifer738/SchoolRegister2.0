@@ -239,6 +239,28 @@ namespace AnimateControl
             Trigger();
         }
 
+        public void ScaleToActiveSize()
+        {
+            currentSizeIsTheActiveOne = true;
+            controlToBeAnimated.Size = activeSize;
+            if (keepControlCetered)
+            {
+                Point activePoint = new Point(centerPointOfControl.X - (activeSize.Width / 2), centerPointOfControl.Y - (activeSize.Height / 2));
+                controlToBeAnimated.Location = activePoint;
+            }
+        }
+
+        public void ScaleToStartingSize()
+        {
+            currentSizeIsTheActiveOne = false;
+            controlToBeAnimated.Size = originalSize;
+            if (keepControlCetered)
+            {
+                Point startingPoint = new Point(centerPointOfControl.X - (originalSize.Width / 2), centerPointOfControl.Y - (originalSize.Height / 2));
+                controlToBeAnimated.Location = startingPoint;
+            }
+        }
+
         private void ScaleNegativeW(object sender, EventArgs e)
         {
             if (finishedScalingW)
