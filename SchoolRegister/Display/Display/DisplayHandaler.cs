@@ -11,9 +11,9 @@ namespace Display.Display
     class DisplayHandaler
     {
         Form mainForm;
-        SideMenu sideMenu;
+        SideMenuDep sideMenu;
 
-        public SideMenu SideMenu
+        public SideMenuDep SideMenu
         {
             get
             {
@@ -37,7 +37,7 @@ namespace Display.Display
 
         private void AddControls()
         {
-            SideMenu = new SideMenu(mainForm, true);
+            SideMenu = new SideMenuDep(mainForm, true);
         }
     }
 }

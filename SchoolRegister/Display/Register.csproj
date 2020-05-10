@@ -51,6 +51,9 @@
     <Compile Include="AnimateControls\RotateImage.cs" />
     <Compile Include="Controller\ControllerHandaler.cs" />
     <Compile Include="Controls\MockControl.cs" />
+    <Compile Include="Controls\SideMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\DataHandaler.cs" />
     <Compile Include="Display\DisplayHandaler.cs" />
     <Compile Include="MainMenu.cs">
@@ -62,7 +65,7 @@
     <Compile Include="DisplayData.cs" />
     <Compile Include="Model\ModelHandaler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\SideMenu.cs" />
+    <Compile Include="DepricatedScripts\SideMenuDep.cs" />
     <Compile Include="SideMenuResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -107,5 +110,6 @@
   <ItemGroup>
     <None Include="Resources\SideMenuButtonPicture.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

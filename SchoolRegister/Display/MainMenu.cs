@@ -20,7 +20,7 @@ namespace Register
         ControllerHandaler controllerHandaler;
 
         #region Debugging Variables
-
+        bool debug = false;
         AnimatePositionControl debugAnimationTest;
         #endregion
 
@@ -31,9 +31,8 @@ namespace Register
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            bool debugging = false;
-            controllerHandaler = new ControllerHandaler(this, debugging);
-            if (debugging)
+            controllerHandaler = new ControllerHandaler(this, debug);
+            if (debug)
             {
                 Debug();
             }
@@ -42,6 +41,26 @@ namespace Register
         #region Debug Methods
 
         private void Debug()
+        {
+            //MovementAnimationDebugging();
+            //SideMenuSizeShow();
+        }
+
+        private void SideMenuSizeShow()
+        {
+            SideMenuDep sideMenu = new SideMenuDep(this, true);
+            sideMenu.MenuPanel.Visible = false;
+
+            Label label = new Label();
+            label.AutoSize = true;
+            label.Location = new Point(150, 150);
+            label.BackColor = Color.White;
+            //label.Text = $"X{sideMenu.MenuPanel.Width - sideMenu.menuCloseOpenButton.Location.X}: Y{sideMenu.menuCloseOpenButton.Location.Y}";
+            //label.Text = $"{sideMenu.menuCloseOpenButton.Size}";
+        }
+
+        #region MoveAnimation
+        private void MovementAnimationDebugging()
         {
             Label informationLabel = new Label();
             informationLabel.Name = "informationLabel";
@@ -60,7 +79,7 @@ namespace Register
             this.Controls.Add(testLabel);
             this.Controls.Add(informationLabel);
 
-            debugAnimationTest = new AnimatePositionControl(testLabel, new Point(testLabel.Location.X + 80, testLabel.Location.Y+ 80), 0);
+            debugAnimationTest = new AnimatePositionControl(testLabel, new Point(testLabel.Location.X + 80, testLabel.Location.Y + 80), 0);
         }
 
         private void TriggerViaFormMove(object sender, MouseEventArgs e)
@@ -75,8 +94,9 @@ namespace Register
 
         private void TriggerViaFormClick(object sender, EventArgs e)
         {
-            
+
         }
+        #endregion
         #endregion
     }
 }

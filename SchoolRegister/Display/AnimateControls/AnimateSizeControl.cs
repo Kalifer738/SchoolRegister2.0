@@ -127,6 +127,36 @@ namespace AnimateControl
         }
 
         /// <summary>
+        /// Size of the control when the animation is active
+        /// </summary>
+        public Size ActiveSize
+        {
+            get
+            {
+                return activeSize;
+            }
+            set
+            {
+                activeSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Size of the control when the animation isn't ative
+        /// </summary>
+        public Size OriginalSize
+        {
+            get
+            {
+                return originalSize;
+            }
+            set
+            {
+                originalSize = value;
+            }
+        }
+
+        /// <summary>
         /// Resize a contorl between its origonal size and the specified one.
         /// </summary>
         /// <param name="ControlToBeAnimated">The contorl to be animated.</param>

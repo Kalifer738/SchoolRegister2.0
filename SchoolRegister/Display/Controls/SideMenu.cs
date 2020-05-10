@@ -1,431 +1,379 @@
 ﻿using AnimateControl;
 using Register;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace KonstantinControls
 {
-    class SideMenu
+    class SideMenu : System.Windows.Forms.Panel
     {
-        Action onAddGrades;
-        Action onAddStudent;
-        Action onSettings;
-        Action onExitApplication;
-
-        AnimatePositionControl menuOpenCloseMenuAnimation;
-
-        AnimateSizeControl menuButtonGrowShrinkAnimation;
-
-        AnimateSizeControl classSelectionmenu;
-
-        Panel menuPanel;
-
-        Label[] borders;
-
-        Label currentClassGFX;
-        Label currentClass;
-        Control[] otherClasses;
-
-        PictureBox menuCloseOpenButton;
-        Label menuCloseOpenButtonGFX;
-
-        Label[] sideMenuOptions;
-
-        public Action OnAddGrades
+        #region Debugging stuff
+        private int debugInt;
+        [Category("DebugInt"), Description("An int used for easier debugging as the via the properties")]
+        public int DebugInt
         {
             get
             {
-                return onAddGrades;
+                return debugInt;
             }
             set
             {
-                onAddGrades += value;
+                debugInt = value;
             }
         }
-        public Action OnAddStudent
+        #endregion
+
+        private AnimatePositionControl animSideMenu;
+        private AnimateSizeControl animClassDropdownMenu;
+        private AnimateSizeControl animButtonHover;
+
+        private Label currentClass;
+        private Label[] currentClassOptions;
+        private Control[] linesBetweenOptions;
+        private PictureBox buttonGFX;
+        private Control classDropdown;
+        private Control[] innerGFX;
+        private Control buttonClickArea;
+
+        private Color currentClassColor;
+        private int spacingBetweenOptions;
+
+
+        [Category("CurrentClass"), Description("Text for the currently selected class")]
+        public Label CurrentClass
         {
             get
             {
-                return onAddStudent;
+                return currentClass;
             }
             set
             {
-                onAddStudent += value;
-            }
-        }
-        public Action OnSettings
-        {
-            get
-            {
-                return onSettings;
-            }
-            set
-            {
-                onSettings += value;
-            }
-        }
-        public Action OnExitApplication
-        {
-            get
-            {
-                return onExitApplication;
-            }
-            set
-            {
-                onExitApplication += value;
+                currentClass = value;
+                Invalidate();
             }
         }
 
-        /// <summary>
-        /// Represents the panel that holds all the controls for the side menu.
-        /// </summary>
-        public Panel MenuPanel
+        [Category("CurrentClass Color")]
+        public Color CurrentClassColor
         {
             get
             {
-                return menuPanel;
+                return currentClassColor;
             }
-            private set
+            set
             {
-                menuPanel = value;
+                currentClassColor = value;
+                UpdateColor();
             }
         }
 
-        /// <summary>
-        /// Creates a side menu on the left, adding it to the form.
-        /// </summary>
-        /// <param name="currentForm">The form that will receive the side menu</param>
-        /// <param name="opened">Is the menu open upton serialization</param>
-        public SideMenu(Form currentForm, bool opened)
+        [Category("Spacing Between Options")]
+        public int SpacingBetweenOptions
         {
-            InicializePanel(currentForm);
-            InicializeBorders();
-            InicializeClassButton();
-            InicializeSideMenuOptions();
+            get
+            {
+                return spacingBetweenOptions;
+            }
+            set
+            {
+                spacingBetweenOptions = value;
+                UpdateSpacingBetweenOptions();
+            }
+        }
+
+
+        public SideMenu()
+        {
+            this.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
+            this.Resize += SideMenu_SizeChanged;
+            this.BackColor = Color.White;
+
             InicializeCurrentClass();
-            SetControlsCorrectOrder();
+            InicializebuttonGFX();
+            InicializeClassDropdown();
+            InicializeInsideBorders();
+            InicializeCurrentClassOptions();
+            InicializeLinesBetweenOptions();
+            InicializeAnimationScripts();
+            OrderControls();
+        }
 
-            menuOpenCloseMenuAnimation = new AnimatePositionControl(menuPanel, new Point(menuPanel.Location.X - (menuPanel.Width - 60), 0), 0);
-            menuButtonGrowShrinkAnimation = new AnimateSizeControl(menuCloseOpenButton, new Size(menuCloseOpenButton.Size.Width + 10, menuCloseOpenButton.Size.Height + 10), 0, true);
-            classSelectionmenu = new AnimateSizeControl(currentClassGFX, new Size(currentClassGFX.Size.Width, currentClassGFX.Height + 500), 5, false);
-
-            menuOpenCloseMenuAnimation.OnActiveAnimationEnds += ExtendButtonLabel;
-            menuOpenCloseMenuAnimation.OnDefaultAnimationStarts += CollapseButtonLabel;
-
-            if (!opened)
+        private void OrderControls()
+        {
+            foreach (var option in currentClassOptions)
             {
-                menuOpenCloseMenuAnimation.MoveToActivePosition();
+                option.SendToBack();
             }
         }
 
-        private void InicializePanel(Form currentForm)
+        private void InicializeLinesBetweenOptions()
         {
-            menuPanel = new Panel();
-            menuPanel.Location = new Point(0, 0);
-            menuPanel.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom);
-            menuPanel.Size = new Size(260, currentForm.Size.Height - 39);
-            menuPanel.Parent = currentForm;
-            menuPanel.BackColor = Color.White;
-            menuPanel.BringToFront();
-            currentForm.Controls.Add(menuPanel);
-        }
-        private void InicializeBorders()
-        {
-            borders = new Label[6];
+            linesBetweenOptions = new Control[currentClassOptions.Length];
 
-            #region Top label
-            Label topLabel = new Label();
-            topLabel.Name = "topBorderLabel";
-            topLabel.BackColor = Color.Black;
-            topLabel.Anchor = (AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right);
-            topLabel.Location = menuPanel.Location;
-            topLabel.Size = new Size(menuPanel.Size.Width, 1);
-            borders[0] = topLabel;
-            #endregion
-
-            #region Bottom Label
-            Label bottomLabel = new Label();
-            bottomLabel.Name = "bottomBorderLabel";
-            bottomLabel.BackColor = Color.Black;
-            bottomLabel.Anchor = AnchorStyles.Bottom;
-            bottomLabel.Location = new Point(menuPanel.Location.X, menuPanel.Height + menuPanel.Location.Y - 1);
-            bottomLabel.Size = new Size(menuPanel.Size.Width, 1);
-            borders[1] = bottomLabel;
-            #endregion
-
-            #region Left label
-            Label leftLabel = new Label();
-            leftLabel.Name = "leftBorderLabel";
-            leftLabel.BackColor = Color.Black;
-            leftLabel.Anchor = (/*AnchorStyles.Left |*/ AnchorStyles.Bottom | AnchorStyles.Top);
-            leftLabel.Location = menuPanel.Location;
-            leftLabel.Size = new Size(1, menuPanel.Size.Height);
-            borders[2] = leftLabel;
-            #endregion
-
-            #region Right label
-            Label rightLabel = new Label();
-            rightLabel.Name = "rightBorderLabel";
-            rightLabel.BackColor = Color.Black;
-            rightLabel.Anchor = (/*AnchorStyles.Right |*/ AnchorStyles.Bottom | AnchorStyles.Top);
-            rightLabel.Location = new Point(menuPanel.Location.X + menuPanel.Width - 1, menuPanel.Location.Y);
-            rightLabel.Size = new Size(1, menuPanel.Size.Height);
-            borders[3] = rightLabel;
-            #endregion
-
-            #region Class label
-            Label classLabel = new Label();
-            classLabel.Name = "classBorderLabel";
-            classLabel.BackColor = Color.Black;
-            classLabel.Anchor = AnchorStyles.Top;
-            classLabel.Location = new Point(menuPanel.Location.X, menuPanel.Location.Y + 42);
-            classLabel.Size = new Size(menuPanel.Size.Width, 1);
-            borders[4] = classLabel;
-            #endregion
-
-            #region Button label
-            Label buttonLabel = new Label();
-            buttonLabel.Name = "buttonBorderLabel";
-            buttonLabel.BackColor = Color.Black;
-            buttonLabel.Anchor = AnchorStyles.Top;
-            buttonLabel.Location = new Point(menuPanel.Location.X + 200, menuPanel.Location.Y);
-            buttonLabel.Size = new Size(1, 43);
-            borders[5] = buttonLabel;
-            #endregion
-
-            foreach (var item in borders)
+            for (int line = 0; line < linesBetweenOptions.Length; line++)
             {
-                item.Parent = menuPanel;
+                linesBetweenOptions[line] = new Control();
+                linesBetweenOptions[line].BackColor = Color.Black;
+                linesBetweenOptions[line].Parent = this;
+                linesBetweenOptions[line].SendToBack();
             }
         }
-        private void InicializeClassButton()
+
+        private void InicializeCurrentClassOptions()
         {
-            menuCloseOpenButton = new PictureBox();
-            menuCloseOpenButton.Location = new Point(211, 10);
-            menuCloseOpenButton.SizeMode = PictureBoxSizeMode.Zoom;
-            menuCloseOpenButton.Size = new Size(38, 25);
-            menuCloseOpenButton.BackColor = Color.Orange;
+            currentClassOptions = new Label[7];
 
-            menuCloseOpenButtonGFX = new Label();
-            menuCloseOpenButtonGFX.Location = borders[5].Location;
-            menuCloseOpenButtonGFX.Size = new Size(menuPanel.Width - borders[5].Location.X, borders[5].Height);
-            menuCloseOpenButtonGFX.BackColor = Color.Orange;
+            currentClassOptions[0] = new Label();
+            currentClassOptions[0].AutoSize = true;
+            currentClassOptions[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            currentClassOptions[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            currentClassOptions[0].BackColor = Color.Transparent;
+            currentClassOptions[0].Parent = this;
+            currentClassOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            currentClassOptions[0].SendToBack();
 
-            menuCloseOpenButton.Image = SideMenuResources.SideMenuButtonPicture;
-
-            menuCloseOpenButton.Click += CloseOpenSideMenu;
-            menuCloseOpenButton.DoubleClick += CloseOpenSideMenu;
-            menuCloseOpenButton.MouseEnter += ResizeMenuButton;
-            menuCloseOpenButton.MouseLeave += ResizeMenuButton;
-
-            menuCloseOpenButtonGFX.Click += CloseOpenSideMenu;
-            menuCloseOpenButtonGFX.DoubleClick += CloseOpenSideMenu;
-            menuCloseOpenButtonGFX.MouseEnter += ResizeMenuButton;
-            menuCloseOpenButtonGFX.MouseLeave += ResizeMenuButton;
-
-            menuCloseOpenButtonGFX.Parent = menuPanel;
-            menuCloseOpenButton.Parent = menuPanel;
-
-            menuCloseOpenButtonGFX.SendToBack();
-            menuCloseOpenButton.BringToFront();
-        }
-        private void InicializeSideMenuOptions()
-        {
-            sideMenuOptions = new Label[5];
-            Point labelCurrentLocation = new Point(menuPanel.Location.X + 11, menuPanel.Location.Y + 54);
-
-            int spacingBetweenLabelsY = 32;
-            Color labelBackColor = Color.Transparent;
-            AnchorStyles labelAnchorStyle = (AnchorStyles.Left | AnchorStyles.Top);
-            Font labelFont = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-
-            #region AddGradesLabel
-            Label addGradesLabel = new Label();
-            addGradesLabel.Name = "addGradesLabel";
-            addGradesLabel.BackColor = labelBackColor;
-            addGradesLabel.Anchor = labelAnchorStyle;
-            addGradesLabel.Location = labelCurrentLocation;
-            addGradesLabel.AutoSize = true;
-            addGradesLabel.Text = "Add Grades";
-            addGradesLabel.Font = labelFont;
-            labelCurrentLocation.Y += spacingBetweenLabelsY;
-            #endregion
-
-            #region Add Class Note
-            Label addClassNoteLabel = new Label();
-            addClassNoteLabel.Name = "addClassNoteLabel";
-            addClassNoteLabel.BackColor = labelBackColor;
-            addClassNoteLabel.Anchor = labelAnchorStyle;
-            addClassNoteLabel.Location = labelCurrentLocation;
-            addClassNoteLabel.AutoSize = true;
-            addClassNoteLabel.Text = "Add Class Note";
-            addClassNoteLabel.Font = labelFont;
-            labelCurrentLocation.Y += spacingBetweenLabelsY;
-            #endregion
-
-            #region Add Student Label
-            Label addStudentLabel = new Label();
-            addStudentLabel.Name = "addStudentLabel";
-            addStudentLabel.BackColor = labelBackColor;
-            addStudentLabel.Anchor = labelAnchorStyle;
-            addStudentLabel.Location = labelCurrentLocation;
-            addStudentLabel.AutoSize = true;
-            addStudentLabel.Text = "Add Student";
-            addStudentLabel.Font = labelFont;
-            labelCurrentLocation.Y += spacingBetweenLabelsY;
-            #endregion
-
-            #region Settings
-            Label settingsLabel = new Label();
-            settingsLabel.Name = "settingsLabel";
-            settingsLabel.BackColor = labelBackColor;
-            settingsLabel.Anchor = labelAnchorStyle;
-            settingsLabel.Location = labelCurrentLocation;
-            settingsLabel.AutoSize = true;
-            settingsLabel.Text = "Settings";
-            settingsLabel.Font = labelFont;
-            labelCurrentLocation.Y += spacingBetweenLabelsY;
-            #endregion
-
-            #region ExitLabel
-            Label exitLabel = new Label();
-            exitLabel.Name = "exitLabel";
-            exitLabel.BackColor = labelBackColor;
-            exitLabel.Anchor = labelAnchorStyle;
-            exitLabel.Location = labelCurrentLocation;
-            exitLabel.AutoSize = true;
-            exitLabel.Text = "Exit";
-            exitLabel.Font = labelFont;
-            labelCurrentLocation.Y += spacingBetweenLabelsY;
-            #endregion
-
-            sideMenuOptions[0] = addGradesLabel;
-            sideMenuOptions[1] = addClassNoteLabel;
-            sideMenuOptions[2] = addStudentLabel;
-            sideMenuOptions[3] = settingsLabel;
-            sideMenuOptions[4] = exitLabel;
-
-            addGradesLabel.Click += AddGrades;
-            addClassNoteLabel.Click += AddClassNote;
-            addStudentLabel.Click += AddStudent;
-            settingsLabel.Click += Settings;
-            exitLabel.Click += ExitApplication;
-
-            foreach (var item in sideMenuOptions)
+            for (int option = 1; option < currentClassOptions.Length; option++)
             {
-                item.Parent = menuPanel;
+                currentClassOptions[option] = new Label();
+                currentClassOptions[option].AutoSize = true;
+                currentClassOptions[option].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+                currentClassOptions[option].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+                currentClassOptions[option].BackColor = Color.Transparent;
+                currentClassOptions[option].Parent = this;
+                currentClassOptions[option].SendToBack();
             }
+
+            currentClassOptions[0].Text = "Add Grade";
+            currentClassOptions[1].Text = "Remove Grade";
+            currentClassOptions[2].Text = "Add Absence";
+            currentClassOptions[3].Text = "Remove Absence";
+            currentClassOptions[4].Text = "Add Student";
+            currentClassOptions[5].Text = "Remove Student";
+            currentClassOptions[6].Text = "Exit";
+
+            currentClassOptions[0].Click += AddGrade;
+            currentClassOptions[1].Click += RemoveGrade;
+            currentClassOptions[2].Click += AddAbsence;
+            currentClassOptions[3].Click += RemoveAbsence;
+            currentClassOptions[4].Click += AddStudent;
+            currentClassOptions[5].Click += RemoveStudent;
+            currentClassOptions[6].Click += ExitApplication;
         }
+
+        private void InicializebuttonGFX()
+        {
+            buttonGFX = new PictureBox();
+            buttonGFX.Size = new Size(38, 25);
+            buttonGFX.SizeMode = PictureBoxSizeMode.Zoom;
+            buttonGFX.Location = new Point(this.Size.Width - 49, 10);
+            buttonGFX.Anchor = (AnchorStyles.Top | AnchorStyles.Right);
+            buttonGFX.Image = SideMenuResources.SideMenuButtonPicture;
+            buttonGFX.Parent = this;
+            buttonGFX.BackColor = CurrentClassColor;
+
+            buttonGFX.Click += TriggerSideMenu;
+            buttonGFX.DoubleClick += TriggerSideMenu;
+
+            buttonClickArea = new Control();
+            buttonClickArea.Location = new Point(this.Width, 1);
+            buttonClickArea.Size = new Size(this.Width - (this.Width - 59), 44);
+            buttonClickArea.BackColor = CurrentClassColor;
+            buttonClickArea.Parent = this;
+            buttonClickArea.Click += TriggerSideMenu;
+            buttonClickArea.DoubleClick += TriggerSideMenu;
+        }
+
         private void InicializeCurrentClass()
         {
-            #region GFX
-            currentClassGFX = new Label();
-            currentClassGFX.Location = MenuPanel.Location;
-            currentClassGFX.Size = new Size(MenuPanel.Width, MenuPanel.Location.Y + borders[4].Location.Y);
-            currentClassGFX.BackColor = Color.Orange;
+            CurrentClass = new Label();
+            CurrentClass.Name = "currentClass";
+            CurrentClass.Text = "No Class Selected";
+            CurrentClass.Parent = this;
+            CurrentClass.Location = new Point(11, 10);
+            CurrentClass.BackColor = CurrentClassColor;
+            CurrentClass.Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            CurrentClass.Size = new Size(190, 23);
+            CurrentClass.AutoEllipsis = true;
 
-            currentClassGFX.Parent = MenuPanel;
-            currentClassGFX.SendToBack();
-            currentClassGFX.Click += OpenCloseClassSelection;
-            currentClassGFX.DoubleClick += OpenCloseClassSelection;
-            #endregion
-
-            #region Current Class
-            currentClass = new Label();
-            currentClass.Location = new Point(MenuPanel.Location.X + 11, 10);
-            currentClass.Name = "currentClassLabel";
-            currentClass.BackColor = Color.Transparent;
-            currentClass.Text = "No class was retrieved";
-            currentClass.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            currentClass.Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            currentClass.Size = new Size(190, 23);
-            currentClass.AutoEllipsis = true;
-
-            currentClass.Parent = currentClassGFX;
-            currentClass.BringToFront();
-            currentClass.Click += OpenCloseClassSelection;
-            currentClass.DoubleClick += OpenCloseClassSelection;
-            #endregion
-
-
-            otherClasses = new Label[1];
-            Point labelCurrentLocation = new Point(MenuPanel.Location.X + 11, MenuPanel.Location.Y + 54);
-            int spacingBetweenLabelsY = 32;
-            Color labelBackColor = Color.Transparent;
-            AnchorStyles labelAnchorStyle = (AnchorStyles.Left | AnchorStyles.Top);
-            Font labelFont = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            CurrentClass.Click += TriggerDropdownMenu;
+            CurrentClass.DoubleClick += TriggerDropdownMenu;
         }
 
-        //Continue to work on this
-        private void SetControlsCorrectOrder()
+        private void InicializeClassDropdown()
         {
-            foreach (var item in sideMenuOptions)
+            classDropdown = new Control();
+            classDropdown.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            classDropdown.Location = new Point(1, 1);
+            classDropdown.Size = new Size(this.Width - 2, 44);
+            classDropdown.BackColor = CurrentClassColor;
+            classDropdown.Parent = this;
+            classDropdown.SendToBack();
+
+            classDropdown.Click += TriggerDropdownMenu;
+            classDropdown.DoubleClick += TriggerDropdownMenu;
+        }
+
+        private void InicializeInsideBorders()
+        {
+            //Class border
+            innerGFX = new Control[2];
+            innerGFX[0] = new Control();
+            innerGFX[0].Size = new Size(this.Width, 1);
+            innerGFX[0].Location = new Point(0, 45);
+            innerGFX[0].BackColor = Color.Black;
+            innerGFX[0].Parent = this;
+            innerGFX[0].BringToFront();
+
+            //Button border
+            innerGFX[1] = new Control();
+            innerGFX[1].Size = new Size(1, 45);
+            innerGFX[1].Location = new Point(this.Size.Width - 60, 0);
+            innerGFX[1].BackColor = Color.Black;
+            innerGFX[1].Parent = this;
+            innerGFX[1].BringToFront();
+        }
+
+        private void InicializeAnimationScripts()
+        {
+            animSideMenu = new AnimatePositionControl(this, new Point(-200, 0), 0);
+            animClassDropdownMenu = new AnimateSizeControl(classDropdown, new Size(258, 463), 0, false);
+            animButtonHover = new AnimateSizeControl(buttonGFX, new Size(buttonGFX.Width + 5, buttonGFX.Height + 5), 0, true);
+
+            animSideMenu.OnActiveAnimationEnds += ExtendButtonLabel;
+            animSideMenu.OnDefaultAnimationStarts += ShrinkButtonLabel;
+        }
+
+
+        private void TriggerDropdownMenu(object sender, EventArgs e)
+        {
+            if (animSideMenu.CurrentlyActive && !animSideMenu.CurrentPositionIsTheActiveOne)
             {
-                item.SendToBack();
+                return;
+            }
+            animClassDropdownMenu.TriggerNow();
+            if (animSideMenu.CurrentlyActive && !animSideMenu.CurrentPositionIsTheActiveOne)
+            {
+                animSideMenu.TriggerNow();
             }
         }
 
-        private void CloseOpenSideMenu(object sender, EventArgs e)
+        private void TriggerSideMenu(object sender, EventArgs e)
         {
-            menuOpenCloseMenuAnimation.Trigger();
-            if (!menuOpenCloseMenuAnimation.CurrentPositionIsTheActiveOne && classSelectionmenu.CurrentSizeIsTheActiveOne)
+            animSideMenu.TriggerNow();
+            if (!animSideMenu.CurrentPositionIsTheActiveOne && animClassDropdownMenu.CurrentSizeIsTheActiveOne)
             {
-                OpenCloseClassSelection(this, EventArgs.Empty);
+                animClassDropdownMenu.TriggerNow();
             }
-        }
-
-        private void ResizeMenuButton(object sender, EventArgs e)
-        {
-            menuButtonGrowShrinkAnimation.TriggerNow();
-        }
-
-        private void OpenCloseClassSelection(object sender, EventArgs e)
-        {
-            classSelectionmenu.TriggerNow();
-        }
-
-        private void CollapseButtonLabel()
-        {
-            borders[5].Size = new Size(1, 43);
+            else if (animClassDropdownMenu.CurrentlyActive && !animClassDropdownMenu.CurrentSizeIsTheActiveOne)
+            {
+                animClassDropdownMenu.TriggerNow();
+            }
         }
 
         private void ExtendButtonLabel()
         {
-            borders[5].Size = new Size(1, menuPanel.Height);
+            innerGFX[1].Size = new Size(1, this.Height);
         }
 
-        private void AddGrades(object sender, EventArgs e)
+        private void ShrinkButtonLabel()
         {
-            if (OnAddGrades != null)
-            {
-                OnAddGrades.Invoke();
-            }
+            innerGFX[1].Size = new Size(1, 45);
         }
-        private void AddClassNote(object sender, EventArgs e)
-        {
 
-        }
-        private void AddStudent(object sender, EventArgs e)
+
+        private void UpdateColor()
         {
-            if (OnAddStudent != null)
+            buttonClickArea.BackColor = CurrentClassColor;
+            CurrentClass.BackColor = CurrentClassColor;
+            buttonGFX.BackColor = CurrentClassColor;
+            classDropdown.BackColor = CurrentClassColor;
+        }
+
+        private void UpdateSpacingBetweenOptions()
+        {
+            currentClassOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            currentClassOptions[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            for (int currentOption = 1; currentOption < currentClassOptions.Length; currentOption++)
             {
-                OnAddStudent.Invoke();
+                currentClassOptions[currentOption].Location = new Point(currentClassOptions[currentOption - 1].Location.X, currentClassOptions[currentOption - 1].Location.Y + spacingBetweenOptions);
+                linesBetweenOptions[currentOption].Location = new Point(0, currentClassOptions[currentOption].Location.Y);
+                linesBetweenOptions[currentOption].Size = new Size(this.Width, 1);
+                currentClassOptions[currentOption].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
             }
         }
-        private void Settings(object sender, EventArgs e)
-        {
-            if (OnSettings != null)
-            {
-                OnSettings.Invoke();
-            }
-        }
+
+
         private void ExitApplication(object sender, EventArgs e)
         {
-            if (OnExitApplication != null)
+            throw new NotImplementedException();
+        }
+
+        private void RemoveStudent(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddStudent(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RemoveAbsence(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddAbsence(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RemoveGrade(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddGrade(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private void SideMenu_SizeChanged(object sender, EventArgs e)
+        {
+            animClassDropdownMenu.ActiveSize = new Size(this.Width - 2, this.Height);
+            animClassDropdownMenu.OriginalSize = new Size(this.Width - 2, 44);
+            if (animClassDropdownMenu.CurrentSizeIsTheActiveOne)
             {
-                OnExitApplication.Invoke();
+                animClassDropdownMenu.ScaleToActiveSize();
             }
+            else
+            {
+                animClassDropdownMenu.ScaleToStartingSize();
+            }
+
+            //Update inner borders
+            innerGFX[0].Size = new Size(this.Width, 1);
+            innerGFX[1].Location = new Point(this.Size.Width - 60, 0);
+
+            Invalidate();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            Pen borderPen = new Pen(Color.Black);
+
+            //Outside Borders
+            Point[] borderPoitns = { new Point(0, 0), new Point(Size.Width - 1, 0),
+                                     new Point(0, 0), new Point(0, Size.Height - 1),
+                                     new Point(0, Size.Height - 1), new Point(Size.Width - 1, Size.Height - 1),
+                                     new Point(Size.Width - 1, 0), new Point(Size.Width - 1, Size.Height - 1)
+            };
+            e.Graphics.DrawLines(borderPen, borderPoitns);
         }
     }
 }
