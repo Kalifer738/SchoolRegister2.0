@@ -97,6 +97,9 @@ namespace KonstantinControls
             }
         }
 
+        /// <summary>
+        /// A control that sits on the side of the form.
+        /// </summary>
         public SideMenu()
         {
             this.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
@@ -275,7 +278,7 @@ namespace KonstantinControls
         private void TriggerSideMenu(object sender, EventArgs e)
         {
             animSideMenu.TriggerNow();
-            if (!animSideMenu.CurrentPositionIsTheActiveOne && animClassDropdownMenu.CurrentSizeIsTheActiveOne)
+            if (!animSideMenu.CurrentPositionIsTheActiveOne && animClassDropdownMenu.CurrentSizeIsTheActiveOne && !animClassDropdownMenu.CurrentlyActive)
             {
                 animClassDropdownMenu.TriggerNow();
             }
