@@ -36,6 +36,7 @@ namespace Register
             {
                 Debug();
             }
+            sideMenu1.Start();
         }
 
         #region Debug Methods

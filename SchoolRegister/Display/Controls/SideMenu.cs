@@ -39,7 +39,7 @@ namespace KonstantinControls
 
         private Color currentClassColor;
         private int spacingBetweenOptions;
-
+        private bool enableLinesBetweenOptions;
 
         [Category("CurrentClass"), Description("Text for the currently selected class")]
         public Label CurrentClass
@@ -83,6 +83,19 @@ namespace KonstantinControls
             }
         }
 
+        [Category("Enable Lines Between Options")]
+        public bool EnableLinesBetweenOptions
+        {
+            get
+            {
+                return enableLinesBetweenOptions;
+            }
+            set
+            {
+                enableLinesBetweenOptions = value;
+                UpdateOptions();
+            }
+        }
 
         public SideMenu()
         {
@@ -303,6 +316,18 @@ namespace KonstantinControls
                 currentClassOptions[currentOption].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
             }
         }
+        
+        private void UpdateOptions()
+        {
+            if (!enableLinesBetweenOptions)
+            {
+                foreach (var line in linesBetweenOptions)
+                {
+                    line.Enabled = false;
+                    line.Visible = false;
+                }
+            }
+        }
 
 
         private void ExitApplication(object sender, EventArgs e)
@@ -374,6 +399,14 @@ namespace KonstantinControls
                                      new Point(Size.Width - 1, 0), new Point(Size.Width - 1, Size.Height - 1)
             };
             e.Graphics.DrawLines(borderPen, borderPoitns);
+        }
+
+        /// <summary>
+        /// Occurs when the control is done being loaded. Occurs once 
+        /// </summary>
+        public void Start()
+        {
+            UpdateOptions();
         }
     }
 }

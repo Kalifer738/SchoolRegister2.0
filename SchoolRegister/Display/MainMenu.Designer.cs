@@ -38,6 +38,7 @@
             this.sideMenu1.BackColor = System.Drawing.Color.White;
             this.sideMenu1.CurrentClassColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.sideMenu1.DebugInt = 8;
+            this.sideMenu1.EnableLinesBetweenOptions = false;
             this.sideMenu1.Location = new System.Drawing.Point(0, 0);
             this.sideMenu1.Name = "sideMenu1";
             this.sideMenu1.Size = new System.Drawing.Size(260, 465);
