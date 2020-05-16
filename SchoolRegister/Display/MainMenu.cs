@@ -32,6 +32,7 @@ namespace Register
         private void MainMenu_Load(object sender, EventArgs e)
         {
             controllerHandaler = new ControllerHandaler(this, debug);
+
             if (debug)
             {
                 Debug();

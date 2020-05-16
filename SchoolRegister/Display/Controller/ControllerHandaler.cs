@@ -22,5 +22,15 @@ namespace Display.Controller
             modelHandaler = new ModelHandaler();
             displayHandaler = new DisplayHandaler(currentForm, debugging);
         }
+
+        /// <summary>
+        /// Returns all students in a class from the database.
+        /// </summary>
+        /// <param name="classID">the said calss</param>
+        /// <returns>all students in the said class</returns>
+        public student[] GetAllStudentsInClass(int classID)
+        {
+            return dataHandaler.GetAllStudentsInClass(classID);
+        }
     }
 }
