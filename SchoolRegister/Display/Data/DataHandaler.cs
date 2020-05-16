@@ -8,6 +8,9 @@ namespace Display.Data
 {
     class DataHandaler
     {
+        public DataHandaler()
+        {
 
+        }
     }
 }
