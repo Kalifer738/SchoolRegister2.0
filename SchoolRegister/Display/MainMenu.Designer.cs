@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.sideMenu1 = new KonstantinControls.SideMenu();
+            this.dataGrid = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // sideMenu1
@@ -45,21 +47,32 @@
             this.sideMenu1.SpacingBetweenOptions = 25;
             this.sideMenu1.TabIndex = 2;
             // 
+            // dataGrid
+            // 
+            this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGrid.Location = new System.Drawing.Point(0, 0);
+            this.dataGrid.Name = "dataGrid";
+            this.dataGrid.Size = new System.Drawing.Size(767, 465);
+            this.dataGrid.TabIndex = 3;
+            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(766, 465);
             this.Controls.Add(this.sideMenu1);
+            this.Controls.Add(this.dataGrid);
             this.Name = "MainMenu";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.MainMenu_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private KonstantinControls.SideMenu sideMenu1;
+        private System.Windows.Forms.DataGridView dataGrid;
     }
 }
 

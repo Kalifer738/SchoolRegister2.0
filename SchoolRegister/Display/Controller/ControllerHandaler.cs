@@ -32,5 +32,10 @@ namespace Display.Controller
         {
             return dataHandaler.GetAllStudentsInClass(classID);
         }
+
+        internal void SaveChanges()
+        {
+            dataHandaler.SaveChanges();
+        }
     }
 }

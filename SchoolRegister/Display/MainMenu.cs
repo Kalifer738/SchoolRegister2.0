@@ -27,18 +27,26 @@ namespace Register
         public MainMenu()
         {
             InitializeComponent();
-        }
 
-        private void MainMenu_Load(object sender, EventArgs e)
-        {
             controllerHandaler = new ControllerHandaler(this, debug);
 
             if (debug)
             {
                 Debug();
             }
+        }
+
+        private void MainMenu_Load(object sender, EventArgs e)
+        {
+            controllerHandaler.GetAllStudentsInClass(0);
             sideMenu1.Start();
         }
+
+        private void MainMenu_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            controllerHandaler.SaveChanges();
+        }
+
 
         #region Debug Methods
 
