@@ -58,7 +58,7 @@ namespace Display.Data
         /// <summary>
         /// Returns all students in a class from the database.
         /// </summary>
-        /// <param name="classID">the said calss</param>
+        /// <param name="classID">the class's id.</param>
         /// <returns>all students in the said class</returns>
         public student[] GetAllStudentsInClass(int classID)
         {

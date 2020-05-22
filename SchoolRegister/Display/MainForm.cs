@@ -32,6 +32,7 @@ namespace Register
         {
             Program.RegisterControllerHandaler.GetAllStudentsInClass(1);
             sideMenu1.Start(this);
+            this.Size = new Size(0,0);
         }
 
         private void MainMenu_Closing(object sender, System.ComponentModel.CancelEventArgs e)

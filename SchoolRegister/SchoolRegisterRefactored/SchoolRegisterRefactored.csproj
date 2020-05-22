@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A112DDD4-1803-43F8-B0EF-AC25274EFB67}</ProjectGuid>
+    <ProjectGuid>{C9F6BE0C-3FCD-419D-AFFB-E1E3D970C757}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Display</RootNamespace>
-    <AssemblyName>Display</AssemblyName>
+    <RootNamespace>SchoolRegisterRefactored</RootNamespace>
+    <AssemblyName>SchoolRegisterRefactored</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -51,16 +51,10 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing.Design" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,59 +70,61 @@
     <Compile Include="AnimateControls\AnimateSizeControl.cs" />
     <Compile Include="AnimateControls\RotateImage.cs" />
     <Compile Include="class.cs">
-      <DependentUpon>SchoolRegistetContext.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Controller\ControllerHandaler.cs" />
+    <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controls\SideMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Data\DataHandaler.cs" />
-    <Compile Include="Display\DisplayHandaler.cs" />
     <Compile Include="grade.cs">
-      <DependentUpon>SchoolRegistetContext.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Model\ModelHandaler.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DepricatedScripts\SideMenuDep.cs" />
-    <Compile Include="SchoolRegistetContext.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SchoolRegistetContext.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SchoolRegistetContext.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SchoolRegistetContext.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SchoolRegistetContext.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SchoolRegistetContext.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Data\RegisterSettings.cs" />
-    <Compile Include="SettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
-      <DependentUpon>SettingsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SideMenuResources.Designer.cs">
+    <Compile Include="Model\DatabaseModel.cs" />
+    <Compile Include="Model\SettingsModel.cs" />
+    <Compile Include="Resources\SideMenuResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SideMenuResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="student.cs">
-      <DependentUpon>SchoolRegistetContext.tt</DependentUpon>
+    <Compile Include="SchoolRegisterModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchoolRegisterModel.Context.tt</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="SchoolRegisterModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SchoolRegisterModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Scripts\RegisterSettings.cs" />
+    <Compile Include="student.cs">
+      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\MainDisplay.Designer.cs">
+      <DependentUpon>MainDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Resources\SideMenuResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SideMenuResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\MainDisplay.resx">
+      <DependentUpon>MainDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -138,14 +134,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SettingsForm.resx">
+    <EmbeddedResource Include="View\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SideMenuResources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>SideMenuResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -157,40 +148,38 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EntityDeploy Include="SchoolRegistetContext.edmx">
+    <EntityDeploy Include="SchoolRegisterModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SchoolRegistetContext.Designer.cs</LastGenOutput>
+      <LastGenOutput>SchoolRegisterModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="SchoolRegistetContext.edmx.diagram">
-      <DependentUpon>SchoolRegistetContext.edmx</DependentUpon>
+    <None Include="SchoolRegisterModel.edmx.diagram">
+      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UserControlsLibrary\UserControlsLibrary.csproj">
-      <Project>{0F601BAC-4204-4E8B-AC05-C507496F4AD0}</Project>
-      <Name>UserControlsLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\SideMenuButtonPicture.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SchoolRegistetContext.Context.tt">
+    <Content Include="SchoolRegisterModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SchoolRegistetContext.edmx</DependentUpon>
-      <LastGenOutput>SchoolRegistetContext.Context.cs</LastGenOutput>
+      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
+      <LastGenOutput>SchoolRegisterModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="SchoolRegistetContext.tt">
+    <Content Include="SchoolRegisterModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SchoolRegistetContext.edmx</DependentUpon>
-      <LastGenOutput>SchoolRegistetContext.cs</LastGenOutput>
+      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
+      <LastGenOutput>SchoolRegisterModel.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UserControlsLibrary\UserControlsLibrary.csproj">
+      <Project>{0F601BAC-4204-4E8B-AC05-C507496F4AD0}</Project>
+      <Name>UserControlsLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
