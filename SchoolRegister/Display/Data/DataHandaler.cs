@@ -13,8 +13,9 @@ namespace Display.Data
 {
     class DataHandaler
     {
+        public static @class[] LoadedClasses;
+
         SchoolRegisterContext context;
-        Settings settings;
         string settingsPath;
 
         public DataHandaler()
@@ -22,24 +23,27 @@ namespace Display.Data
             context = new SchoolRegisterContext();
             settingsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\settings.json";
             GetSettings();
+            LoadedClasses = context.classes.ToArray();
         }
 
         private void GetSettings()
         {
+            RegisterSettings settings;
             if (!File.Exists(settingsPath))
             {
-                File.WriteAllText(settingsPath, JsonConvert.SerializeObject(Settings.Default));
+                File.WriteAllText(settingsPath, JsonConvert.SerializeObject(RegisterSettings.Default));
             }
             string settingsJson = File.ReadAllText(settingsPath);
 
             if (settingsJson == null)
             {
-                settings = Settings.Default;
+                settings = RegisterSettings.Default;
             }
             else
             {
-                settings = JsonConvert.DeserializeObject<Settings>(settingsJson);
+                settings = JsonConvert.DeserializeObject<RegisterSettings>(settingsJson);
             }
+            RegisterSettings.CurrentSettings = settings;
         }
 
         /// <summary>
@@ -58,7 +62,23 @@ namespace Display.Data
         /// <returns>all students in the said class</returns>
         public student[] GetAllStudentsInClass(int classID)
         {
-            return context.students.Where(student => student.class_id == classID).ToArray();
+            return LoadedClasses.First(c => c.id == classID).students.ToArray();
+            //return context.students.Where(student => student.class_id == classID).ToArray();
+        }
+
+        /// <summary>
+        /// Returns a class by its ID.
+        /// </summary>
+        /// <param name="id">The ID for said class.</param>
+        /// <returns></returns>
+        public @class GetClass(int id)
+        {
+           return context.classes.First(c => c.id == id);
+        }
+
+        public void SaveRegisterSettings(RegisterSettings settings)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

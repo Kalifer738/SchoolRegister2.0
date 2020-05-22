@@ -1,15 +1,19 @@
 ﻿using AnimateControl;
+using Display;
+using Display.Data;
+using Display.Scripts;
 using Register;
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace KonstantinControls
 {
     class SideMenu : System.Windows.Forms.Panel
     {
-        #region Debugging stuff
+        #region Debugging REMOVE BEFORE FINISHING PRODUCT!!!
         private int debugInt;
         [Category("DebugInt"), Description("An int used for easier debugging as the via the properties")]
         public int DebugInt
@@ -24,6 +28,8 @@ namespace KonstantinControls
             }
         }
         #endregion
+
+        private SettingsForm settingsForm;
 
         private AnimatePositionControl animSideMenu;
         private AnimateSizeControl animClassDropdownMenu;
@@ -105,6 +111,9 @@ namespace KonstantinControls
             this.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
             this.Resize += SideMenu_SizeChanged;
             this.BackColor = Color.White;
+            this.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - this.Size.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2 - this.Size.Height / 2);
+
+            settingsForm = new SettingsForm();
 
             InicializeCurrentClass();
             InicializebuttonGFX();
@@ -115,6 +124,8 @@ namespace KonstantinControls
             InicializeAnimationScripts();
             OrderControls();
         }
+
+        #region Inicializing Methods
 
         private void OrderControls()
         {
@@ -139,7 +150,7 @@ namespace KonstantinControls
 
         private void InicializeCurrentClassOptions()
         {
-            currentClassOptions = new Label[7];
+            currentClassOptions = new Label[8];
 
             currentClassOptions[0] = new Label();
             currentClassOptions[0].AutoSize = true;
@@ -162,20 +173,22 @@ namespace KonstantinControls
             }
 
             currentClassOptions[0].Text = "Add Grade";
-            currentClassOptions[1].Text = "Remove Grade";
-            currentClassOptions[2].Text = "Add Absence";
-            currentClassOptions[3].Text = "Remove Absence";
-            currentClassOptions[4].Text = "Add Student";
+            currentClassOptions[1].Text = "Add Absence";
+            currentClassOptions[2].Text = "Add Student";
+            currentClassOptions[3].Text = "Remove Grade";
+            currentClassOptions[4].Text = "Remove Absence";
             currentClassOptions[5].Text = "Remove Student";
-            currentClassOptions[6].Text = "Exit";
+            currentClassOptions[6].Text = "Settings";
+            currentClassOptions[7].Text = "Exit";
 
             currentClassOptions[0].Click += AddGrade;
-            currentClassOptions[1].Click += RemoveGrade;
-            currentClassOptions[2].Click += AddAbsence;
-            currentClassOptions[3].Click += RemoveAbsence;
-            currentClassOptions[4].Click += AddStudent;
+            currentClassOptions[1].Click += AddAbsence;
+            currentClassOptions[2].Click += AddStudent;
+            currentClassOptions[3].Click += RemoveGrade;
+            currentClassOptions[4].Click += RemoveAbsence;
             currentClassOptions[5].Click += RemoveStudent;
-            currentClassOptions[6].Click += ExitApplication;
+            currentClassOptions[6].Click += Settings;
+            currentClassOptions[7].Click += ExitApplication;
         }
 
         private void InicializebuttonGFX()
@@ -215,6 +228,8 @@ namespace KonstantinControls
 
             CurrentClass.Click += TriggerDropdownMenu;
             CurrentClass.DoubleClick += TriggerDropdownMenu;
+
+            CurrentClass.Text = Program.RegisterControllerHandaler.GetClassName(RegisterSettings.CurrentSettings.LastClassID).name;
         }
 
         private void InicializeClassDropdown()
@@ -260,8 +275,9 @@ namespace KonstantinControls
             animSideMenu.OnActiveAnimationEnds += ExtendButtonLabel;
             animSideMenu.OnDefaultAnimationStarts += ShrinkButtonLabel;
         }
+        #endregion
 
-
+        #region GFX methods
         private void TriggerDropdownMenu(object sender, EventArgs e)
         {
             if (animSideMenu.CurrentlyActive && !animSideMenu.CurrentPositionIsTheActiveOne)
@@ -297,7 +313,7 @@ namespace KonstantinControls
         {
             innerGFX[1].Size = new Size(1, 45);
         }
-
+        #endregion
 
         private void UpdateColor()
         {
@@ -332,10 +348,19 @@ namespace KonstantinControls
             }
         }
 
-
+        #region Events
         private void ExitApplication(object sender, EventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void Settings(object sender, EventArgs e)
+        {
+            if (settingsForm.IsDisposed == true)
+            {
+                settingsForm = new SettingsForm();
+            }
+            settingsForm.Show();
         }
 
         private void RemoveStudent(object sender, EventArgs e)
@@ -367,7 +392,6 @@ namespace KonstantinControls
         {
             throw new NotImplementedException();
         }
-
 
         private void SideMenu_SizeChanged(object sender, EventArgs e)
         {
@@ -404,11 +428,14 @@ namespace KonstantinControls
             e.Graphics.DrawLines(borderPen, borderPoitns);
         }
 
+        #endregion
+
         /// <summary>
         /// Occurs when the control is done being loaded. Occurs once 
         /// </summary>
-        public void Start()
+        public void Start(Form currentForm)
         {
+            this.Parent = currentForm;
             UpdateOptions();
         }
     }

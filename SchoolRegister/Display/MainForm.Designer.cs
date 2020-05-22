@@ -1,6 +1,6 @@
 ﻿namespace Register
 {
-    partial class MainMenu
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.

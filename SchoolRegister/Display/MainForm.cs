@@ -15,36 +15,28 @@ using Display.Controller;
 
 namespace Register
 {
-    public partial class MainMenu : Form
+    public partial class MainForm : Form
     {
-        ControllerHandaler controllerHandaler;
 
         #region Debugging Variables
         bool debug = false;
         AnimatePositionControl debugAnimationTest;
         #endregion
 
-        public MainMenu()
+        public MainForm()
         {
             InitializeComponent();
-
-            controllerHandaler = new ControllerHandaler(this, debug);
-
-            if (debug)
-            {
-                Debug();
-            }
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            controllerHandaler.GetAllStudentsInClass(0);
-            sideMenu1.Start();
+            Program.RegisterControllerHandaler.GetAllStudentsInClass(1);
+            sideMenu1.Start(this);
         }
 
         private void MainMenu_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            controllerHandaler.SaveChanges();
+            Program.RegisterControllerHandaler.SaveChanges();
         }
 
 
