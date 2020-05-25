@@ -13,11 +13,11 @@ namespace KonstantinControls
         Action onSettings;
         Action onExitApplication;
 
-        AnimatePositionControl menuOpenCloseMenuAnimation;
+        readonly AnimatePositionControl menuOpenCloseMenuAnimation;
 
-        AnimateSizeControl menuButtonGrowShrinkAnimation;
+        readonly AnimateSizeControl menuButtonGrowShrinkAnimation;
 
-        AnimateSizeControl classSelectionmenu;
+        readonly AnimateSizeControl classSelectionmenu;
 
         Panel menuPanel;
 
@@ -381,9 +381,9 @@ namespace KonstantinControls
 
             otherClasses = new Label[1];
             Point labelCurrentLocation = new Point(MenuPanel.Location.X + 11, MenuPanel.Location.Y + 54);
-            int spacingBetweenLabelsY = 32;
+            //int spacingBetweenLabelsY = 32;
             Color labelBackColor = Color.Transparent;
-            AnchorStyles labelAnchorStyle = (AnchorStyles.Left | AnchorStyles.Top);
+            //AnchorStyles labelAnchorStyle = (AnchorStyles.Left | AnchorStyles.Top);
             Font labelFont = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
         }
 

@@ -79,6 +79,7 @@
     <Compile Include="grade.cs">
       <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ICustomControl.cs" />
     <Compile Include="Model\DatabaseModel.cs" />
     <Compile Include="Model\SettingsModel.cs" />
     <Compile Include="Resources\SideMenuResources.Designer.cs">
@@ -174,12 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UserControlsLibrary\UserControlsLibrary.csproj">
-      <Project>{0F601BAC-4204-4E8B-AC05-C507496F4AD0}</Project>
-      <Name>UserControlsLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -12,9 +12,9 @@ namespace SchoolRegisterRefactored.Controller
 {
     public class RegisterController
     {
-        MainDisplay display;
-        DatabaseModel databaseModel;
-        SettingsModel settingsModel;
+        readonly MainDisplay display;
+        readonly DatabaseModel databaseModel;
+        readonly SettingsModel settingsModel;
 
         public RegisterController(MainDisplay display)
         {
@@ -24,6 +24,11 @@ namespace SchoolRegisterRefactored.Controller
         }
 
         #region Classes Methods
+
+        public bool DoesClassExist(string className)
+        {
+            return databaseModel.DoesClassExist(className);
+        }
 
         /// <summary>
         /// Returns a class.
@@ -43,6 +48,16 @@ namespace SchoolRegisterRefactored.Controller
         public @class GetClass(string className)
         {
             return databaseModel.GetClass(className);
+        }
+
+        /// <summary>
+        /// Returns all classes expect the current class.
+        /// </summary>
+        /// <param name="currentClass">The current class.</param>
+        /// <returns></returns>
+        public string[] GetAllClassesExceptCurrentClass(string currentClass)
+        {
+            return databaseModel.GetAllClassesExceptCurrentClass(currentClass);
         }
 
         /// <summary>

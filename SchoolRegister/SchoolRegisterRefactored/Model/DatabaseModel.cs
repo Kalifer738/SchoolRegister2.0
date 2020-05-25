@@ -10,9 +10,9 @@ namespace SchoolRegisterRefactored.Model
 {
     class DatabaseModel
     {
-        RegisterController registerController;
+        readonly RegisterController registerController;
 
-        SchoolRegisterContext context;
+        readonly SchoolRegisterContext context;
 
         public DatabaseModel(RegisterController registerController)
         {
@@ -36,6 +36,26 @@ namespace SchoolRegisterRefactored.Model
         public student[] GetAllStudentsInClass(int classID)
         {
             return context.classes.First(@class => @class.id == classID).students.ToArray();
+        }
+
+        public bool DoesClassExist(string className)
+        {
+            @class classToCheck = context.classes.First(@class => @class.name == className);
+            if (classToCheck != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns all classes expect the current class.
+        /// </summary>
+        /// <param name="currentClass">The current class.</param>
+        /// <returns></returns>
+        public string[] GetAllClassesExceptCurrentClass(string currentClass)
+        {
+            return context.classes.Where(@class => @class.name != currentClass).Select(x => x.name).ToArray();
         }
 
         /// <summary>
@@ -64,12 +84,7 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public string[] GetAllClassesNames()
         {
-            string[] classesNames = new string[context.classes.Count()];
-            for (int i = 0; i < context.classes.Count(); i++)
-            {
-                classesNames[i] = context.classes.First(@class => @class.id == i + 1).name;
-            }
-            return classesNames;
+            return context.classes.Select(@class => @class.name).ToArray();
         }
 
         /// <summary>

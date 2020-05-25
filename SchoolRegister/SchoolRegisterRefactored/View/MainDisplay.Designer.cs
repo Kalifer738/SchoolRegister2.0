@@ -29,28 +29,41 @@
         private void InitializeComponent()
         {
             this.sideMenu = new KonstantinControls.SideMenu();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // sideMenu
             // 
+            this.sideMenu.AllLabelsFont = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.sideMenu.AllLabelsFontStyle = System.Drawing.FontStyle.Bold;
             this.sideMenu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.sideMenu.BackColor = System.Drawing.Color.White;
-            this.sideMenu.CurrentClassColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.sideMenu.CurrentClassBackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.sideMenu.DebugInt = 0;
-            this.sideMenu.EnableLinesBetweenOptions = false;
             this.sideMenu.ForeColor = System.Drawing.SystemColors.ControlText;
             this.sideMenu.Location = new System.Drawing.Point(0, 0);
             this.sideMenu.Name = "sideMenu";
             this.sideMenu.Size = new System.Drawing.Size(260, 466);
-            this.sideMenu.SpacingBetweenOptions = 25;
+            this.sideMenu.SpacingBetweenOptionsAndClasses = 25;
             this.sideMenu.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(500, 76);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // MainDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(766, 466);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.sideMenu);
             this.Name = "MainDisplay";
             this.Text = "School Register";
@@ -62,5 +75,6 @@
         #endregion
 
         private KonstantinControls.SideMenu sideMenu;
+        private System.Windows.Forms.Button button1;
     }
 }

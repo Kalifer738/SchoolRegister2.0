@@ -2,17 +2,20 @@
 using Display;
 using Display.Scripts;
 using Register;
+using SchoolRegisterRefactored.Controller;
 using SchoolRegisterRefactored.Display;
+using KonstantinControls.Interfaces;
 using SchoolRegisterRefactored.Resources;
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace KonstantinControls
 {
-    class SideMenu : System.Windows.Forms.Panel
+    class SideMenu : System.Windows.Forms.Panel, ICustomControl
     {
         #region Debugging REMOVE BEFORE FINISHING PRODUCT!!!
         private int debugInt;
@@ -30,26 +33,38 @@ namespace KonstantinControls
         }
         #endregion
 
+        //Variables to showcase editing in the design view.
+        #region Example Variables
+
+        private Label[] exampleOptionLabels;
+        private Label exampleleCurrentClassLabel;
+        private Control exampleCurrentClassDrodown;
+
+        #endregion
+
         private SettingsForm settingsForm;
 
         private AnimatePositionControl animSideMenu;
         private AnimateSizeControl animClassDropdownMenu;
         private AnimateSizeControl animButtonHover;
 
+        private Label[] outsideBorders;
         private Label currentClass;
-        private Label[] currentClassOptions;
-        private Control[] linesBetweenOptions;
+        private Label[] classOptions;
+        private Label[] classes;
         private PictureBox buttonGFX;
         private Control classDropdown;
         private Control[] innerGFX;
         private Control buttonClickArea;
 
-        private Color currentClassColor;
-        private int spacingBetweenOptions;
-        private bool enableLinesBetweenOptions;
+        private FontStyle allLabelsFontStyle;
+        private Font allLabelsFont;
 
-        [Category("CurrentClass"), Description("Text for the currently selected class")]
-        public Label CurrentClass
+        private Color currentClassColor;
+        private int spacingBetweenOptionsAndClasses;
+        private bool inicialized;
+
+        private Label CurrentClass
         {
             get
             {
@@ -58,12 +73,47 @@ namespace KonstantinControls
             set
             {
                 currentClass = value;
-                Invalidate();
             }
         }
 
-        [Category("CurrentClass Color")]
-        public Color CurrentClassColor
+        [Category("All Labels Font")]
+        public Font AllLabelsFont
+        {
+            get
+            {
+                return allLabelsFont; 
+            }
+            set
+            {
+                allLabelsFont = value;
+                UpdateExamples();
+                if (inicialized)
+                {
+                    UpdateFonts();
+                }
+            }
+        }
+
+        [Category("All Labels Font Style")]
+        public FontStyle AllLabelsFontStyle
+        {
+            get
+            {
+                return allLabelsFontStyle;
+            }
+            set
+            {
+                allLabelsFontStyle = value;
+                UpdateExamples();
+                if (inicialized)
+                {
+                    UpdateFonts();
+                }
+            }
+        }
+
+        [Category("Current Class Background Color")]
+        public Color CurrentClassBackgroundColor
         {
             get
             {
@@ -72,35 +122,30 @@ namespace KonstantinControls
             set
             {
                 currentClassColor = value;
-                UpdateColor();
+                UpdateExamples();
+                if (inicialized)
+                {
+                    UpdateColor();
+                }
             }
         }
 
-        [Category("Spacing Between Options")]
-        public int SpacingBetweenOptions
+        [Category("Spacing Between Options And Classes")]
+        public int SpacingBetweenOptionsAndClasses
         {
             get
             {
-                return spacingBetweenOptions;
+                return spacingBetweenOptionsAndClasses;
             }
             set
             {
-                spacingBetweenOptions = value;
-                UpdateSpacingBetweenOptions();
-            }
-        }
-
-        [Category("Enable Lines Between Options")]
-        public bool EnableLinesBetweenOptions
-        {
-            get
-            {
-                return enableLinesBetweenOptions;
-            }
-            set
-            {
-                enableLinesBetweenOptions = value;
-                UpdateOptions();
+                spacingBetweenOptionsAndClasses = value;
+                UpdateExamples();
+                if (inicialized)
+                {
+                    UpdateSpacingBetweenClasses();
+                    UpdateSpacingBetweenOptions();
+                }
             }
         }
 
@@ -116,81 +161,105 @@ namespace KonstantinControls
             this.Location = new Point(0, 0);
 
             settingsForm = new SettingsForm();
+            inicialized = false;
 
-            InicializeCurrentClass();
-            InicializebuttonGFX();
-            InicializeClassDropdown();
-            InicializeInsideBorders();
-            InicializeCurrentClassOptions();
-            InicializeLinesBetweenOptions();
-            InicializeAnimationScripts();
-            OrderControls();
+            InicializeExampleControls();
         }
 
         #region Inicializing Methods
 
-        private void OrderControls()
+        private void InicializeOutsideBorders()
         {
-            foreach (var option in currentClassOptions)
+            outsideBorders = new Label[4];
+            outsideBorders = outsideBorders.Select(border => border = new Label()).ToArray();
+
+            foreach (Label border in outsideBorders)
             {
-                option.SendToBack();
+                border.Parent = this;
+                border.BackColor = Color.Black;
             }
+            outsideBorders[0].Location = new Point(0, 0);
+            outsideBorders[0].Size = new Size(this.Size.Width, 1);
+
+            outsideBorders[1].Location = new Point(0, 0);
+            outsideBorders[1].Size = new Size(1, this.Size.Height);
+
+            outsideBorders[2].Location = new Point(1, this.Size.Height - 1);
+            outsideBorders[2].Size = new Size(this.Size.Width, this.Size.Height);
+
+            outsideBorders[3].Location = new Point(this.Size.Width - 1, 1);
+            outsideBorders[3].Size = new Size(this.Size.Width, this.Size.Height);
         }
 
-        private void InicializeLinesBetweenOptions()
+        private void InicializeClasses()
         {
-            linesBetweenOptions = new Control[currentClassOptions.Length];
+            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(currentClass.Text);
 
-            for (int line = 0; line < linesBetweenOptions.Length; line++)
-            {
-                linesBetweenOptions[line] = new Control();
-                linesBetweenOptions[line].BackColor = Color.Black;
-                linesBetweenOptions[line].Parent = this;
-                linesBetweenOptions[line].SendToBack();
-            }
+            classes = new Label[classesNames.Count()];
+
+            classes[0] = new Label();
+            classes[0].AutoSize = true;
+            classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            classes[0].BackColor = Color.Transparent;
+            classes[0].Parent = classDropdown;
+            classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            classes[0].SendToBack();
+
+            SetCurrentClass(RegisterSettings.CurrentSettings.ClassToLoadName);
         }
 
-        private void InicializeCurrentClassOptions()
+        private void InicializeExampleControls()
         {
-            currentClassOptions = new Label[8];
+            exampleCurrentClassDrodown = new Control();
+            exampleCurrentClassDrodown.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            exampleCurrentClassDrodown.Location = new Point(1, 1);
+            exampleCurrentClassDrodown.Size = new Size(this.Width - 2, 44);
+            exampleCurrentClassDrodown.BackColor = CurrentClassBackgroundColor;
 
-            currentClassOptions[0] = new Label();
-            currentClassOptions[0].AutoSize = true;
-            currentClassOptions[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            currentClassOptions[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            currentClassOptions[0].BackColor = Color.Transparent;
-            currentClassOptions[0].Parent = this;
-            currentClassOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
-            currentClassOptions[0].SendToBack();
+            exampleleCurrentClassLabel = new Label();
+            exampleleCurrentClassLabel.Text = "Class Example";
+            //exampleleCurrentClassLabel.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+            exampleleCurrentClassLabel.BackColor = Color.Transparent;
+            exampleleCurrentClassLabel.Parent = exampleCurrentClassDrodown;
 
-            for (int option = 1; option < currentClassOptions.Length; option++)
+            exampleOptionLabels = new Label[4];
+            exampleOptionLabels[0] = new Label();
+            exampleOptionLabels[0].AutoSize = true;
+            //exampleOptionLabels[0].Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+            exampleOptionLabels[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            exampleOptionLabels[0].BackColor = Color.Transparent;
+            exampleOptionLabels[0].Parent = this;
+            //exampleOptionLabels[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            exampleOptionLabels[0].SendToBack();
+
+            for (int exampleOption = 1; exampleOption < exampleOptionLabels.Length; exampleOption++)
             {
-                currentClassOptions[option] = new Label();
-                currentClassOptions[option].AutoSize = true;
-                currentClassOptions[option].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-                currentClassOptions[option].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-                currentClassOptions[option].BackColor = Color.Transparent;
-                currentClassOptions[option].Parent = this;
-                currentClassOptions[option].SendToBack();
+                exampleOptionLabels[exampleOption] = new Label();
+                exampleOptionLabels[exampleOption].AutoSize = true;
+                //exampleOptionLabels[exampleOption].Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+                exampleOptionLabels[exampleOption].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+                exampleOptionLabels[exampleOption].BackColor = Color.Transparent;
+                exampleOptionLabels[exampleOption].Parent = this;
+                exampleOptionLabels[exampleOption].SendToBack();
+                exampleOptionLabels[exampleOption].Text = $"Option {exampleOption}";
             }
 
-            currentClassOptions[0].Text = "Add Grade";
-            currentClassOptions[1].Text = "Add Absence";
-            currentClassOptions[2].Text = "Add Student";
-            currentClassOptions[3].Text = "Remove Grade";
-            currentClassOptions[4].Text = "Remove Absence";
-            currentClassOptions[5].Text = "Remove Student";
-            currentClassOptions[6].Text = "Settings";
-            currentClassOptions[7].Text = "Exit";
+        }
 
-            currentClassOptions[0].Click += AddGrade;
-            currentClassOptions[1].Click += AddAbsence;
-            currentClassOptions[2].Click += AddStudent;
-            currentClassOptions[3].Click += RemoveGrade;
-            currentClassOptions[4].Click += RemoveAbsence;
-            currentClassOptions[5].Click += RemoveStudent;
-            currentClassOptions[6].Click += Settings;
-            currentClassOptions[7].Click += ExitApplication;
+        private void InicializeCurrentClass()
+        {
+            CurrentClass = new Label();
+            CurrentClass.Name = "currentClass";
+            CurrentClass.Parent = this;
+            CurrentClass.Location = new Point(11, 10);
+            CurrentClass.BackColor = CurrentClassBackgroundColor;
+            CurrentClass.Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            CurrentClass.Size = new Size(190, 23);
+            CurrentClass.AutoEllipsis = true;
+
+            CurrentClass.Click += TriggerDropdownMenu;
+            CurrentClass.DoubleClick += TriggerDropdownMenu;
         }
 
         private void InicializebuttonGFX()
@@ -202,35 +271,19 @@ namespace KonstantinControls
             buttonGFX.Anchor = (AnchorStyles.Top | AnchorStyles.Right);
             buttonGFX.Image = SideMenuResources.SideMenuButtonPicture;
             buttonGFX.Parent = this;
-            buttonGFX.BackColor = CurrentClassColor;
+            buttonGFX.BackColor = CurrentClassBackgroundColor;
 
             buttonGFX.Click += TriggerSideMenu;
             buttonGFX.DoubleClick += TriggerSideMenu;
 
             buttonClickArea = new Control();
-            buttonClickArea.Location = new Point(this.Width, 1);
-            buttonClickArea.Size = new Size(this.Width - (this.Width - 59), 44);
-            buttonClickArea.BackColor = CurrentClassColor;
+            buttonClickArea.Location = new Point(this.Width - 59, 1);
+            buttonClickArea.Size = new Size(this.Width - (this.Width - 58), 44);
+            buttonClickArea.BackColor = CurrentClassBackgroundColor;
             buttonClickArea.Parent = this;
+
             buttonClickArea.Click += TriggerSideMenu;
             buttonClickArea.DoubleClick += TriggerSideMenu;
-        }
-
-        private void InicializeCurrentClass()
-        {
-            CurrentClass = new Label();
-            CurrentClass.Name = "currentClass";
-            CurrentClass.Parent = this;
-            CurrentClass.Location = new Point(11, 10);
-            CurrentClass.BackColor = CurrentClassColor;
-            CurrentClass.Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            CurrentClass.Size = new Size(190, 23);
-            CurrentClass.AutoEllipsis = true;
-
-            CurrentClass.Click += TriggerDropdownMenu;
-            CurrentClass.DoubleClick += TriggerDropdownMenu;
-
-            //CurrentClass.Text = Program.RegisterControllerHandaler.GetClassName(RegisterSettings.CurrentSettings.LastClassID).name;
         }
 
         private void InicializeClassDropdown()
@@ -239,7 +292,7 @@ namespace KonstantinControls
             classDropdown.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
             classDropdown.Location = new Point(1, 1);
             classDropdown.Size = new Size(this.Width - 2, 44);
-            classDropdown.BackColor = CurrentClassColor;
+            classDropdown.BackColor = CurrentClassBackgroundColor;
             classDropdown.Parent = this;
             classDropdown.SendToBack();
 
@@ -267,15 +320,70 @@ namespace KonstantinControls
             innerGFX[1].BringToFront();
         }
 
+        private void InicializeOptions()
+        {
+            classOptions = new Label[8];
+
+            classOptions[0] = new Label();
+            classOptions[0].AutoSize = true;
+            classOptions[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            classOptions[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            classOptions[0].BackColor = Color.Transparent;
+            classOptions[0].Parent = this;
+            classOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            classOptions[0].SendToBack();
+
+            for (int option = 1; option < classOptions.Length; option++)
+            {
+                classOptions[option] = new Label();
+                classOptions[option].AutoSize = true;
+                classOptions[option].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+                classOptions[option].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+                classOptions[option].BackColor = Color.Transparent;
+                classOptions[option].Parent = this;
+                classOptions[option].SendToBack();
+            }
+
+            classOptions[0].Text = "Add Grade";
+            classOptions[1].Text = "Add Absence";
+            classOptions[2].Text = "Add Student";
+            classOptions[3].Text = "Remove Grade";
+            classOptions[4].Text = "Remove Absence";
+            classOptions[5].Text = "Remove Student";
+            classOptions[6].Text = "Settings";
+            classOptions[7].Text = "Exit";
+
+            classOptions[0].Click += AddGrade;
+            classOptions[1].Click += AddAbsence;
+            classOptions[2].Click += AddStudent;
+            classOptions[3].Click += RemoveGrade;
+            classOptions[4].Click += RemoveAbsence;
+            classOptions[5].Click += RemoveStudent;
+            classOptions[6].Click += ShowSettings;
+            classOptions[7].Click += ExitApplication;
+            UpdateSpacingBetweenOptions();
+        }
+
         private void InicializeAnimationScripts()
         {
-            animSideMenu = new AnimatePositionControl(this, new Point(-200, 0), 0);
+            animSideMenu = new AnimatePositionControl(this, new Point(-200, 0), 8, 2);
             animClassDropdownMenu = new AnimateSizeControl(classDropdown, new Size(258, 463), 0, false);
             animButtonHover = new AnimateSizeControl(buttonGFX, new Size(buttonGFX.Width + 5, buttonGFX.Height + 5), 0, true);
 
             animSideMenu.OnActiveAnimationEnds += ExtendButtonLabel;
-            animSideMenu.OnDefaultAnimationStarts += ShrinkButtonLabel;
+            animSideMenu.OnOriginalAnimationStarts += ShrinkButtonLabel;
+            animClassDropdownMenu.OnDefaultAnimationEnds += DisableClassesLabels;
+            //animClassDropdownMenu.OnActiveAnimationStarts += EnableClassesLabels;
         }
+
+        private void OrderControls()
+        {
+            foreach (var option in classOptions)
+            {
+                option.SendToBack();
+            }
+        }
+
         #endregion
 
         #region GFX methods
@@ -305,6 +413,22 @@ namespace KonstantinControls
             }
         }
 
+        private void EnableClassesLabels()
+        {
+            foreach (Label @class in classes)
+            {
+                @class.Visible = true;
+            }
+        }
+
+        private void DisableClassesLabels()
+        {
+            foreach (Label @class in classes)
+            {
+                @class.Visible = false;
+            }
+        }
+
         private void ExtendButtonLabel()
         {
             innerGFX[1].Size = new Size(1, this.Height);
@@ -316,46 +440,115 @@ namespace KonstantinControls
         }
         #endregion
 
+        private void UpdateFonts()
+        {
+            foreach (Label option in classOptions)
+            {
+                option.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+            }
+            foreach (Label @class in classes)
+            {
+                @class.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+            }
+            currentClass.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+        }
+
+        private void UpdateExamples()
+        {
+            exampleCurrentClassDrodown.BackColor = CurrentClassBackgroundColor;
+            exampleleCurrentClassLabel.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+            for (int exampleOption = 0; exampleOption < exampleOptionLabels.Length; exampleOption++)
+            {
+                exampleOptionLabels[exampleOption].Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
+            }
+        }
+
         private void UpdateColor()
         {
-            buttonClickArea.BackColor = CurrentClassColor;
-            CurrentClass.BackColor = CurrentClassColor;
-            buttonGFX.BackColor = CurrentClassColor;
-            classDropdown.BackColor = CurrentClassColor;
+            buttonClickArea.BackColor = CurrentClassBackgroundColor;
+            CurrentClass.BackColor = CurrentClassBackgroundColor;
+            buttonGFX.BackColor = CurrentClassBackgroundColor;
+            classDropdown.BackColor = CurrentClassBackgroundColor;
         }
 
         private void UpdateSpacingBetweenOptions()
         {
-            currentClassOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
-            currentClassOptions[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            for (int currentOption = 1; currentOption < currentClassOptions.Length; currentOption++)
+            classOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            for (int currentOption = 1; currentOption < classOptions.Length; currentOption++)
             {
-                currentClassOptions[currentOption].Location = new Point(currentClassOptions[currentOption - 1].Location.X, currentClassOptions[currentOption - 1].Location.Y + spacingBetweenOptions);
-                linesBetweenOptions[currentOption].Location = new Point(0, currentClassOptions[currentOption].Location.Y);
-                linesBetweenOptions[currentOption].Size = new Size(this.Width, 1);
-                currentClassOptions[currentOption].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            }
-        }
-        
-        private void UpdateOptions()
-        {
-            if (!enableLinesBetweenOptions)
-            {
-                foreach (var line in linesBetweenOptions)
-                {
-                    line.Enabled = false;
-                    line.Visible = false;
-                }
+                classOptions[currentOption].Location = new Point(classOptions[currentOption - 1].Location.X, classOptions[currentOption - 1].Location.Y + spacingBetweenOptionsAndClasses);
             }
         }
 
+        private void UpdateSpacingBetweenClasses()
+        {
+            for (int currentClass = 1; currentClass < classes.Length; currentClass++)
+            {
+                classes[currentClass].Location = new Point(classes[currentClass - 1].Location.X, classes[currentClass - 1].Location.Y + spacingBetweenOptionsAndClasses);
+            }
+        }
+
+        private void SetCurrentClass(string className)
+        {
+            if (!MainDisplay.RegisterController.DoesClassExist(className))
+            {
+                MessageBox.Show($"The class \"{className}\" doesn't exist in the database!");
+                currentClass.Text = "No Class Selected!";
+            }
+            else
+            {
+                currentClass.Text = className;
+            }
+
+            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(className);
+            classes = new Label[classesNames.Count()];
+
+            classes[0] = new Label();
+            classes[0].AutoSize = true;
+            classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            classes[0].BackColor = Color.Transparent;
+            classes[0].Parent = classDropdown;
+            classes[0].Text = classesNames[0];
+            classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            classes[0].SendToBack();
+            classes[0].Click += ClassOptionClick;
+            classes[0].DoubleClick += ClassOptionClick;
+
+            if (classesNames.Count() != 1)
+            {
+                for (int i = 1; i < classesNames.Count(); i++)
+                {
+                    classes[i] = new Label();
+                    classes[i].AutoSize = true;
+                    classes[i].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+                    classes[i].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+                    classes[i].BackColor = Color.Transparent;
+                    classes[i].Parent = classDropdown;
+                    classes[i].Text = classesNames[i];
+                    classes[i].SendToBack();
+                    classes[i].Click += ClassOptionClick;
+                    classes[i].DoubleClick += ClassOptionClick;
+                }
+            }
+
+            UpdateSpacingBetweenClasses();
+        }
+
         #region Events
+
+        private void ClassOptionClick(object sender, EventArgs e)
+        {
+            Label senderLabel = (Label)sender;
+            MessageBox.Show($"HAHA {senderLabel.Text} ARE LOSERS");
+        }
+
         private void ExitApplication(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        private void Settings(object sender, EventArgs e)
+        private void ShowSettings(object sender, EventArgs e)
         {
             if (settingsForm.IsDisposed == true)
             {
@@ -397,6 +590,10 @@ namespace KonstantinControls
 
         private void SideMenu_SizeChanged(object sender, EventArgs e)
         {
+            if (!inicialized)
+            {
+                return;
+            }
             animClassDropdownMenu.ActiveSize = new Size(this.Width - 2, this.Height);
             animClassDropdownMenu.OriginalSize = new Size(this.Width - 2, 44);
             if (animClassDropdownMenu.CurrentSizeIsTheActiveOne)
@@ -415,35 +612,74 @@ namespace KonstantinControls
             Invalidate();
         }
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            Pen borderPen = new Pen(Color.Black);
-
-            //Outside Borders
-            Point[] borderPoitns = { new Point(0, 0), new Point(Size.Width - 1, 0),
-                                     new Point(0, 0), new Point(0, Size.Height - 1),
-                                     new Point(0, Size.Height - 1), new Point(Size.Width - 1, Size.Height - 1),
-                                     new Point(Size.Width - 1, 0), new Point(Size.Width - 1, Size.Height - 1)
-            };
-            e.Graphics.DrawLines(borderPen, borderPoitns);
-        }
-
         #endregion
 
         /// <summary>
         /// Requared Method to setup the controls. Gets called only once when everything is already inicialized.
         /// </summary>
-        public void Start(MainDisplay currentForm)
+        public void Start(Form currentForm)
         {
             this.Parent = currentForm;
 
-            CurrentClass.Text = RegisterSettings.CurrentSettings.ClassToLoadName;
-            
-            UpdateOptions();
-            
+            InicializeCurrentClass();
+            InicializebuttonGFX();
+            InicializeClassDropdown();
+            InicializeInsideBorders();
+            InicializeOptions();
+            InicializeAnimationScripts();
+            InicializeClasses();
+            InicializeOutsideBorders();
+
+            OrderControls();
+            DisbleExmaples();
+
+            //Disabiling visibility of classes because they're not visible to the user yet.
+            foreach (Label @class in classes)
+            {
+                @class.Visible = false;
+            }
+
             settingsForm.Inicilize();
+
+            inicialized = true;
+        }
+
+        public void DisableEveryLabel()
+        {
+            foreach (var item in classes)
+            {
+                item.Visible = false;
+            }
+            currentClass.Visible = false;
+            foreach (var item in classOptions)
+            {
+                item.Visible = false;
+            }
+            buttonGFX.Visible = false;
+        }
+
+        public void EnableEveryLabel()
+        {
+            foreach (var item in classes)
+            {
+                item.Visible = true;
+            }
+            currentClass.Visible = true;
+            foreach (var item in classOptions)
+            {
+                item.Visible = true;
+            }
+            buttonGFX.Visible = true;
+        }
+
+        private void DisbleExmaples()
+        {
+            exampleCurrentClassDrodown.Dispose();
+            exampleleCurrentClassLabel.Dispose();
+            foreach (Label option in exampleOptionLabels)
+            {
+                option.Dispose();
+            }
         }
     }
 }

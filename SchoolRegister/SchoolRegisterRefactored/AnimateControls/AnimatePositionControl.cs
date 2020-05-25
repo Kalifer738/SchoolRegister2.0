@@ -10,7 +10,7 @@ namespace AnimateControl
 {
     public class AnimatePositionControl
     {
-        private Control controlToBeAnimated;
+        readonly private Control controlToBeAnimated;
 
         private Action onActiveAnimationStarts;
         private Action onActiveAnimationEnds;
@@ -25,15 +25,19 @@ namespace AnimateControl
         private bool finishedMovingY;
         private bool finishedMovingX;
 
-        private Timer originalPositionAnimation;
-        private Timer activePositionAnimation;
+        readonly private Timer originalPositionAnimation;
+        readonly private Timer activePositionAnimation;
 
         private bool currentPositionIsTheActiveOne;
         private int startingSpeed;
-        private int numberOfTicks;
+        private int currentSpeed;
+        private int speedOverTime;
 
         private bool currentlyActive;
 
+        /// <summary>
+        /// Occurs when the active animations starts.
+        /// </summary>
         public Action OnActiveAnimationStarts
         {
             get
@@ -45,6 +49,10 @@ namespace AnimateControl
                 onActiveAnimationStarts = value;
             }
         }
+
+        /// <summary>
+        /// Occurs when the active animations ends.
+        /// </summary>
         public Action OnActiveAnimationEnds
         {
             get 
@@ -56,7 +64,11 @@ namespace AnimateControl
                 onActiveAnimationEnds = value;
             }
         }
-        public Action OnDefaultAnimationStarts
+
+        /// <summary>
+        /// Occurs when the original animations starts.
+        /// </summary>
+        public Action OnOriginalAnimationStarts
         {
             get
             {
@@ -67,7 +79,11 @@ namespace AnimateControl
                 onDefaultAnimationStarts = value;
             }
         }
-        public Action OnDefaultAnimationEnds
+
+        /// <summary>
+        /// Occurs when the origonal animations ends.
+        /// </summary>
+        public Action OnOriginalAnimationEnds
         {
             get
             {
@@ -125,24 +141,41 @@ namespace AnimateControl
         }
 
         /// <summary>
+        /// The increasing speed of the control over time.
+        /// </summary>
+        public int SpeedOverTime
+        {
+            get
+            {
+                return speedOverTime;
+            }
+            set
+            {
+                speedOverTime = value;
+            }
+        }
+
+        /// <summary>
         /// Move a contorl between its origonal location and the specified one.
         /// </summary>
         /// <param name="ControlToBeAnimated">The contorl to be animated</param>
         /// <param name="ActivePosiiton">The specified location of the control when the animation is active.</param>
         /// <param name="StartingSpeed">The starting speed of the animation.</param>
-        public AnimatePositionControl(Control ControlToBeAnimated, Point ActivePosiiton, int StartingSpeed)
+        /// <param name="SpeedOverTime">The increasing speed of the control over time.</param>
+        public AnimatePositionControl(Control ControlToBeAnimated, Point ActivePosiiton, int StartingSpeed, int SpeedOverTime)
         {
             this.controlToBeAnimated = ControlToBeAnimated;
             this.originalLocation = controlToBeAnimated.Location;
             this.activeLocation = ActivePosiiton;
             this.StartingSpeed = StartingSpeed;
+            this.SpeedOverTime = SpeedOverTime;
             currentPositionIsTheActiveOne = false;
 
             activePositionAnimation = new Timer();
-            activePositionAnimation.Interval = 2;
+            activePositionAnimation.Interval = 17;
 
             originalPositionAnimation = new Timer();
-            originalPositionAnimation.Interval = 2;
+            originalPositionAnimation.Interval = 17;
 
             bool YSame = false;
             bool XSame = false;
@@ -191,28 +224,24 @@ namespace AnimateControl
             if (!CurrentlyActive)
             {
                 CurrentlyActive = true;
-                numberOfTicks = 0;
+                currentSpeed = 0;
                 finishedMovingX = false;
                 finishedMovingY = false;
                 if (currentPositionIsTheActiveOne)
                 {
-                    if (originalPositionAnimation != null)
+                    if (OnOriginalAnimationStarts != null)
                     {
-                        originalPositionAnimation.Start();
+                        OnOriginalAnimationStarts.Invoke();
                     }
+                    originalPositionAnimation.Start();
                 }
                 else
                 {
-                        activePositionAnimation.Start();
-                }
-
-                if (OnActiveAnimationStarts != null)
-                {
-                    OnActiveAnimationStarts.Invoke();
-                }
-                if (OnDefaultAnimationStarts != null)
-                {
-                    OnDefaultAnimationStarts.Invoke();
+                    if (OnActiveAnimationStarts != null)
+                    {
+                        OnActiveAnimationStarts.Invoke();
+                    }
+                    activePositionAnimation.Start();
                 }
             }
         }
@@ -228,6 +257,8 @@ namespace AnimateControl
             CurrentlyActive = false;
             Trigger();
         }
+
+        #region Movement Methods
 
         /// <summary>
         /// Teleport the control to the original position.
@@ -251,11 +282,11 @@ namespace AnimateControl
         {
             if (finishedMovingX)
             {
-                UpdateControl();
+                UpdateControlPosition();
                 return;
             }
             updatedPosition = controlToBeAnimated.Location;
-            updatedPosition.X = updatedPosition.X - (StartingSpeed + numberOfTicks);
+            updatedPosition.X -= (StartingSpeed + currentSpeed);
 
             if (!currentPositionIsTheActiveOne)
             {
@@ -273,7 +304,7 @@ namespace AnimateControl
                     finishedMovingX = true;
                 }
             }
-            UpdateControl();
+            UpdateControlPosition();
         }
 
         private void MovePositiveX(object sender, EventArgs e)
@@ -283,7 +314,7 @@ namespace AnimateControl
                 return;
             }
             updatedPosition = controlToBeAnimated.Location;
-            updatedPosition.X = updatedPosition.X + (StartingSpeed + numberOfTicks);
+            updatedPosition.X += (StartingSpeed + currentSpeed);
 
             if (!currentPositionIsTheActiveOne)
             {
@@ -301,18 +332,18 @@ namespace AnimateControl
                     finishedMovingX = true;
                 }
             }
-            UpdateControl();
+            UpdateControlPosition();
         }
 
         private void MoveNegativeY(object sender, EventArgs e)
         {
             if (finishedMovingY)
             {
-                UpdateControl();
+                UpdateControlPosition();
                 return;
             }
             updatedPosition = controlToBeAnimated.Location;
-            updatedPosition.Y = updatedPosition.Y - (StartingSpeed + numberOfTicks);
+            updatedPosition.Y -= (StartingSpeed + currentSpeed);
 
             if (!currentPositionIsTheActiveOne)
             {
@@ -330,18 +361,18 @@ namespace AnimateControl
                     finishedMovingY = true;
                 }
             }
-            UpdateControl();
+            UpdateControlPosition();
         }
 
         private void MovePositiveY(object sender, EventArgs e)
         {
             if (finishedMovingY)
             {
-                UpdateControl();
+                UpdateControlPosition();
                 return;
             }
             updatedPosition = controlToBeAnimated.Location;
-            updatedPosition.Y = updatedPosition.Y + (StartingSpeed + numberOfTicks);
+            updatedPosition.Y += (StartingSpeed + currentSpeed);
 
             if (!currentPositionIsTheActiveOne)
             {
@@ -359,12 +390,14 @@ namespace AnimateControl
                     finishedMovingY = true;
                 }
             }
-            UpdateControl();
+            UpdateControlPosition();
         }
 
-        private void UpdateControl()
+        #endregion
+
+        private void UpdateControlPosition()
         {
-            if (updatedPosition == activeLocation && numberOfTicks != 0 && !currentPositionIsTheActiveOne || updatedPosition == originalLocation && numberOfTicks != 0 && currentPositionIsTheActiveOne)
+            if (updatedPosition == activeLocation && currentSpeed != 0 && !currentPositionIsTheActiveOne || updatedPosition == originalLocation && currentSpeed != 0 && currentPositionIsTheActiveOne)
             {
                 activePositionAnimation.Stop();
                 originalPositionAnimation.Stop();
@@ -374,13 +407,13 @@ namespace AnimateControl
                 {
                     OnActiveAnimationEnds.Invoke();
                 }
-                else if (OnDefaultAnimationEnds != null)
+                else if (OnOriginalAnimationEnds != null)
                 {
-                    OnDefaultAnimationEnds.Invoke();
+                    OnOriginalAnimationEnds.Invoke();
                 }
             }
             controlToBeAnimated.Location = updatedPosition;
-            numberOfTicks++;
+            currentSpeed += SpeedOverTime;
         }
 
         public override string ToString()
@@ -388,7 +421,7 @@ namespace AnimateControl
             return $"Positon- X:{updatedPosition.X} Y:{updatedPosition.Y} {Environment.NewLine}" +
                    $"Active Animation Running: {originalPositionAnimation.Enabled} {Environment.NewLine}" +
                    $"Original Animation Running: {activePositionAnimation.Enabled} {Environment.NewLine}" +
-                   $"Number of moves: {numberOfTicks}";
+                   $"Number of moves: {currentSpeed}";
         }
     }
 }
