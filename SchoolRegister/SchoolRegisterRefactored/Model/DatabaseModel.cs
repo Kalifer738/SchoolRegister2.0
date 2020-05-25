@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace SchoolRegisterRefactored.Model
 {
+    /// <summary>
+    /// Represents the model used in MVC design pattern projects.
+    /// </summary>
     class DatabaseModel
     {
         readonly RegisterController registerController;
@@ -38,6 +41,11 @@ namespace SchoolRegisterRefactored.Model
             return context.classes.First(@class => @class.id == classID).students.ToArray();
         }
 
+        /// <summary>
+        /// Returns true if the class exists in the database.
+        /// </summary>
+        /// <param name="className"></param>
+        /// <returns></returns>
         public bool DoesClassExist(string className)
         {
             @class classToCheck = context.classes.First(@class => @class.name == className);

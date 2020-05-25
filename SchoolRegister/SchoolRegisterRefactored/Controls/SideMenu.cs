@@ -17,6 +17,8 @@ namespace KonstantinControls
 {
     class SideMenu : System.Windows.Forms.Panel, ICustomControl
     {
+        #region Variables
+
         #region Debugging REMOVE BEFORE FINISHING PRODUCT!!!
         private int debugInt;
         [Category("DebugInt"), Description("An int used for easier debugging as the via the properties")]
@@ -33,8 +35,8 @@ namespace KonstantinControls
         }
         #endregion
 
-        //Variables to showcase editing in the design view.
         #region Example Variables
+        //Variables to showcase editing in the design view.
 
         private Label[] exampleOptionLabels;
         private Label exampleleCurrentClassLabel;
@@ -63,6 +65,10 @@ namespace KonstantinControls
         private Color currentClassColor;
         private int spacingBetweenOptionsAndClasses;
         private bool inicialized;
+
+        #endregion
+
+        #region Properties
 
         private Label CurrentClass
         {
@@ -149,6 +155,8 @@ namespace KonstantinControls
             }
         }
 
+        #endregion
+
         /// <summary>
         /// A control that sits on the side of the form.
         /// </summary>
@@ -178,17 +186,24 @@ namespace KonstantinControls
                 border.Parent = this;
                 border.BackColor = Color.Black;
             }
+            //Top
             outsideBorders[0].Location = new Point(0, 0);
             outsideBorders[0].Size = new Size(this.Size.Width, 1);
 
+            //Left
             outsideBorders[1].Location = new Point(0, 0);
             outsideBorders[1].Size = new Size(1, this.Size.Height);
+            outsideBorders[1].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
 
+            //Bottom
             outsideBorders[2].Location = new Point(1, this.Size.Height - 1);
-            outsideBorders[2].Size = new Size(this.Size.Width, this.Size.Height);
+            outsideBorders[2].Size = new Size(this.Size.Width, 1);
+            outsideBorders[2].Anchor = AnchorStyles.Bottom;
 
+            //Right
             outsideBorders[3].Location = new Point(this.Size.Width - 1, 1);
             outsideBorders[3].Size = new Size(this.Size.Width, this.Size.Height);
+            outsideBorders[3].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
         }
 
         private void InicializeClasses()
@@ -366,14 +381,14 @@ namespace KonstantinControls
 
         private void InicializeAnimationScripts()
         {
-            animSideMenu = new AnimatePositionControl(this, new Point(-200, 0), 8, 2);
-            animClassDropdownMenu = new AnimateSizeControl(classDropdown, new Size(258, 463), 0, false);
+            animSideMenu = new AnimatePositionControl(this, new Point(-200, 0), 0, 1);
+            animClassDropdownMenu = new AnimateSizeControl(classDropdown, new Size(classDropdown.Width, this.Height - 1), 0, false);
             animButtonHover = new AnimateSizeControl(buttonGFX, new Size(buttonGFX.Width + 5, buttonGFX.Height + 5), 0, true);
 
             animSideMenu.OnActiveAnimationEnds += ExtendButtonLabel;
             animSideMenu.OnOriginalAnimationStarts += ShrinkButtonLabel;
-            animClassDropdownMenu.OnDefaultAnimationEnds += DisableClassesLabels;
-            //animClassDropdownMenu.OnActiveAnimationStarts += EnableClassesLabels;
+            animClassDropdownMenu.OnOriginalAnimationEnds += DisableClassesLabels;
+            animClassDropdownMenu.OnActiveAnimationStarts += EnableClassesLabels;
         }
 
         private void OrderControls()
@@ -438,7 +453,6 @@ namespace KonstantinControls
         {
             innerGFX[1].Size = new Size(1, 45);
         }
-        #endregion
 
         private void UpdateFonts()
         {
@@ -488,56 +502,11 @@ namespace KonstantinControls
             }
         }
 
-        private void SetCurrentClass(string className)
-        {
-            if (!MainDisplay.RegisterController.DoesClassExist(className))
-            {
-                MessageBox.Show($"The class \"{className}\" doesn't exist in the database!");
-                currentClass.Text = "No Class Selected!";
-            }
-            else
-            {
-                currentClass.Text = className;
-            }
-
-            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(className);
-            classes = new Label[classesNames.Count()];
-
-            classes[0] = new Label();
-            classes[0].AutoSize = true;
-            classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            classes[0].BackColor = Color.Transparent;
-            classes[0].Parent = classDropdown;
-            classes[0].Text = classesNames[0];
-            classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
-            classes[0].SendToBack();
-            classes[0].Click += ClassOptionClick;
-            classes[0].DoubleClick += ClassOptionClick;
-
-            if (classesNames.Count() != 1)
-            {
-                for (int i = 1; i < classesNames.Count(); i++)
-                {
-                    classes[i] = new Label();
-                    classes[i].AutoSize = true;
-                    classes[i].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-                    classes[i].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-                    classes[i].BackColor = Color.Transparent;
-                    classes[i].Parent = classDropdown;
-                    classes[i].Text = classesNames[i];
-                    classes[i].SendToBack();
-                    classes[i].Click += ClassOptionClick;
-                    classes[i].DoubleClick += ClassOptionClick;
-                }
-            }
-
-            UpdateSpacingBetweenClasses();
-        }
+        #endregion
 
         #region Events
 
-        private void ClassOptionClick(object sender, EventArgs e)
+        private void ClassLabelClick(object sender, EventArgs e)
         {
             Label senderLabel = (Label)sender;
             MessageBox.Show($"HAHA {senderLabel.Text} ARE LOSERS");
@@ -598,7 +567,7 @@ namespace KonstantinControls
             animClassDropdownMenu.OriginalSize = new Size(this.Width - 2, 44);
             if (animClassDropdownMenu.CurrentSizeIsTheActiveOne)
             {
-                animClassDropdownMenu.ScaleToActiveSize();
+                animClassDropdownMenu.ScaleToOriginalSize();
             }
             else
             {
@@ -644,6 +613,56 @@ namespace KonstantinControls
             inicialized = true;
         }
 
+        private void SetCurrentClass(string className)
+        {
+            if (!MainDisplay.RegisterController.DoesClassExist(className))
+            {
+                MessageBox.Show($"The class \"{className}\" doesn't exist in the database!");
+                currentClass.Text = "No Class Selected!";
+            }
+            else
+            {
+                currentClass.Text = className;
+            }
+
+            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(className);
+            classes = new Label[classesNames.Count()];
+
+            classes[0] = new Label();
+            classes[0].AutoSize = true;
+            classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            classes[0].BackColor = Color.Transparent;
+            classes[0].Parent = classDropdown;
+            classes[0].Text = classesNames[0];
+            classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            classes[0].SendToBack();
+            classes[0].Click += ClassLabelClick;
+            classes[0].DoubleClick += ClassLabelClick;
+
+            if (classesNames.Count() != 1)
+            {
+                for (int i = 1; i < classesNames.Count(); i++)
+                {
+                    classes[i] = new Label();
+                    classes[i].AutoSize = true;
+                    classes[i].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+                    classes[i].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+                    classes[i].BackColor = Color.Transparent;
+                    classes[i].Parent = classDropdown;
+                    classes[i].Text = classesNames[i];
+                    classes[i].SendToBack();
+                    classes[i].Click += ClassLabelClick;
+                    classes[i].DoubleClick += ClassLabelClick;
+                }
+            }
+
+            UpdateSpacingBetweenClasses();
+        }
+
+        /// <summary>
+        /// Disabled visibility of every label on the sidemenu, used for debugging purposes.
+        /// </summary>
         public void DisableEveryLabel()
         {
             foreach (var item in classes)
@@ -658,6 +677,9 @@ namespace KonstantinControls
             buttonGFX.Visible = false;
         }
 
+        /// <summary>
+        /// Enables visibility of every label on the sidemenu, used for debugging purposes.
+        /// </summary>
         public void EnableEveryLabel()
         {
             foreach (var item in classes)

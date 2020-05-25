@@ -17,6 +17,8 @@ namespace AnimateControl
         private Action onActiveAnimationEnds;
         private Action onDefaultAnimationStarts;
         private Action onDefaultAnimationEnds;
+        private Action onScaledToActiveSize;
+        private Action onScaledToOriginalSize;
 
         Point centerPointOfControl;
         Point updatedPoint;
@@ -38,6 +40,39 @@ namespace AnimateControl
         private bool keepControlCetered;
         private bool currentlyActive;
 
+        /// <summary>
+        /// Occurs when the ScaleToActiveSize gets called.
+        /// </summary>
+        public Action OnScaledToActiveSize
+        {
+            get
+            {
+                return onScaledToActiveSize;
+            }
+            set
+            {
+                onScaledToActiveSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Occurs when the ScaledToOriginalSize gets called.
+        /// </summary>
+        public Action OnScaledToOriginalSize
+        {
+            get
+            {
+                return onScaledToOriginalSize;
+            }
+            set
+            {
+                onScaledToOriginalSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Occurs when the animation starts scaling to the active size.
+        /// </summary>
         public Action OnActiveAnimationStarts
         {
             get
@@ -49,6 +84,10 @@ namespace AnimateControl
                 onActiveAnimationStarts = value;
             }
         }
+
+        /// <summary>
+        /// Occurs when the animation stops scaling to the active size.
+        /// </summary>
         public Action OnActiveAnimationEnds
         {
             get
@@ -60,7 +99,11 @@ namespace AnimateControl
                 onActiveAnimationEnds = value;
             }
         }
-        public Action OnDefaultAnimationStarts
+
+        /// <summary>
+        /// Occurs when the animation starts scaling to the original size.
+        /// </summary>
+        public Action OnOriginalAnimationStarts
         {
             get
             {
@@ -71,7 +114,11 @@ namespace AnimateControl
                 onDefaultAnimationStarts = value;
             }
         }
-        public Action OnDefaultAnimationEnds
+
+        /// <summary>
+        /// Occurs when the animation stops scaling to the original size.
+        /// </summary>
+        public Action OnOriginalAnimationEnds
         {
             get
             {
@@ -156,6 +203,8 @@ namespace AnimateControl
             }
         }
 
+
+
         /// <summary>
         /// Resize a contorl between its origonal size and the specified one.
         /// </summary>
@@ -227,6 +276,7 @@ namespace AnimateControl
         }
 
 
+
         /// <summary>
         /// Activate the animation and scale to the next size.
         /// </summary>
@@ -245,10 +295,18 @@ namespace AnimateControl
                 }
                 if (currentSizeIsTheActiveOne)
                 {
+                    if (OnOriginalAnimationStarts != null)
+                    {
+                        OnOriginalAnimationStarts.Invoke();
+                    }
                     originalSizeAnimation.Start();
                 }
                 else
                 {
+                    if (OnActiveAnimationStarts != null)
+                    {
+                        OnActiveAnimationStarts.Invoke();
+                    }
                     activeSizeAnimation.Start();
                 }
             }
@@ -269,7 +327,12 @@ namespace AnimateControl
             Trigger();
         }
 
-        public void ScaleToActiveSize()
+        #region Scaling Methods
+
+        /// <summary>
+        /// Resizes the control to the original size.
+        /// </summary>
+        public void ScaleToOriginalSize()
         {
             currentSizeIsTheActiveOne = true;
             controlToBeAnimated.Size = activeSize;
@@ -280,6 +343,9 @@ namespace AnimateControl
             }
         }
 
+        /// <summary>
+        /// Resizes the contorl to the active size.
+        /// </summary>
         public void ScaleToStartingSize()
         {
             currentSizeIsTheActiveOne = false;
@@ -395,6 +461,8 @@ namespace AnimateControl
             }
         }
 
+        #endregion
+
         private void CenterControl()
         {
             controlToBeAnimated.Location = new Point(centerPointOfControl.X - (controlToBeAnimated.Size.Width / 2), centerPointOfControl.Y - (controlToBeAnimated.Size.Height / 2));
@@ -406,6 +474,20 @@ namespace AnimateControl
             {
                 activeSizeAnimation.Stop();
                 originalSizeAnimation.Stop();
+                if (currentSizeIsTheActiveOne)
+                {
+                    if (OnOriginalAnimationEnds != null)
+                    {
+                        OnOriginalAnimationEnds.Invoke();
+                    }
+                }
+                else
+                {
+                    if (OnActiveAnimationEnds != null)
+                    {
+                        OnActiveAnimationEnds.Invoke();
+                    }
+                }
                 currentSizeIsTheActiveOne = !currentSizeIsTheActiveOne;
                 CurrentlyActive = false;
             }

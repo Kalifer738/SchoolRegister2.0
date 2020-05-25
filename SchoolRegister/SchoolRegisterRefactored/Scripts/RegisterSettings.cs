@@ -7,14 +7,19 @@ using System.Threading.Tasks;
 
 namespace Display.Scripts
 {
+    /// <summary>
+    /// Represents the object to be serialized and saved on energy independent storage, which object stores settings for the application.
+    /// </summary>
     public class RegisterSettings
     {
-        //int lastClassID;
         bool openSideMenuOnLunch;
         bool loadLastOpenedClassOnLunch;
         string classToLoadName;
         static RegisterSettings currentSettings;
 
+        /// <summary>
+        /// Default settings of the application
+        /// </summary>
         public static RegisterSettings Default 
         {
             get
@@ -27,22 +32,10 @@ namespace Display.Scripts
                 return settings;
             }
         }
-        
-        ///// <summary>
-        ///// Represetns the last loaded class.
-        ///// </summary>
-        //public int LastClassID
-        //{
-        //    get
-        //    {
-        //        return lastClassID;
-        //    }
-        //    set
-        //    {
-        //        lastClassID = value;
-        //    }
-        //}
-
+       
+        /// <summary>
+        /// Represents the class's name to load.
+        /// </summary>
         public string ClassToLoadName
         {
             get

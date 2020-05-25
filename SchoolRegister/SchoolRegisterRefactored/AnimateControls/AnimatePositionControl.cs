@@ -10,6 +10,8 @@ namespace AnimateControl
 {
     public class AnimatePositionControl
     {
+        #region Variables
+
         readonly private Control controlToBeAnimated;
 
         private Action onActiveAnimationStarts;
@@ -34,6 +36,10 @@ namespace AnimateControl
         private int speedOverTime;
 
         private bool currentlyActive;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Occurs when the active animations starts.
@@ -119,7 +125,7 @@ namespace AnimateControl
             { 
                 return currentlyActive; 
             }
-            set 
+            private set 
             { 
                 currentlyActive = value; 
             }
@@ -151,9 +157,18 @@ namespace AnimateControl
             }
             set
             {
-                speedOverTime = value;
+                if (value <= 0)
+                {
+                    SpeedOverTime = 1;
+                }
+                else
+                {
+                    speedOverTime = value;
+                }
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Move a contorl between its origonal location and the specified one.
@@ -172,10 +187,10 @@ namespace AnimateControl
             currentPositionIsTheActiveOne = false;
 
             activePositionAnimation = new Timer();
-            activePositionAnimation.Interval = 17;
+            activePositionAnimation.Interval = 8;
 
             originalPositionAnimation = new Timer();
-            originalPositionAnimation.Interval = 17;
+            originalPositionAnimation.Interval = 8;
 
             bool YSame = false;
             bool XSame = false;
@@ -416,6 +431,10 @@ namespace AnimateControl
             currentSpeed += SpeedOverTime;
         }
 
+        /// <summary>
+        /// Returns a string with debugging information about the object.
+        /// </summary>
+        /// <returns>Debugging Information</returns>
         public override string ToString()
         {
             return $"Positon- X:{updatedPosition.X} Y:{updatedPosition.Y} {Environment.NewLine}" +
