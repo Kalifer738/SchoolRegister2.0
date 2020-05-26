@@ -28,13 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.sideMenu = new KonstantinControls.SideMenu();
             this.button1 = new System.Windows.Forms.Button();
+            this.sideMenu = new KonstantinControls.SideMenu();
             this.SuspendLayout();
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(500, 76);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // sideMenu
             // 
-            this.sideMenu.AllLabelsFont = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.sideMenu.AllLabelsFont = new System.Drawing.Font("Microsoft Sans Serif", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sideMenu.AllLabelsFontStyle = System.Drawing.FontStyle.Bold;
             this.sideMenu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
@@ -47,16 +57,6 @@
             this.sideMenu.Size = new System.Drawing.Size(260, 466);
             this.sideMenu.SpacingBetweenOptionsAndClasses = 25;
             this.sideMenu.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(500, 76);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // MainDisplay
             // 

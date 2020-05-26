@@ -12,11 +12,15 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq.Expressions;
 
 namespace KonstantinControls
 {
     class SideMenu : System.Windows.Forms.Panel, ICustomControl
     {
+            
         #region Variables
 
         #region Debugging REMOVE BEFORE FINISHING PRODUCT!!!
@@ -31,6 +35,10 @@ namespace KonstantinControls
             set
             {
                 debugInt = value;
+                if (!inicialized)
+                {
+                    UpdateExamples();
+                }
             }
         }
         #endregion
@@ -41,6 +49,8 @@ namespace KonstantinControls
         private Label[] exampleOptionLabels;
         private Label exampleleCurrentClassLabel;
         private Control exampleCurrentClassDrodown;
+        private Label[] exampleOutsideBorders;
+        private Label[] exampleInsideBorders;
 
         #endregion
 
@@ -226,40 +236,37 @@ namespace KonstantinControls
 
         private void InicializeExampleControls()
         {
+
+
+
+            exampleOutsideBorders = Enumerable.Repeat(new Label() { BackColor = Color.Black, Parent = this }, 4).ToArray();
+            exampleOutsideBorders[0].Anchor = AnchorStyles.Top;//Top
+            exampleOutsideBorders[1].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);//Left
+            exampleOutsideBorders[2].Anchor = AnchorStyles.Bottom;//Bottom
+            exampleOutsideBorders[3].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);//Right
+
+            exampleInsideBorders = Enumerable.Repeat(new Label() { BackColor = Color.Black, Parent = this }, 2).ToArray();
+            exampleInsideBorders[0].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
+            exampleInsideBorders[1].Anchor = (AnchorStyles.Left | AnchorStyles.Right);
+
             exampleCurrentClassDrodown = new Control();
+            exampleCurrentClassDrodown.Name = "exampleCurrentClassDrodown";
             exampleCurrentClassDrodown.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
             exampleCurrentClassDrodown.Location = new Point(1, 1);
-            exampleCurrentClassDrodown.Size = new Size(this.Width - 2, 44);
+            exampleCurrentClassDrodown.Size = new Size(this.Width + 58, 44);
             exampleCurrentClassDrodown.BackColor = CurrentClassBackgroundColor;
+            exampleCurrentClassDrodown.Parent = this;
 
             exampleleCurrentClassLabel = new Label();
+            exampleleCurrentClassLabel.Location = new Point(10, 10);
+            exampleleCurrentClassLabel.AutoSize = true;
             exampleleCurrentClassLabel.Text = "Class Example";
-            //exampleleCurrentClassLabel.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
             exampleleCurrentClassLabel.BackColor = Color.Transparent;
             exampleleCurrentClassLabel.Parent = exampleCurrentClassDrodown;
 
             exampleOptionLabels = new Label[4];
-            exampleOptionLabels[0] = new Label();
-            exampleOptionLabels[0].AutoSize = true;
-            //exampleOptionLabels[0].Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
-            exampleOptionLabels[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            exampleOptionLabels[0].BackColor = Color.Transparent;
-            exampleOptionLabels[0].Parent = this;
-            //exampleOptionLabels[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
-            exampleOptionLabels[0].SendToBack();
-
-            for (int exampleOption = 1; exampleOption < exampleOptionLabels.Length; exampleOption++)
-            {
-                exampleOptionLabels[exampleOption] = new Label();
-                exampleOptionLabels[exampleOption].AutoSize = true;
-                //exampleOptionLabels[exampleOption].Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
-                exampleOptionLabels[exampleOption].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-                exampleOptionLabels[exampleOption].BackColor = Color.Transparent;
-                exampleOptionLabels[exampleOption].Parent = this;
-                exampleOptionLabels[exampleOption].SendToBack();
-                exampleOptionLabels[exampleOption].Text = $"Option {exampleOption}";
-            }
-
+            exampleOptionLabels = Enumerable.Repeat(new Label() { AutoSize = true, Anchor = (AnchorStyles.Left | AnchorStyles.Top), BackColor = Color.Transparent, Parent = this }, 4).ToArray();
+            exampleOptionLabels.Select(exampleOpt => { exampleOpt.SendToBack(); exampleOpt.Text = "Option Name"; return true; });
         }
 
         private void InicializeCurrentClass()
@@ -469,12 +476,47 @@ namespace KonstantinControls
 
         private void UpdateExamples()
         {
+            #region Update Positions for all controls
+
+            //Class Line
+            exampleInsideBorders[0].Size = new Size(this.Width, 1);
+            exampleInsideBorders[0].Location = new Point(0, 45 + debugInt);
+
+            //Button Line
+            exampleInsideBorders[1].Size = new Size(1, 45);
+            exampleInsideBorders[1].Location = new Point(this.Size.Width - 60, 0);
+
+            //Top Outside
+            exampleOutsideBorders[0].Location = new Point(0, 0);
+            exampleOutsideBorders[0].Size = new Size(this.Size.Width, 1);
+            //Left Outside
+            exampleOutsideBorders[1].Location = new Point(0, 0);
+            exampleOutsideBorders[1].Size = new Size(1, this.Size.Height);
+            //Bottom Outside
+            exampleOutsideBorders[2].Location = new Point(1, this.Size.Height - 1);
+            exampleOutsideBorders[2].Size = new Size(this.Size.Width, 1);
+            //Right Outside
+            exampleOutsideBorders[3].Location = new Point(this.Size.Width - 1, 1);
+            exampleOutsideBorders[3].Size = new Size(1, this.Size.Height);
+
+            exampleOptionLabels[0].Location = new Point(exampleleCurrentClassLabel.Location.X, exampleOutsideBorders[0].Location.Y + 8);
+
+            #endregion
+
+            #region Update Fonts for all labels
+
             exampleCurrentClassDrodown.BackColor = CurrentClassBackgroundColor;
             exampleleCurrentClassLabel.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
-            for (int exampleOption = 0; exampleOption < exampleOptionLabels.Length; exampleOption++)
-            {
-                exampleOptionLabels[exampleOption].Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle);
-            }
+            exampleOptionLabels.Select(x => x.Font = new Font(allLabelsFont.FontFamily, allLabelsFont.Size, allLabelsFontStyle));
+
+            #endregion
+
+            #region Update Z order for all controls
+
+            exampleOutsideBorders.Select(x => { x.BringToFront(); return true; });
+            exampleInsideBorders.Select(x => { x.BringToFront(); return true; });
+
+            #endregion
         }
 
         private void UpdateColor()
@@ -698,10 +740,9 @@ namespace KonstantinControls
         {
             exampleCurrentClassDrodown.Dispose();
             exampleleCurrentClassLabel.Dispose();
-            foreach (Label option in exampleOptionLabels)
-            {
-                option.Dispose();
-            }
+            exampleOutsideBorders.All(x => { x.Dispose(); return true; });
+            exampleOptionLabels.All(x => { x.Dispose(); return true; });
+            exampleInsideBorders.All(x => { x.Dispose(); return true; });
         }
     }
 }
