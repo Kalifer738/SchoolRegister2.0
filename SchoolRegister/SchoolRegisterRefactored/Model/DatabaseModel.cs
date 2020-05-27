@@ -196,34 +196,16 @@ namespace SchoolRegisterRefactored.Model
             SaveLastChangesToDB();
         }
 
-        public void UpdateStudentGrades(int studentID, int[] value)
+        public void UpdateStudentGrades(int studentID, Dictionary<int, int> value)
         {
             MessageBox.Show("Not Implemented! What you type is only seen on your side");
             return;
-            grade[] newGrades = new grade[value.Count()];
-
-            for (int i = 0; i < value.Count(); i++)
-            {
-                newGrades[i] = new grade();
-                newGrades[i].grade1 = value[i];
-                newGrades[i].id = value[i] - 1;
-            }
-
-            context.Database.ExecuteSqlCommand(
-                ""
-                );
-
-            //foreach (student registerStudent in context.students)
-            //{
-            //    if (registerStudent.id == studentID)
-            //    {
-            //        foreach (grade newGrade in grades)
-            //        {
-            //            registerStudent.grades = grades;
-            //        }
-            //        break;
-            //    }
-            //}
+            //Keys == number
+            //Value == times seen that number
+            //Add a methods to remove and add a mass ammout of same grades
+            //After implemeting and fixing the side menu go ahead and make sure to test things and then to =>
+            //Implement MetroFramework!!! https://thielj.github.io/MetroFramework/#Screenshots
+            //It looks so much better than this ugly ass shit
             SaveLastChangesToDB();
         }
 

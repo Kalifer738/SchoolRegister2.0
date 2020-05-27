@@ -88,30 +88,18 @@ namespace SchoolRegisterRefactored.Controls
                     case "grades":
                         {
                             int[] editedGrades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
-                            Array.Sort(editedGrades);
                             
                             ignoreCellUpdate = true;
                             this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
                             ignoreCellUpdate = false;
 
-                            int[] oldGradesArray = GradesToArray(gradesBeforeGettingEdited);
-                            int[] differenceBetweenNewAndOldGrades = GetDifferenceBetweenGrades(oldGradesArray, editedGrades);
+                            Dictionary<int, int> differenceBetweenOldAndNewGrades = ArrayDifferenceCalculator.GetDifference(GradesToArray(gradesBeforeGettingEdited), editedGrades);
 
-                            MainDisplay.RegisterController.UpdateStudentGrades(studentID, editedGrades); break;
+                            MainDisplay.RegisterController.UpdateStudentGrades(studentID, differenceBetweenOldAndNewGrades); break;
                         }
                     default: throw new Exception("You've Edited a non existant column..." + Environment.NewLine + "How...? How is that possible???? REPORT THIS!");
                 }
             }
-        }
-
-        private int[] GetDifferenceBetweenGrades(int[] oldGradesArray, int[] editedGrades)
-        {
-            int[] array1 = oldGradesArray.Except(editedGrades).ToArray();
-            int[] array2 = editedGrades.Except(oldGradesArray).ToArray();
-            int[] BothArrays = oldGradesArray.Intersect(editedGrades).ToArray();
-            return new int[4];
-            //int[] differenceBetweenArrays = oldGradesArray.Except(editedGrades).ToArray();
-            //return differenceBetweenArrays;
         }
 
         private void DataGridCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)

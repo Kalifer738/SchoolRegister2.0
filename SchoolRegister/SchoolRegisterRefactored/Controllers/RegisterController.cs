@@ -170,7 +170,7 @@ namespace SchoolRegisterRefactored.Controller
         /// </summary>
         /// <param name="studentID">students ID.</param>
         /// <param name="value">The value to update to.</param>
-        public void UpdateStudentGrades(int studentID, int[] value)
+        public void UpdateStudentGrades(int studentID, Dictionary<int, int> value)
         {
             databaseModel.UpdateStudentGrades(studentID, value);
         }
