@@ -24,10 +24,10 @@ namespace Display
             this.Size = new Size(250, 500);
             this.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - this.Size.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2 - this.Size.Height / 2);
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            ForceUpdateSettings();
+            LoadSettingsIntoUI();
         }
 
-        private void ForceUpdateSettings()
+        private void LoadSettingsIntoUI()
         {
 
             bool loadLastOpenedClassOnLunch = RegisterSettings.CurrentSettings.LoadLastOpenedClassOnLunch;
@@ -51,7 +51,9 @@ namespace Display
             RegisterSettings settings = new RegisterSettings();
             if (!LoadLastClassCheckBox.Checked)
             {
-                settings.ClassToLoadName = (string)ClassToLoadComboBox.SelectedItem;
+                string className = (string)ClassToLoadComboBox.SelectedItem;
+                settings.ClassToLoadID = MainDisplay.RegisterController.GetClass(className).id;
+                settings.ClassToLoadName = className;
             }
             else
             {

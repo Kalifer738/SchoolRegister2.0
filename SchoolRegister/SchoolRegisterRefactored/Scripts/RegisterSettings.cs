@@ -15,6 +15,7 @@ namespace Display.Scripts
         bool openSideMenuOnLunch;
         bool loadLastOpenedClassOnLunch;
         string classToLoadName;
+        int classToLoadID;
         static RegisterSettings currentSettings;
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace Display.Scripts
             get
             {
                 RegisterSettings settings = new RegisterSettings();
-                //settings.LastClassID = 1;
+                settings.ClassToLoadID = -1;
                 settings.LoadLastOpenedClassOnLunch = true;
                 settings.OpenSideMenuOnLunch = true;
                 settings.classToLoadName = "None";
@@ -75,6 +76,25 @@ namespace Display.Scripts
             set
             {
                 openSideMenuOnLunch = value;
+            }
+        }
+
+        public int ClassToLoadID
+        {
+            get
+            {
+                return classToLoadID;
+            }
+            set
+            {
+                if (value <= 0)
+                {
+                    classToLoadID = -1;
+                }
+                else
+                {
+                    classToLoadID = value;
+                }
             }
         }
 

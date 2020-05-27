@@ -422,7 +422,7 @@ namespace AnimateControl
                 {
                     OnActiveAnimationEnds.Invoke();
                 }
-                else if (OnOriginalAnimationEnds != null)
+                else if (!currentPositionIsTheActiveOne && OnOriginalAnimationEnds != null)
                 {
                     OnOriginalAnimationEnds.Invoke();
                 }

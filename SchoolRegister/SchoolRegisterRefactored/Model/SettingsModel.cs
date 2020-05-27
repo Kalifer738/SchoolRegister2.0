@@ -48,11 +48,13 @@ namespace SchoolRegisterRefactored.Model
         {
             using (FileStream fs = File.Create(settingsPath)) 
             { 
-            
+                //Creating a new empty file, then closing the resource.
             }
+
             JsonSerializer json = new JsonSerializer();
             using (StreamWriter fs = new StreamWriter(settingsPath))
             {
+                //Writing to the new file.
                 json.Serialize(fs, settings);
             }
 

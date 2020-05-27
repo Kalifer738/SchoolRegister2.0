@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace Register.Animation
 {
+    /// <summary>
+    /// WARRNING: this class has been depricated. In futire releases it will be removed!
+    /// </summary>
     class RotateImage
     {
         public static PictureBox myPictureBox;

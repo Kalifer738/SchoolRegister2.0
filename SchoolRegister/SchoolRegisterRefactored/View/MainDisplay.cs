@@ -11,12 +11,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Display.Scripts;
 
 namespace SchoolRegisterRefactored.Display
 {
     public partial class MainDisplay : Form
     {
         private static RegisterController registerController;
+        private static @class currentClass;
         private static bool sideMenuLabelsDisabled = false;
 
         /// <summary>
@@ -34,6 +36,22 @@ namespace SchoolRegisterRefactored.Display
             }
         }
 
+        public static @class CurrentClass
+        {
+            get
+            {
+                return currentClass;
+            }
+            set
+            {
+                currentClass = value;
+                if (RegisterController.OnClassChanged != null)
+                {
+                    RegisterController.OnClassChanged.Invoke();
+                }
+
+            }
+        }
         public MainDisplay()
         {
             InitializeComponent();

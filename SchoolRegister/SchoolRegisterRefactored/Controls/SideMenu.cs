@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
+using SchoolRegisterRefactored.Properties;
 
 namespace KonstantinControls
 {
@@ -220,25 +221,20 @@ namespace KonstantinControls
         {
             string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(currentClass.Text);
 
-            classes = new Label[classesNames.Count()];
-
-            classes[0] = new Label();
-            classes[0].AutoSize = true;
-            classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            classes[0].BackColor = Color.Transparent;
-            classes[0].Parent = classDropdown;
-            classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
-            classes[0].SendToBack();
+            //classes[0] = new Label();
+            //classes[0].AutoSize = true;
+            //classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
+            //classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
+            //classes[0].BackColor = Color.Transparent;
+            //classes[0].Parent = classDropdown;
+            //classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            //classes[0].SendToBack();
 
             SetCurrentClass(RegisterSettings.CurrentSettings.ClassToLoadName);
         }
 
         private void InicializeExampleControls()
         {
-
-
-
             exampleOutsideBorders = Enumerable.Repeat(new Label() { BackColor = Color.Black, Parent = this }, 4).ToArray();
             exampleOutsideBorders[0].Anchor = AnchorStyles.Top;//Top
             exampleOutsideBorders[1].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);//Left
@@ -392,8 +388,14 @@ namespace KonstantinControls
             animClassDropdownMenu = new AnimateSizeControl(classDropdown, new Size(classDropdown.Width, this.Height - 1), 0, false);
             animButtonHover = new AnimateSizeControl(buttonGFX, new Size(buttonGFX.Width + 5, buttonGFX.Height + 5), 0, true);
 
+            if (!RegisterSettings.CurrentSettings.OpenSideMenuOnLunch)
+            {
+                animSideMenu.MoveToActivePosition();
+            }
+
             animSideMenu.OnActiveAnimationEnds += ExtendButtonLabel;
             animSideMenu.OnOriginalAnimationStarts += ShrinkButtonLabel;
+
             animClassDropdownMenu.OnOriginalAnimationEnds += DisableClassesLabels;
             animClassDropdownMenu.OnActiveAnimationStarts += EnableClassesLabels;
         }
@@ -551,7 +553,8 @@ namespace KonstantinControls
         private void ClassLabelClick(object sender, EventArgs e)
         {
             Label senderLabel = (Label)sender;
-            MessageBox.Show($"HAHA {senderLabel.Text} ARE LOSERS");
+            MainDisplay.CurrentClass = MainDisplay.RegisterController.GetClass(senderLabel.Text);
+            SetCurrentClass(senderLabel.Text);
         }
 
         private void ExitApplication(object sender, EventArgs e)
@@ -630,6 +633,10 @@ namespace KonstantinControls
         /// </summary>
         public void Start(Form currentForm)
         {
+            if (inicialized)
+            {
+                return;
+            }
             this.Parent = currentForm;
 
             InicializeCurrentClass();
@@ -659,12 +666,22 @@ namespace KonstantinControls
         {
             if (!MainDisplay.RegisterController.DoesClassExist(className))
             {
-                MessageBox.Show($"The class \"{className}\" doesn't exist in the database!");
                 currentClass.Text = "No Class Selected!";
             }
             else
             {
                 currentClass.Text = className;
+            }
+
+            if (classes != null)
+            {
+                foreach (Label item in classes)
+                {
+                    if (!item.IsDisposed)
+                    {
+                        item.Dispose();
+                    }
+                }
             }
 
             string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(className);

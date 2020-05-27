@@ -64,15 +64,19 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimateControls\AnimatePositionControl.cs" />
     <Compile Include="AnimateControls\AnimateSizeControl.cs" />
-    <Compile Include="AnimateControls\RotateImage.cs" />
+    <Compile Include="AnimateControls\RotateImageDep.cs" />
     <Compile Include="class.cs">
       <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controls\DataGridDisplay.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SideMenu.cs">
       <SubType>Component</SubType>
     </Compile>

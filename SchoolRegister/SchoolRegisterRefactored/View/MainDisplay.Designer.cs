@@ -30,6 +30,8 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.sideMenu = new KonstantinControls.SideMenu();
+            this.dataGridDisplay1 = new SchoolRegisterRefactored.Controls.DataGridDisplay();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridDisplay1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -58,6 +60,18 @@
             this.sideMenu.SpacingBetweenOptionsAndClasses = 25;
             this.sideMenu.TabIndex = 0;
             // 
+            // dataGridDisplay1
+            // 
+            this.dataGridDisplay1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridDisplay1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridDisplay1.CurrentClass = null;
+            this.dataGridDisplay1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
+            this.dataGridDisplay1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridDisplay1.MultiSelect = false;
+            this.dataGridDisplay1.Name = "dataGridDisplay1";
+            this.dataGridDisplay1.Size = new System.Drawing.Size(766, 466);
+            this.dataGridDisplay1.TabIndex = 2;
+            // 
             // MainDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -65,9 +79,11 @@
             this.ClientSize = new System.Drawing.Size(766, 466);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.sideMenu);
+            this.Controls.Add(this.dataGridDisplay1);
             this.Name = "MainDisplay";
             this.Text = "School Register";
             this.Load += new System.EventHandler(this.RegisterForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridDisplay1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -76,5 +92,6 @@
 
         private KonstantinControls.SideMenu sideMenu;
         private System.Windows.Forms.Button button1;
+        private Controls.DataGridDisplay dataGridDisplay1;
     }
 }

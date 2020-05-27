@@ -15,7 +15,27 @@ namespace SchoolRegisterRefactored.Controller
         readonly MainDisplay display;
         readonly DatabaseModel databaseModel;
         readonly SettingsModel settingsModel;
+        private Action onClassChange;
 
+        /// <summary>
+        /// Occurs when the current class has been changed
+        /// </summary>
+        public Action OnClassChanged
+        {
+            get
+            {
+                return onClassChange;
+            }
+            set
+            {
+                onClassChange = value;
+            }
+        }
+
+        /// <summary>
+        /// Represents the Controller in the MVC Design Pattern.
+        /// </summary>
+        /// <param name="display"></param>
         public RegisterController(MainDisplay display)
         {
             this.display = display;
@@ -113,6 +133,46 @@ namespace SchoolRegisterRefactored.Controller
         public void RemoveStudent(int classID, string firstName, string lastName)
         {
             databaseModel.RemoveStudent(classID, firstName, lastName);
+        }
+
+        /// <summary>
+        /// Updates a students first name.
+        /// </summary>
+        /// <param name="studentID">students ID.</param>
+        /// <param name="value">The value to update to.</param>
+        public void UpdateStudentFirstName(int studentID, string value)
+        {
+            databaseModel.UpdateStudentFirstName(studentID, value);
+        }
+
+        /// <summary>
+        /// Updates a students last name.
+        /// </summary>
+        /// <param name="studentID">students ID.</param>
+        /// <param name="value">The value to update to.</param>
+        public void UpdateStudentLastName(int studentID, string value)
+        {
+            databaseModel.UpdateStudentLastName(studentID, value);
+        }
+
+        /// <summary>
+        /// Updates a students absences.
+        /// </summary>
+        /// <param name="studentID">students ID.</param>
+        /// <param name="value">The value to update to.</param>
+        public void UpdateStudentAbsences(int studentID, float value)
+        {
+            databaseModel.UpdateStudentAbsences(studentID, value);
+        }
+
+        /// <summary>
+        /// Updates a students grades.
+        /// </summary>
+        /// <param name="studentID">students ID.</param>
+        /// <param name="value">The value to update to.</param>
+        public void UpdateStudentGrades(int studentID, int[] value)
+        {
+            databaseModel.UpdateStudentGrades(studentID, value);
         }
 
         #endregion
