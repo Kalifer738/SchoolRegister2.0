@@ -106,6 +106,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Scripts\ArrayDifferenceCalculator.cs" />
     <Compile Include="Scripts\RegisterSettings.cs" />
     <Compile Include="student.cs">
       <DependentUpon>SchoolRegisterModel.tt</DependentUpon>

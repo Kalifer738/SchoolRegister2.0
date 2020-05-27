@@ -17,10 +17,13 @@ namespace SchoolRegisterRefactored.Controls
     {
         Form mainForm;
         @class currentClass;
-        Point lastSelectedCellPosition;
         bool inicialized;
         bool ignoreCellUpdate;
+        string gradesBeforeGettingEdited;
 
+        /// <summary>
+        /// Represents the currently selected class in the DataGrid
+        /// </summary>
         public @class CurrentClass 
         {
             get
@@ -83,15 +86,56 @@ namespace SchoolRegisterRefactored.Controls
                     case "last_name": MainDisplay.RegisterController.UpdateStudentLastName(studentID, this[e.ColumnIndex, e.RowIndex].Value.ToString()); break;
                     case "absences": MainDisplay.RegisterController.UpdateStudentAbsences(studentID, (float)this[e.ColumnIndex, e.RowIndex].Value); break;
                     case "grades":
-                        int[] grades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
-                        ignoreCellUpdate = true;
-                        this[e.ColumnIndex, e.RowIndex].Value = GradesToString(grades);
-                        ignoreCellUpdate = false;
-                        MainDisplay.RegisterController.UpdateStudentGrades(studentID, grades); break;
+                        {
+                            int[] editedGrades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
+                            Array.Sort(editedGrades);
+                            
+                            ignoreCellUpdate = true;
+                            this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
+                            ignoreCellUpdate = false;
+
+                            int[] oldGradesArray = GradesToArray(gradesBeforeGettingEdited);
+                            int[] differenceBetweenNewAndOldGrades = GetDifferenceBetweenGrades(oldGradesArray, editedGrades);
+
+                            MainDisplay.RegisterController.UpdateStudentGrades(studentID, editedGrades); break;
+                        }
                     default: throw new Exception("You've Edited a non existant column..." + Environment.NewLine + "How...? How is that possible???? REPORT THIS!");
                 }
             }
         }
+
+        private int[] GetDifferenceBetweenGrades(int[] oldGradesArray, int[] editedGrades)
+        {
+            int[] array1 = oldGradesArray.Except(editedGrades).ToArray();
+            int[] array2 = editedGrades.Except(oldGradesArray).ToArray();
+            int[] BothArrays = oldGradesArray.Intersect(editedGrades).ToArray();
+            return new int[4];
+            //int[] differenceBetweenArrays = oldGradesArray.Except(editedGrades).ToArray();
+            //return differenceBetweenArrays;
+        }
+
+        private void DataGridCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (this.Columns[e.ColumnIndex].Name == "grades")
+            {
+                gradesBeforeGettingEdited = this[e.ColumnIndex, e.RowIndex].Value.ToString();
+            }
+        }
+
+        private void DataGridError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            if (e.Exception.Message == "Input string was not in the correct format" || this.Columns[e.ColumnIndex].Name == "absences")
+            {
+                MessageBox.Show("You cannot place any symbols other than '.' in the Absences columns!", "Invalid input!");
+            }
+            MessageBox.Show("We recommend that you close the application and opening it before continuing!" + Environment.NewLine
+                + "Exception Message: " + e.Exception.Message, "System Datagrid Error Exception!");
+            e.ThrowException = false;
+        }
+
+        #endregion
+
+        #region Grade Methods
 
         private int[] GradesToArray(string gradesString)
         {
@@ -112,27 +156,30 @@ namespace SchoolRegisterRefactored.Controls
                     grades.Add(grade);
                 }
             }
-
-            return grades.ToArray();
+            int[] sortedGrades = grades.ToArray();
+            Array.Sort(sortedGrades);
+            return sortedGrades;
         }
 
         private string GradesToString(grade[] grades)
         {
-            string currentGrade = "";
-
             if (grades.Count() <= 0)
             {
                 return "No Grades";
             }
 
-            for (int i = 0; i < grades.Count() - 1; i++)
+            int[] sortedGrades = grades.Select(x => x.grade1).ToArray();
+            Array.Sort(sortedGrades);
+            string currentGrade = "";
+
+            for (int i = 0; i < sortedGrades.Count() - 1; i++)
             {
-                currentGrade += grades[i].grade1 + ", ";
+                currentGrade += sortedGrades[i] + ", ";
             }
 
-            if (grades.Count() > 1)
+            if (sortedGrades.Count() > 1)
             {
-                currentGrade += grades[grades.Count() - 1].grade1;
+                currentGrade += sortedGrades[sortedGrades.Count() - 1];
             }
             return currentGrade;
         }
@@ -156,22 +203,6 @@ namespace SchoolRegisterRefactored.Controls
                 currentGrade += grades[grades.Count() - 1];
             }
             return currentGrade;
-        }
-
-        private void DataGridCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-        {
-            lastSelectedCellPosition = new Point(e.ColumnIndex, e.RowIndex);
-        }
-
-        private void DataGridError(object sender, DataGridViewDataErrorEventArgs e)
-        {
-            if (e.Exception.Message == "Input string was not in the correct format" || this.Columns[e.ColumnIndex].Name == "absences")
-            {
-                MessageBox.Show("You cannot place any symbols other than '.' in the Absences columns!", "Invalid input!");
-            }
-            MessageBox.Show("We recommend that you close the application and opening it before continuing!" + Environment.NewLine
-                + "Exception Message: " + e.Exception.Message, "System Datagrid Error Exception!");
-            e.ThrowException = false;
         }
 
         #endregion
@@ -228,47 +259,15 @@ namespace SchoolRegisterRefactored.Controls
             {
                 this[this.Columns.Count - 1, i].Value = GradesToString(students[i].grades.ToArray());
             }
-            //if (students.Count() == 1)
-            //{
-                //int[] currentStudentGrades;
-                //string currentGrade = "";
-                //currentStudentGrades = students[0].grades.Select(x => x.grade1).ToArray();
+        }
 
-                //if (currentStudentGrades.Count() <= 0)
-                //{
-                //    this[this.Columns.Count - 1, 0].Value = "No Grades";
-                //    return;
-                //}
-
-                //for (int i = 0; i < currentStudentGrades.Count() - 1; i++)
-                //{
-                //    currentGrade += currentStudentGrades[i] + ", ";
-                //}
-                //currentGrade += currentStudentGrades[0];
-                //this[this.Columns.Count - 1, 0].Value = currentGrade;
-                //return;
-            //}
-
-            //for (int i = 0; i < students.Count(); i++)
-            //{
-            //    int[] currentStudentGrades;
-            //    string currentGrade = "";
-            //    currentStudentGrades = students[i].grades.Select(x => x.grade1).ToArray();
-
-            //    if (currentStudentGrades.Count() <= 0)
-            //    {
-            //        this[this.Columns.Count - 1, 0].Value = "No Grades";
-            //        return;
-            //    }
-
-            //    for (int i2 = 0; i2 < currentStudentGrades.Count() - 1; i2++)
-            //    {
-            //        currentGrade += currentStudentGrades[i2] + ", ";
-            //    }
-
-            //    currentGrade += currentStudentGrades[currentStudentGrades.Count() - 1];
-            //    this[this.Columns.Count - 1, i].Value = currentGrade;
-            //}
+        private void UpdateCurrentClass()
+        {
+            if (MainDisplay.CurrentClass == null)
+            {
+                return;
+            }
+            CurrentClass = MainDisplay.CurrentClass;
         }
 
         /// <summary>
@@ -286,15 +285,6 @@ namespace SchoolRegisterRefactored.Controls
             InicializeDataGrid();
             MainDisplay.RegisterController.OnClassChanged += UpdateCurrentClass;
             UpdateCurrentClass();
-        }
-
-        private void UpdateCurrentClass()
-        {
-            if (MainDisplay.CurrentClass == null)
-            {
-                return;
-            }
-            CurrentClass = MainDisplay.CurrentClass;
         }
     }
 }
