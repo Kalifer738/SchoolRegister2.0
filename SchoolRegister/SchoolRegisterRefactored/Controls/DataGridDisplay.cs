@@ -42,6 +42,7 @@ namespace SchoolRegisterRefactored.Controls
             }
         }
 
+
         public DataGridDisplay()
         {
             inicialized = false;
@@ -116,8 +117,8 @@ namespace SchoolRegisterRefactored.Controls
             {
                 MessageBox.Show("You cannot place any symbols other than '.' in the Absences columns!", "Invalid input!");
             }
-            MessageBox.Show("We recommend that you close the application and opening it before continuing!" + Environment.NewLine
-                + "Exception Message: " + e.Exception.Message, "System Datagrid Error Exception!");
+            MainDisplay.RegisterController.ShowError(e.Exception);
+
             e.ThrowException = false;
         }
 
@@ -197,6 +198,7 @@ namespace SchoolRegisterRefactored.Controls
 
         private void LoadStudents()
         {
+            ignoreCellUpdate = true;
             if (CurrentClass.students == null)
             {
                 return;
@@ -231,6 +233,7 @@ namespace SchoolRegisterRefactored.Controls
 
 
             InsertCurrentStudentsGrades();
+            ignoreCellUpdate = false;
         }
 
         private void InsertCurrentStudentsGrades()
@@ -256,6 +259,14 @@ namespace SchoolRegisterRefactored.Controls
                 return;
             }
             CurrentClass = MainDisplay.CurrentClass;
+        }
+
+        /// <summary>
+        /// Updates the data grid.
+        /// </summary>
+        public void UpdateDataGrid()
+        {
+            LoadStudents();
         }
 
         /// <summary>

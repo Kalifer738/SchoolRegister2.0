@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using SchoolRegisterRefactored.Properties;
+using SchoolRegisterRefactored.View;
 
 namespace KonstantinControls
 {
@@ -56,6 +57,8 @@ namespace KonstantinControls
         #endregion
 
         private SettingsForm settingsForm;
+        private AddStudentForm addStudentForm;
+        private RemoveStudentForm removeStudentForm;
 
         private AnimatePositionControl animSideMenu;
         private AnimateSizeControl animClassDropdownMenu;
@@ -178,14 +181,19 @@ namespace KonstantinControls
             this.BackColor = Color.White;
             this.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - this.Size.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2 - this.Size.Height / 2);
             this.Location = new Point(0, 0);
-
-            settingsForm = new SettingsForm();
             inicialized = false;
 
             InicializeExampleControls();
         }
 
         #region Inicializing Methods
+
+        private void InicializeForms()
+        {
+            settingsForm = new SettingsForm();
+            addStudentForm = new AddStudentForm();
+            removeStudentForm = new RemoveStudentForm();
+        }
 
         private void InicializeOutsideBorders()
         {
@@ -219,17 +227,6 @@ namespace KonstantinControls
 
         private void InicializeClasses()
         {
-            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(currentClass.Text);
-
-            //classes[0] = new Label();
-            //classes[0].AutoSize = true;
-            //classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            //classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            //classes[0].BackColor = Color.Transparent;
-            //classes[0].Parent = classDropdown;
-            //classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
-            //classes[0].SendToBack();
-
             SetCurrentClass(RegisterSettings.CurrentSettings.ClassToLoadName);
         }
 
@@ -245,20 +242,24 @@ namespace KonstantinControls
             exampleInsideBorders[0].Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
             exampleInsideBorders[1].Anchor = (AnchorStyles.Left | AnchorStyles.Right);
 
-            exampleCurrentClassDrodown = new Control();
-            exampleCurrentClassDrodown.Name = "exampleCurrentClassDrodown";
-            exampleCurrentClassDrodown.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            exampleCurrentClassDrodown.Location = new Point(1, 1);
-            exampleCurrentClassDrodown.Size = new Size(this.Width + 58, 44);
-            exampleCurrentClassDrodown.BackColor = CurrentClassBackgroundColor;
-            exampleCurrentClassDrodown.Parent = this;
+            exampleCurrentClassDrodown = new Control
+            {
+                Name = "exampleCurrentClassDrodown",
+                Anchor = (AnchorStyles.Left | AnchorStyles.Top),
+                Location = new Point(1, 1),
+                Size = new Size(this.Width + 58, 44),
+                BackColor = CurrentClassBackgroundColor,
+                Parent = this
+            };
 
-            exampleleCurrentClassLabel = new Label();
-            exampleleCurrentClassLabel.Location = new Point(10, 10);
-            exampleleCurrentClassLabel.AutoSize = true;
-            exampleleCurrentClassLabel.Text = "Class Example";
-            exampleleCurrentClassLabel.BackColor = Color.Transparent;
-            exampleleCurrentClassLabel.Parent = exampleCurrentClassDrodown;
+            exampleleCurrentClassLabel = new Label
+            {
+                Location = new Point(10, 10),
+                AutoSize = true,
+                Text = "Class Example",
+                BackColor = Color.Transparent,
+                Parent = exampleCurrentClassDrodown
+            };
 
             exampleOptionLabels = new Label[4];
             exampleOptionLabels = Enumerable.Repeat(new Label() { AutoSize = true, Anchor = (AnchorStyles.Left | AnchorStyles.Top), BackColor = Color.Transparent, Parent = this }, 4).ToArray();
@@ -267,38 +268,44 @@ namespace KonstantinControls
 
         private void InicializeCurrentClass()
         {
-            CurrentClass = new Label();
-            CurrentClass.Name = "currentClass";
-            CurrentClass.Parent = this;
-            CurrentClass.Location = new Point(11, 10);
-            CurrentClass.BackColor = CurrentClassBackgroundColor;
-            CurrentClass.Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            CurrentClass.Size = new Size(190, 23);
-            CurrentClass.AutoEllipsis = true;
+            CurrentClass = new Label
+            {
+                Name = "currentClass",
+                Parent = this,
+                Location = new Point(11, 10),
+                BackColor = CurrentClassBackgroundColor,
+                Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold),
+                Size = new Size(190, 23),
+                AutoEllipsis = true
+            };
 
             CurrentClass.Click += TriggerDropdownMenu;
             CurrentClass.DoubleClick += TriggerDropdownMenu;
         }
 
-        private void InicializebuttonGFX()
+        private void InicializeButtonGFX()
         {
-            buttonGFX = new PictureBox();
-            buttonGFX.Size = new Size(38, 25);
-            buttonGFX.SizeMode = PictureBoxSizeMode.Zoom;
-            buttonGFX.Location = new Point(this.Size.Width - 49, 10);
-            buttonGFX.Anchor = (AnchorStyles.Top | AnchorStyles.Right);
-            buttonGFX.Image = SideMenuResources.SideMenuButtonPicture;
-            buttonGFX.Parent = this;
-            buttonGFX.BackColor = CurrentClassBackgroundColor;
+            buttonGFX = new PictureBox
+            {
+                Size = new Size(38, 25),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Location = new Point(this.Size.Width - 49, 10),
+                Anchor = (AnchorStyles.Top | AnchorStyles.Right),
+                Image = SideMenuResources.SideMenuButtonPicture,
+                Parent = this,
+                BackColor = CurrentClassBackgroundColor
+        };
 
             buttonGFX.Click += TriggerSideMenu;
             buttonGFX.DoubleClick += TriggerSideMenu;
 
-            buttonClickArea = new Control();
-            buttonClickArea.Location = new Point(this.Width - 59, 1);
-            buttonClickArea.Size = new Size(this.Width - (this.Width - 58), 44);
-            buttonClickArea.BackColor = CurrentClassBackgroundColor;
-            buttonClickArea.Parent = this;
+            buttonClickArea = new Control
+            {
+                Location = new Point(this.Width - 59, 1),
+                Size = new Size(this.Width - (this.Width - 58), 44),
+                BackColor = CurrentClassBackgroundColor,
+                Parent = this
+            };
 
             buttonClickArea.Click += TriggerSideMenu;
             buttonClickArea.DoubleClick += TriggerSideMenu;
@@ -306,12 +313,14 @@ namespace KonstantinControls
 
         private void InicializeClassDropdown()
         {
-            classDropdown = new Control();
-            classDropdown.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            classDropdown.Location = new Point(1, 1);
-            classDropdown.Size = new Size(this.Width - 2, 44);
-            classDropdown.BackColor = CurrentClassBackgroundColor;
-            classDropdown.Parent = this;
+            classDropdown = new Control
+            {
+                Anchor = (AnchorStyles.Left | AnchorStyles.Top),
+                Location = new Point(1, 1),
+                Size = new Size(this.Width - 2, 44),
+                BackColor = CurrentClassBackgroundColor,
+                Parent = this
+            };
             classDropdown.SendToBack();
 
             classDropdown.Click += TriggerDropdownMenu;
@@ -322,63 +331,63 @@ namespace KonstantinControls
         {
             //Class border
             innerGFX = new Control[2];
-            innerGFX[0] = new Control();
-            innerGFX[0].Size = new Size(this.Width, 1);
-            innerGFX[0].Location = new Point(0, 45);
-            innerGFX[0].BackColor = Color.Black;
-            innerGFX[0].Parent = this;
+            innerGFX[0] = new Control
+            {
+                Size = new Size(this.Width, 1),
+                Location = new Point(0, 45),
+                BackColor = Color.Black,
+                Parent = this
+            };
             innerGFX[0].BringToFront();
 
             //Button border
-            innerGFX[1] = new Control();
-            innerGFX[1].Size = new Size(1, 45);
-            innerGFX[1].Location = new Point(this.Size.Width - 60, 0);
-            innerGFX[1].BackColor = Color.Black;
-            innerGFX[1].Parent = this;
+            innerGFX[1] = new Control
+            {
+                Size = new Size(1, 45),
+                Location = new Point(this.Size.Width - 60, 0),
+                BackColor = Color.Black,
+                Parent = this
+            };
             innerGFX[1].BringToFront();
         }
 
         private void InicializeOptions()
         {
-            classOptions = new Label[8];
+            classOptions = new Label[4];
 
-            classOptions[0] = new Label();
-            classOptions[0].AutoSize = true;
-            classOptions[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            classOptions[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            classOptions[0].BackColor = Color.Transparent;
-            classOptions[0].Parent = this;
-            classOptions[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            classOptions[0] = new Label
+            {
+                AutoSize = true,
+                Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold),
+                Anchor = (AnchorStyles.Left | AnchorStyles.Top),
+                BackColor = Color.Transparent,
+                Parent = this,
+                Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8)
+            };
             classOptions[0].SendToBack();
 
             for (int option = 1; option < classOptions.Length; option++)
             {
-                classOptions[option] = new Label();
-                classOptions[option].AutoSize = true;
-                classOptions[option].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-                classOptions[option].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-                classOptions[option].BackColor = Color.Transparent;
-                classOptions[option].Parent = this;
+                classOptions[option] = new Label
+                {
+                    AutoSize = true,
+                    Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold),
+                    Anchor = (AnchorStyles.Left | AnchorStyles.Top),
+                    BackColor = Color.Transparent,
+                    Parent = this
+                };
                 classOptions[option].SendToBack();
             }
 
-            classOptions[0].Text = "Add Grade";
-            classOptions[1].Text = "Add Absence";
-            classOptions[2].Text = "Add Student";
-            classOptions[3].Text = "Remove Grade";
-            classOptions[4].Text = "Remove Absence";
-            classOptions[5].Text = "Remove Student";
-            classOptions[6].Text = "Settings";
-            classOptions[7].Text = "Exit";
+            classOptions[0].Text = "Add Student";
+            classOptions[1].Text = "Remove Student";
+            classOptions[2].Text = "Settings";
+            classOptions[3].Text = "Exit";
 
-            classOptions[0].Click += AddGrade;
-            classOptions[1].Click += AddAbsence;
-            classOptions[2].Click += AddStudent;
-            classOptions[3].Click += RemoveGrade;
-            classOptions[4].Click += RemoveAbsence;
-            classOptions[5].Click += RemoveStudent;
-            classOptions[6].Click += ShowSettings;
-            classOptions[7].Click += ExitApplication;
+            classOptions[0].Click += AddStudent;
+            classOptions[1].Click += RemoveStudent;
+            classOptions[2].Click += ShowSettings;
+            classOptions[3].Click += ExitApplication;
             UpdateSpacingBetweenOptions();
         }
 
@@ -559,7 +568,7 @@ namespace KonstantinControls
 
         private void ExitApplication(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            MainDisplay.RegisterController.ExitApplication();   
         }
 
         private void ShowSettings(object sender, EventArgs e)
@@ -567,19 +576,27 @@ namespace KonstantinControls
             if (settingsForm.IsDisposed == true)
             {
                 settingsForm = new SettingsForm();
-                settingsForm.Inicilize();
+                settingsForm.Inicialize();
             }
             settingsForm.Show();
         }
 
         private void RemoveStudent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (removeStudentForm.IsDisposed == true)
+            {
+                removeStudentForm = new RemoveStudentForm();
+            }
+            removeStudentForm.Show();
         }
 
         private void AddStudent(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (addStudentForm.IsDisposed == true)
+            {
+                addStudentForm = new AddStudentForm();
+            }
+            addStudentForm.Show();
         }
 
         private void RemoveAbsence(object sender, EventArgs e)
@@ -639,8 +656,9 @@ namespace KonstantinControls
             }
             this.Parent = currentForm;
 
+            InicializeForms();
             InicializeCurrentClass();
-            InicializebuttonGFX();
+            InicializeButtonGFX();
             InicializeClassDropdown();
             InicializeInsideBorders();
             InicializeOptions();
@@ -657,7 +675,7 @@ namespace KonstantinControls
                 @class.Visible = false;
             }
 
-            settingsForm.Inicilize();
+            settingsForm.Inicialize();
 
             inicialized = true;
         }
@@ -687,14 +705,16 @@ namespace KonstantinControls
             string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(className);
             classes = new Label[classesNames.Count()];
 
-            classes[0] = new Label();
-            classes[0].AutoSize = true;
-            classes[0].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-            classes[0].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-            classes[0].BackColor = Color.Transparent;
-            classes[0].Parent = classDropdown;
-            classes[0].Text = classesNames[0];
-            classes[0].Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8);
+            classes[0] = new Label
+            {
+                AutoSize = true,
+                Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold),
+                Anchor = (AnchorStyles.Left | AnchorStyles.Top),
+                BackColor = Color.Transparent,
+                Parent = classDropdown,
+                Text = classesNames[0],
+                Location = new Point(CurrentClass.Location.X, innerGFX[0].Location.Y + 8)
+            };
             classes[0].SendToBack();
             classes[0].Click += ClassLabelClick;
             classes[0].DoubleClick += ClassLabelClick;
@@ -703,13 +723,15 @@ namespace KonstantinControls
             {
                 for (int i = 1; i < classesNames.Count(); i++)
                 {
-                    classes[i] = new Label();
-                    classes[i].AutoSize = true;
-                    classes[i].Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold);
-                    classes[i].Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-                    classes[i].BackColor = Color.Transparent;
-                    classes[i].Parent = classDropdown;
-                    classes[i].Text = classesNames[i];
+                    classes[i] = new Label
+                    {
+                        AutoSize = true,
+                        Font = new Font(FontFamily.GenericSansSerif, 13, FontStyle.Bold),
+                        Anchor = (AnchorStyles.Left | AnchorStyles.Top),
+                        BackColor = Color.Transparent,
+                        Parent = classDropdown,
+                        Text = classesNames[i]
+                    };
                     classes[i].SendToBack();
                     classes[i].Click += ClassLabelClick;
                     classes[i].DoubleClick += ClassLabelClick;

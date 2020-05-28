@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,6 +42,7 @@ namespace SchoolRegisterRefactored.Controller
             this.display = display;
             databaseModel = new DatabaseModel(this);
             settingsModel = new SettingsModel(this);
+
         }
 
         #region Classes Methods
@@ -89,19 +91,9 @@ namespace SchoolRegisterRefactored.Controller
             return databaseModel.GetAllClassesNames();
         }
 
-        /// <summary>
-        /// Returns all students in a class from the database.
-        /// </summary>
-        /// <param name="classID">the class's id.</param>
-        /// <returns>all students in the said class</returns>
-        public student[] GetAllStudentsInClass(int classID)
-        {
-            return databaseModel.GetAllStudentsInClass(classID);
-        }
-
         #endregion
 
-        #region Students Methods
+        #region Student Void Methods
 
         /// <summary>
         /// Adds a new students to the database.
@@ -117,23 +109,26 @@ namespace SchoolRegisterRefactored.Controller
         /// <summary>
         /// Remove a student from the database.
         /// </summary>
-        /// <param name="classID">The class the students is in.</param>
-        /// <param name="studentID">The student's id.</param>
-        public void RemoveStudent(int classID, int studentID)
-        {
-            databaseModel.RemoveStudent(classID, studentID);
-        }
-
-        /// <summary>
-        /// Remove a student from the database.
-        /// </summary>
         /// <param name="classID">Student's class ID.</param>
         /// <param name="firstName">Student's first name.</param>
         /// <param name="lastName">Student's last name.</param>
-        public void RemoveStudent(int classID, string firstName, string lastName)
+        public void RemoveStudent(string firstName, string lastName, int classID)
         {
             databaseModel.RemoveStudent(classID, firstName, lastName);
         }
+        #endregion
+
+        /// <summary>
+        /// Returns all students in a class from the database.
+        /// </summary>
+        /// <param name="classID">the class's id.</param>
+        /// <returns>all students in the said class</returns>
+        public student[] GetAllStudentsInClass(int classID)
+        {
+            return databaseModel.GetAllStudentsInClass(classID);
+        }
+
+        #region Students Updating Methods
 
         /// <summary>
         /// Updates a students first name.
@@ -177,13 +172,46 @@ namespace SchoolRegisterRefactored.Controller
 
         #endregion
 
-        #region Settings Methods
+        /// <summary>
+        /// Shows a message box with the error message from the exception.
+        /// </summary>
+        /// <param name="exception">The Exception</param>
+        public void ShowError(Exception exception)
+        {
+            display.ShowError(exception);
+        }
 
+        /// <summary>
+        /// Updates the data grid.
+        /// </summary>
+        public void UpdateDataGrid()
+        {
+            display.UpdateDataGrid();
+        }
+
+        /// <summary>
+        /// Saves the settings given to the settings.json file.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
         public void SaveSettings(RegisterSettings settings)
         {
             settingsModel.SaveSettings(settings);
         }
 
-        #endregion
+        /// <summary>
+        /// Saves all changes done to the database.
+        /// </summary>
+        public void SaveChangesToDatabase()
+        {
+            databaseModel.SaveChangesToDB();
+        }
+
+        /// <summary>
+        /// Exists the application.
+        /// </summary>
+        public void ExitApplication()
+        {
+            display.Close();
+        }
     }
 }

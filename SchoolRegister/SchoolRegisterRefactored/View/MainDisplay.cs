@@ -19,7 +19,6 @@ namespace SchoolRegisterRefactored.Display
     {
         private static RegisterController registerController;
         private static @class currentClass;
-        private static bool sideMenuLabelsDisabled = false;
 
         /// <summary>
         /// The main controller of the MVC model.
@@ -34,6 +33,14 @@ namespace SchoolRegisterRefactored.Display
             {
                 registerController = value;
             }
+        }
+
+        /// <summary>
+        /// Updates the data grid.
+        /// </summary>
+        public void UpdateDataGrid()
+        {
+            dataGridDisplay1.UpdateDataGrid();
         }
 
         public static @class CurrentClass
@@ -52,14 +59,20 @@ namespace SchoolRegisterRefactored.Display
 
             }
         }
+
         public MainDisplay()
         {
             InitializeComponent();
+            this.FormClosing += ExitApplication;
         }
 
         private void RegisterForm_Load(object sender, EventArgs e)
         {
             registerController = new RegisterController(this);
+            if (RegisterSettings.CurrentSettings.ClassToLoadID > 0)
+            {
+                CurrentClass = RegisterController.GetClass(RegisterSettings.CurrentSettings.ClassToLoadID);
+            }
             StartCustomControls();
         }
 
@@ -78,17 +91,23 @@ namespace SchoolRegisterRefactored.Display
             }
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void ExitApplication(object sender, FormClosingEventArgs e)
         {
-            if (sideMenuLabelsDisabled)
+            DialogResult buttonPressed = MessageBox.Show("Save changes before exiting?", "Are you sure you wanna exit?", MessageBoxButtons.YesNo);
+            if (buttonPressed == DialogResult.Yes)
             {
-                sideMenu.EnableEveryLabel();
+                RegisterController.SaveChangesToDatabase();
             }
-            else
-            {
-                sideMenu.DisableEveryLabel();
-            }
-            sideMenuLabelsDisabled = !sideMenuLabelsDisabled;
+        }
+
+        /// <summary>
+        /// Shows a message box with the error message from the exception.
+        /// </summary>
+        /// <param name="exception">The Exception</param>
+        public void ShowError(Exception exception)
+        {
+            MessageBox.Show("We recommend that you close the application and opening it before continuing!" + Environment.NewLine
+            + "Exception Message: " + exception.Message, "System Datagrid Error Exception!");
         }
     }
 }

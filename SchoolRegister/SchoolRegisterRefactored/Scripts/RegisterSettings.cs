@@ -14,6 +14,7 @@ namespace Display.Scripts
     {
         bool openSideMenuOnLunch;
         bool loadLastOpenedClassOnLunch;
+        bool showMessages;
         string classToLoadName;
         int classToLoadID;
         static RegisterSettings currentSettings;
@@ -29,6 +30,7 @@ namespace Display.Scripts
                 settings.ClassToLoadID = -1;
                 settings.LoadLastOpenedClassOnLunch = true;
                 settings.OpenSideMenuOnLunch = true;
+                settings.showMessages = true;
                 settings.classToLoadName = "None";
                 return settings;
             }
@@ -76,6 +78,22 @@ namespace Display.Scripts
             set
             {
                 openSideMenuOnLunch = value;
+            }
+        }
+
+        /// <summary>
+        /// Wheather to show message box with information after each delete, add and such operations.
+        /// </summary>
+        public bool ShowMessages
+        {
+            get
+            {
+                return showMessages;
+            }
+            set
+            {
+
+                showMessages = value;
             }
         }
 

@@ -19,7 +19,7 @@ namespace Display
             InitializeComponent();
         }
 
-        public void Inicilize()
+        public void Inicialize()
         {
             this.Size = new Size(250, 500);
             this.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - this.Size.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2 - this.Size.Height / 2);
@@ -41,7 +41,7 @@ namespace Display
                 ClassToLoadComboBox.SelectedIndex = 0;
                 ClassToLoadComboBox.SelectedItem = 0;
             }
-            
+
             ClassToLoadComboBox.Items.AddRange(MainDisplay.RegisterController.GetAllClassesNames());
             ClassToLoadComboBox.SelectedItem = RegisterSettings.CurrentSettings.ClassToLoadName;
         }
@@ -61,6 +61,7 @@ namespace Display
                 ClassToLoadComboBox.SelectedItem = 0;
                 ClassToLoadComboBox.SelectedIndex = 0;
             }
+            settings.ShowMessages = ShowMessagesLabel.Checked;
             settings.OpenSideMenuOnLunch = OpenSideMenuCheckBox.Checked;
             settings.LoadLastOpenedClassOnLunch = LoadLastClassCheckBox.Checked;
             MainDisplay.RegisterController.SaveSettings(settings);

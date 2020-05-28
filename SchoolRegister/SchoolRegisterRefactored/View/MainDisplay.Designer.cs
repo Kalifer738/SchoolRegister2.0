@@ -28,21 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
             this.sideMenu = new KonstantinControls.SideMenu();
             this.dataGridDisplay1 = new SchoolRegisterRefactored.Controls.DataGridDisplay();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridDisplay1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(500, 76);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // sideMenu
             // 
@@ -62,6 +51,8 @@
             // 
             // dataGridDisplay1
             // 
+            this.dataGridDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridDisplay1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridDisplay1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridDisplay1.CurrentClass = null;
@@ -77,10 +68,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(766, 466);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.sideMenu);
             this.Controls.Add(this.dataGridDisplay1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "MainDisplay";
+            this.ShowIcon = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "School Register";
             this.Load += new System.EventHandler(this.RegisterForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridDisplay1)).EndInit();
@@ -91,7 +84,6 @@
         #endregion
 
         private KonstantinControls.SideMenu sideMenu;
-        private System.Windows.Forms.Button button1;
         private Controls.DataGridDisplay dataGridDisplay1;
     }
 }

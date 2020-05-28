@@ -1,11 +1,17 @@
-﻿using SchoolRegisterRefactored.Controller;
+﻿using Display.Scripts;
+using MySql.Data.MySqlClient;
+using SchoolRegisterRefactored.Controller;
+using SchoolRegisterRefactored.Display;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace SchoolRegisterRefactored.Model
@@ -19,6 +25,8 @@ namespace SchoolRegisterRefactored.Model
 
         readonly SchoolRegisterContext context;
 
+        readonly MySqlConnection databaseConnection;
+
         private DispatcherTimer savingChangesTimer;
 
         public DatabaseModel(RegisterController registerController)
@@ -26,15 +34,7 @@ namespace SchoolRegisterRefactored.Model
             this.registerController = registerController;
             savingChangesTimer = new DispatcherTimer();
             context = new SchoolRegisterContext();
-        }
-
-        /// <summary>
-        /// Saves all changes done to the database.
-        /// </summary>
-        public void SaveChangesToDB()
-        {
-            context.SaveChanges();
-            student studenT = context.students.First(x => x.id == 1);
+            databaseConnection = new MySqlConnection(context.Database.Connection.ConnectionString);
         }
 
         #region Class Methods
@@ -104,8 +104,6 @@ namespace SchoolRegisterRefactored.Model
 
         #endregion
 
-        #region Students Methods
-
         /// <summary>
         /// Returns all students in a class from the database.
         /// </summary>
@@ -115,6 +113,8 @@ namespace SchoolRegisterRefactored.Model
         {
             return context.classes.First(@class => @class.id == classID).students.ToArray();
         }
+
+        #region Students Void Methods
 
         /// <summary>
         /// Adds a new students to the database.
@@ -129,18 +129,7 @@ namespace SchoolRegisterRefactored.Model
             newStudent.last_name = lastName;
             newStudent.class_id = classID;
             context.students.Add(newStudent);
-        }
-
-        /// <summary>
-        /// Remove a student from the database.
-        /// </summary>
-        /// <param name="classID">The class the students is in.</param>
-        /// <param name="studentID">The student's id.</param>
-        public void RemoveStudent(int classID, int studentID)
-        {
-            student studentToBeRemoved = context.students.First(student => student.id == classID && student.id == studentID);
-            context.students.Remove(studentToBeRemoved);
-            context.SaveChangesAsync();
+            SaveChangesToDB();
         }
 
         /// <summary>
@@ -151,8 +140,21 @@ namespace SchoolRegisterRefactored.Model
         /// <param name="lastName">Student's last name.</param>
         public void RemoveStudent(int classID, string firstName, string lastName)
         {
-            student studentToBeRemoved = context.students.First(student => student.first_name == firstName && student.last_name == lastName && student.class_id == classID);
-            context.students.Remove(studentToBeRemoved);
+            try
+            {
+                context.students.Remove(context.students.First(x => x.first_name == firstName && x.last_name == lastName && x.class_id == classID));
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Sequence contains no elements")
+                {
+                    MessageBox.Show("Cannot delete a non existing student!", "Invalid Operation!");
+                }
+                else
+                {
+                    MainDisplay.RegisterController.ShowError(e);
+                }
+            }
             context.SaveChangesAsync();
         }
 
@@ -169,7 +171,7 @@ namespace SchoolRegisterRefactored.Model
                     registerStudent.first_name = value;
                 }
             }
-            SaveLastChangesToDB();
+            SaveChangedToDBWithDelay();
         }
 
         public void UpdateStudentLastName(int studentID, string value)
@@ -181,7 +183,7 @@ namespace SchoolRegisterRefactored.Model
                     registerStudent.last_name = value;
                 }
             }
-            SaveLastChangesToDB();
+            SaveChangedToDBWithDelay();
         }
 
         public void UpdateStudentAbsences(int studentID, float value)
@@ -193,21 +195,101 @@ namespace SchoolRegisterRefactored.Model
                     registerStudent.absences = value;
                 }
             }
-            SaveLastChangesToDB();
+            SaveChangedToDBWithDelay();
         }
 
-        public void UpdateStudentGrades(int studentID, Dictionary<int, int> value)
+        #region Grade Methods
+
+        public void UpdateStudentGrades(int studentID, Dictionary<int, int> gradesDictinary)
         {
-            MessageBox.Show("Not Implemented! What you type is only seen on your side");
-            return;
-            //Keys == number
-            //Value == times seen that number
             //Add a methods to remove and add a mass ammout of same grades
             //After implemeting and fixing the side menu go ahead and make sure to test things and then to =>
             //Implement MetroFramework!!! https://thielj.github.io/MetroFramework/#Screenshots
             //It looks so much better than this ugly ass shit
-            SaveLastChangesToDB();
+
+            foreach (int key in gradesDictinary.Keys)
+            {
+                if (gradesDictinary[key] == 0)
+                {
+                    continue;
+                }
+                BeginAddingGrades(key, gradesDictinary[key], studentID);
+            }
+            SaveChangedToDBWithDelay();
         }
+
+        private void BeginAddingGrades(int gradeType, int timesToAdd, int studentID)
+        {
+            ThreadStart threadStart = new ThreadStart(delegate
+            {
+                bool addGrades = true;
+                if (timesToAdd < 0)
+                {
+                    addGrades = false;
+                }
+                for (int i = 0; i < timesToAdd; i++)
+                {
+                    if (addGrades)
+                    {
+                        AddGrade(gradeType, studentID);
+                    }
+                    else
+                    {
+                        RemoveGrade(gradeType, studentID);
+                    }
+                }
+            });
+            Thread addingGradesThread = new Thread(threadStart);
+            addingGradesThread.Start();
+        }
+
+        private void RemoveGrade(int gradeType, int studentID)
+        {
+            bool foundStudent = false;
+            MySqlCommand removeStudentGrade = new MySqlCommand("");
+            removeStudentGrade.Connection = databaseConnection;
+
+            foreach (student studentt in context.students)
+            {
+                if (studentt.id == studentID)
+                {
+                    foundStudent = true;
+                    //removeStudentGrade.ExecuteNonQuery();
+                    MessageBox.Show($"Found student! But Still cannot remove {gradeType}. Not saved to database!", "Not Implemented");
+                    break;
+                }
+            }
+
+            if (!foundStudent)
+            {
+                MessageBox.Show($"Error! Cannot find student with studentID({studentID})", "Not Implemented");
+            }
+        }
+
+        private void AddGrade(int gradeType, int studentID)
+        {
+            bool foundStudent = false;
+            MySqlCommand addGrades = new MySqlCommand("");
+            addGrades.Connection = databaseConnection;
+
+            foreach (student studentt in context.students)
+            {
+                if (studentt.id == studentID)
+                {
+                    foundStudent = true;
+                    //removeStudentGrade.ExecuteNonQuery();
+                    MessageBox.Show($"Found student! But Still cannot add {gradeType}. Not saved to database!");
+                    break;
+                }
+            }
+
+            if (!foundStudent)
+            {
+                MessageBox.Show($"Error! Cannot find student with studentID({studentID})", "Cannot Add Grade!");
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -223,7 +305,10 @@ namespace SchoolRegisterRefactored.Model
             savingChangesTimer.Start();
         }
 
-        private void SaveLastChangesToDB()
+        /// <summary>
+        /// Saves all changes done to the database with a delay of 5 seconds.
+        /// </summary>
+        private void SaveChangedToDBWithDelay()
         {
             if (savingChangesTimer.IsEnabled)
             {
@@ -231,6 +316,14 @@ namespace SchoolRegisterRefactored.Model
             }
 
             AwaitAction(5000, new Action(SaveChangesToDB));
+        }
+
+        /// <summary>
+        /// Saves all changes done to the database.
+        /// </summary>
+        public void SaveChangesToDB()
+        {
+            context.SaveChanges();
         }
     }
 }

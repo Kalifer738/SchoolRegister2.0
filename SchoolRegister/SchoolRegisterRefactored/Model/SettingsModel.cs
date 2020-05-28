@@ -1,6 +1,7 @@
 ﻿using Display.Scripts;
 using Newtonsoft.Json;
 using SchoolRegisterRefactored.Controller;
+using SchoolRegisterRefactored.Display;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,10 +22,10 @@ namespace SchoolRegisterRefactored.Model
         {
             this.controller = controller;
             settingsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\settings.json";
-            UpdateSettings();
+            GetSettings();
         }
 
-        private void UpdateSettings()
+        private void GetSettings()
         {
             RegisterSettings settings;
             if (!File.Exists(settingsPath))
@@ -44,6 +45,10 @@ namespace SchoolRegisterRefactored.Model
             RegisterSettings.CurrentSettings = settings;
         }
 
+        /// <summary>
+        /// Saves the given settings locally where the application's .exe file is in.
+        /// </summary>
+        /// <param name="settings">The "given" settings</param>
         public void SaveSettings(RegisterSettings settings)
         {
             using (FileStream fs = File.Create(settingsPath)) 
@@ -58,7 +63,7 @@ namespace SchoolRegisterRefactored.Model
                 json.Serialize(fs, settings);
             }
 
-            UpdateSettings();
+            GetSettings();
         }
     }
 }
