@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Display.Scripts;
+using SchoolRegisterRefactored.Model;
+using SchoolRegisterRefactored.Properties;
 
 namespace SchoolRegisterRefactored.Display
 {
@@ -93,11 +95,16 @@ namespace SchoolRegisterRefactored.Display
 
         private void ExitApplication(object sender, FormClosingEventArgs e)
         {
-            DialogResult buttonPressed = MessageBox.Show("Save changes before exiting?", "Are you sure you wanna exit?", MessageBoxButtons.YesNo);
-            if (buttonPressed == DialogResult.Yes)
+            if (RegisterSettings.CurrentSettings.ShowMessages)
             {
-                RegisterController.SaveChangesToDatabase();
+                DialogResult buttonPressed = MessageBox.Show("Save changes before exiting?", "Are you sure you wanna exit?", MessageBoxButtons.YesNo);
+                if (buttonPressed == DialogResult.Yes)
+                {
+                    RegisterController.SaveChangesToDatabase();
+                    return;
+                }
             }
+            RegisterController.SaveChangesToDatabase();
         }
 
         /// <summary>
