@@ -94,7 +94,7 @@ namespace SchoolRegisterRefactored.Controls
                             this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
                             ignoreCellUpdate = false;
 
-                            Dictionary<int, int> differenceBetweenOldAndNewGrades = ArrayDifferenceCalculator.GetDifference(GradesToArray(gradesBeforeGettingEdited), editedGrades);
+                            Dictionary<int, int> differenceBetweenOldAndNewGrades = ArrayDifferenceCalculator.GetDifferenceDictinary(GradesToArray(gradesBeforeGettingEdited), editedGrades);
 
                             MainDisplay.RegisterController.UpdateStudentGrades(studentID, differenceBetweenOldAndNewGrades); break;
                         }

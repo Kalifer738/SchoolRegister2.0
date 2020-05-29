@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Register", "Display\Register.csproj", "{A112DDD4-1803-43F8-B0EF-AC25274EFB67}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUintTesting", "NUintTesting\NUintTesting.csproj", "{8D250E66-243B-49B0-8975-CEF65969C4EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolRegisterRefactored", "SchoolRegisterRefactored\SchoolRegisterRefactored.csproj", "{C9F6BE0C-3FCD-419D-AFFB-E1E3D970C757}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A112DDD4-1803-43F8-B0EF-AC25274EFB67}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8D250E66-243B-49B0-8975-CEF65969C4EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D250E66-243B-49B0-8975-CEF65969C4EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D250E66-243B-49B0-8975-CEF65969C4EB}.Release|Any CPU.ActiveCfg = Release|Any CPU

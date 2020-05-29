@@ -6,27 +6,45 @@ using System.Threading.Tasks;
 
 namespace Display.Scripts
 {
-    static class ArrayDifferenceCalculator
+    public static class ArrayDifferenceCalculator
     {
         /// <summary>
         /// Returns a dictinary, in which contains the number (key), and number seen times (value).
         /// </summary>
-        /// <param name="array">The array.</param>
-        /// <param name="comparingArray">The array to compare against.</param>
+        /// <param name="array">The sorted array.</param>
+        /// <param name="comparingArray">The sorted array to compare against.</param>
         /// <returns></returns>
-        public static Dictionary<int, int> GetDifference(int[] array, int[] comparingArray)
+        public static Dictionary<int, int> GetDifferenceDictinary(int[] array, int[] comparingArray)
         {
-            Dictionary<int, int> timesSeenValuesOldArray = GetDicinaryDifference(array, comparingArray);
-            Dictionary<int, int> timesSeenValuesNewArray = GetDicinaryDifference(comparingArray, array);
-            return GetFullDifference(timesSeenValuesOldArray, timesSeenValuesNewArray);
+            Dictionary<int, int> timeseSeenInComparing = GetDicinaryDifference(array, comparingArray);
+            Dictionary<int, int> timeseSeenInArray = GetDicinaryDifference(comparingArray, array);
+            return GetFullDifference(timeseSeenInComparing, timeseSeenInArray);
+        }
+
+        public static int[] GetDifferenceArray(int[] array, int[] comparingArray)
+        {
+            Dictionary<int, int> differenceDictinary = GetDicinaryDifference(array, comparingArray);
+            int[] arrayToReturn = new int[differenceDictinary.Count];
+
+            int index = 0;
+            foreach (int key in differenceDictinary.Keys)
+            {
+                for (int i = 0; i < differenceDictinary[key]; i++)
+                {
+                    arrayToReturn[index] = differenceDictinary[key];
+                    index++;
+                }
+            }
+            return arrayToReturn;
         }
 
         private static Dictionary<int, int> GetFullDifference(Dictionary<int, int> dictionary1, Dictionary<int, int> dictionary2)
         {
-            Dictionary<int, int> fullDifference = new Dictionary<int, int>(dictionary1.Keys.Count);
-
+            Dictionary<int, int> fullDifference = new Dictionary<int, int>();
+            List<int> keysSearchedFor = new List<int>();
             foreach (int keyValue in dictionary1.Keys)
             {
+                keysSearchedFor.Add(keyValue);
                 int calc = dictionary1[keyValue];
                 if (dictionary2.Keys.Contains(keyValue))
                 {
@@ -34,6 +52,15 @@ namespace Display.Scripts
                 }
 
                 fullDifference.Add(keyValue, calc);
+            }
+            foreach (int keyValue in dictionary2.Keys)
+            {
+                if (keysSearchedFor.Contains(keyValue))
+                {
+                    continue;
+                }
+
+                fullDifference.Add(keyValue, Math.Abs(dictionary2[keyValue]));
             }
             return fullDifference;
         }

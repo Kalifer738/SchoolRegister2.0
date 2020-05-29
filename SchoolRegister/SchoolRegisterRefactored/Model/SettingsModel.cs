@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SchoolRegisterRefactored.Model
 {
-    class SettingsModel
+    public class SettingsModel
     {
         RegisterController controller;
 

@@ -54,17 +54,20 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimateControlsTests.cs" />
+    <Compile Include="Tests\AnimateControlsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Display\Register.csproj">
-      <Project>{A112DDD4-1803-43F8-B0EF-AC25274EFB67}</Project>
-      <Name>Register</Name>
-    </ProjectReference>
+    <Compile Include="Tests\ArrayDifferenceCalculatorTests.cs" />
+    <Compile Include="Tests\RegisterControllerTests.cs" />
+    <Compile Include="Tests\SettingsModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SchoolRegisterRefactored\SchoolRegisterRefactored.csproj">
+      <Project>{C9F6BE0C-3FCD-419D-AFFB-E1E3D970C757}</Project>
+      <Name>SchoolRegisterRefactored</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

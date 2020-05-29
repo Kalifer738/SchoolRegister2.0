@@ -19,7 +19,7 @@ namespace SchoolRegisterRefactored.Model
     /// <summary>
     /// Represents the model used in MVC design pattern projects.
     /// </summary>
-    class DatabaseModel
+    public class DatabaseModel
     {
         readonly RegisterController registerController;
 
