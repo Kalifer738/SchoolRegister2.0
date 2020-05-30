@@ -30,8 +30,6 @@ namespace SchoolRegisterRefactored.Model
 
         readonly MySqlConnection databaseConnection;
 
-        private bool addingGrades;
-
         private DispatcherTimer savingChangesTimer;
 
         public DatabaseModel(RegisterController registerController)
@@ -318,7 +316,6 @@ namespace SchoolRegisterRefactored.Model
 
         private void BeginAddingGrades(int gradeType, int timesToAdd, int studentID)
         {
-            addingGrades = true;
             bool addGrades = true;
             if (timesToAdd < 0)
             {
@@ -338,7 +335,12 @@ namespace SchoolRegisterRefactored.Model
             SaveChangesToDB();
         }
 
-        private void RemoveGrade(int gradeType, int studentID)
+        /// <summary>
+        /// Removes a grade from the student
+        /// </summary>
+        /// <param name="gradeType">grade number</param>
+        /// <param name="studentID">studnet ID</param>
+        public void RemoveGrade(int gradeType, int studentID)
         {
             bool foundStudent = false;
 
@@ -377,7 +379,12 @@ namespace SchoolRegisterRefactored.Model
             }
         }
 
-        private void AddGrade(int gradeType, int studentID)
+        /// <summary>
+        /// Adds a grade to the student
+        /// </summary>
+        /// <param name="gradeType">grade number</param>
+        /// <param name="studentID">studnet ID</param>
+        public void AddGrade(int gradeType, int studentID)
         {
             bool foundStudent = false;
             //MySqlCommand addGrades = new MySqlCommand("");

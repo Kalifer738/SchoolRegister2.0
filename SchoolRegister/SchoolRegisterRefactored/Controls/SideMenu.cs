@@ -61,6 +61,8 @@ namespace KonstantinControls
         private RemoveStudentForm removeStudentForm;
         private AddClassForm addClassForm;
         private RemoveClassForm removeClassForm;
+        private AddGradeForm addGradeForm;
+        private RemoveGradeForm removeGradeForm;
 
         private AnimatePositionControl animSideMenu;
         private AnimateSizeControl animClassDropdownMenu;
@@ -197,6 +199,8 @@ namespace KonstantinControls
             removeStudentForm = new RemoveStudentForm();
             addClassForm = new AddClassForm();
             removeClassForm = new RemoveClassForm();
+            addGradeForm = new AddGradeForm();
+            removeGradeForm = new RemoveGradeForm();
         }
 
         private void InicializeOutsideBorders()
@@ -357,7 +361,7 @@ namespace KonstantinControls
 
         private void InicializeOptions()
         {
-            classOptions = new Label[6];
+            classOptions = new Label[8];
 
             classOptions[0] = new Label
             {
@@ -385,17 +389,21 @@ namespace KonstantinControls
 
             classOptions[0].Text = "Add Student";
             classOptions[1].Text = "Remove Student";
-            classOptions[2].Text = "Add Class";
-            classOptions[3].Text = "Remove Class";
-            classOptions[4].Text = "Settings";
-            classOptions[5].Text = "Exit";
+            classOptions[2].Text = "Add Grade";
+            classOptions[3].Text = "Remove Grade";
+            classOptions[4].Text = "Add Class";
+            classOptions[5].Text = "Remove Class";
+            classOptions[6].Text = "Settings";
+            classOptions[7].Text = "Exit";
 
             classOptions[0].Click += AddStudent;
             classOptions[1].Click += RemoveStudent;
-            classOptions[2].Click += AddClass;
-            classOptions[3].Click += RemoveClass;
-            classOptions[4].Click += ShowSettings;
-            classOptions[5].Click += ExitApplication;
+            classOptions[2].Click += AddGrade;
+            classOptions[3].Click += RemoveGrade;
+            classOptions[4].Click += AddClass;
+            classOptions[5].Click += RemoveClass;
+            classOptions[6].Click += ShowSettings;
+            classOptions[7].Click += ExitApplication;
             UpdateSpacingBetweenOptions();
         }
 
@@ -623,6 +631,24 @@ namespace KonstantinControls
                 addClassForm = new AddClassForm();
             }
             addClassForm.Show();
+        }
+
+        private void RemoveGrade(object sender, EventArgs e)
+        {
+            if (removeGradeForm.IsDisposed == true)
+            {
+                removeGradeForm = new RemoveGradeForm();
+            }
+            removeGradeForm.Show();
+        }
+
+        private void AddGrade(object sender, EventArgs e)
+        {
+            if (addGradeForm.IsDisposed == true)
+            {
+                addGradeForm = new AddGradeForm();
+            }
+            addGradeForm.Show();
         }
 
         private void SideMenu_SizeChanged(object sender, EventArgs e)

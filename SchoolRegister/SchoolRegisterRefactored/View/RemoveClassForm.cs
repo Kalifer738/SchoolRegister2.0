@@ -34,5 +34,15 @@ namespace SchoolRegisterRefactored.View
             MainDisplay.RegisterController.RemoveClass(classNameTextBox.Text);
             MainDisplay.RegisterController.RefreshClasses();
         }
+
+        private void classNameTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void classNameLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

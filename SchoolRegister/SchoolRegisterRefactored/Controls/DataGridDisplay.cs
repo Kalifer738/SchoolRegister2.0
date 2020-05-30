@@ -88,30 +88,31 @@ namespace SchoolRegisterRefactored.Controls
                     case "absences": MainDisplay.RegisterController.UpdateStudentAbsences(studentID, (float)this[e.ColumnIndex, e.RowIndex].Value); break;
                     case "grades":
                         {
-                            int[] editedGrades = { };
-                            if (this[e.ColumnIndex, e.RowIndex].Value == null)
-                            {
-                                ignoreCellUpdate = true;
-                                this[e.ColumnIndex, e.RowIndex].Value = "No Grades";
-                                ignoreCellUpdate = false;
-                            }
-                            else
-                            {
-                                editedGrades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
+                            //int[] editedGrades = { };
+                            //if (this[e.ColumnIndex, e.RowIndex].Value == null)
+                            //{
+                            //    ignoreCellUpdate = true;
+                            //    this[e.ColumnIndex, e.RowIndex].Value = "No Grades";
+                            //    ignoreCellUpdate = false;
+                            //}
+                            //else
+                            //{
+                            //    editedGrades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
 
-                                ignoreCellUpdate = true;
-                                this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
-                                ignoreCellUpdate = false;
-                            }
-                            Dictionary<int, int> differenceBetweenOldAndNewGrades = ArrayDifferenceCalculator.GetDifferenceDictinary(GradesToArray(gradesBeforeGettingEdited), editedGrades);
-                            if (differenceBetweenOldAndNewGrades == null)
-                            {
-                                this[e.ColumnIndex, e.RowIndex].Value = "No Grades"; break;
-                            }
-                            else
-                            {
-                                MainDisplay.RegisterController.UpdateStudentGrades(studentID, differenceBetweenOldAndNewGrades); break;
-                            }
+                            //    ignoreCellUpdate = true;
+                            //    this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
+                            //    ignoreCellUpdate = false;
+                            //}
+                            //Dictionary<int, int> differenceBetweenOldAndNewGrades = ArrayDifferenceCalculator.GetDifferenceDictinary(GradesToArray(gradesBeforeGettingEdited), editedGrades);
+                            //if (differenceBetweenOldAndNewGrades == null)
+                            //{
+                            //    this[e.ColumnIndex, e.RowIndex].Value = "No Grades"; break;
+                            //}
+                            //else
+                            //{
+                            //    MainDisplay.RegisterController.UpdateStudentGrades(studentID, differenceBetweenOldAndNewGrades); break;
+                            //}
+                            break;
                         }
                     default: MainDisplay.RegisterController.ShowError(new Exception($"You've Edited a non existant column...{Environment.NewLine}How...? How is that possible???? REPORT THIS!"), "", true); break;
                 }
@@ -245,6 +246,7 @@ namespace SchoolRegisterRefactored.Controls
             this.Columns[1].HeaderText = "Last Name";
             this.Columns[2].HeaderText = "Absences";
             this.Columns.Add("grades", "Grades");
+            this.Columns["grades"].ReadOnly = true;
 
 
 

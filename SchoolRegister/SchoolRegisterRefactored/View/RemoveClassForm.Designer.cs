@@ -41,6 +41,7 @@
             this.classNameLabel.Size = new System.Drawing.Size(63, 13);
             this.classNameLabel.TabIndex = 11;
             this.classNameLabel.Text = "Class Name";
+            this.classNameLabel.Click += new System.EventHandler(this.classNameLabel_Click);
             // 
             // classNameTextBox
             // 
@@ -48,6 +49,7 @@
             this.classNameTextBox.Name = "classNameTextBox";
             this.classNameTextBox.Size = new System.Drawing.Size(100, 20);
             this.classNameTextBox.TabIndex = 10;
+            this.classNameTextBox.TextChanged += new System.EventHandler(this.classNameTextBox_TextChanged);
             // 
             // removeClassButton
             // 

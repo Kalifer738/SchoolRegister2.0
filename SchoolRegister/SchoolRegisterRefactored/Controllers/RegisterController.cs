@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Display.Scripts;
 using SchoolRegisterRefactored;
 using SchoolRegisterRefactored.Display;
@@ -196,6 +197,44 @@ namespace SchoolRegisterRefactored.Controller
         {
             databaseModel.UpdateStudentGrades(studentID, value);
         }
+
+        #endregion
+
+        #region Grade Methods
+
+        public void RemoveGrade(int gradeToAdd, string firstName, string lastName)
+        {
+            int studentID;
+            try
+            {
+                studentID = MainDisplay.CurrentClass.students.First(x => x.first_name == firstName && x.last_name == lastName).id;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Student Doesn't Exist!");
+                return;
+            }
+
+            databaseModel.RemoveGrade(gradeToAdd, studentID);
+        }
+
+        public void AddGrade(int gradeToAdd, string firstName, string lastName)
+        {
+            int studentID;
+            try
+            {
+                studentID = MainDisplay.CurrentClass.students.First(x => x.first_name == firstName && x.last_name == lastName).id;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Student Doesn't Exist!");
+                return;
+            }
+
+            databaseModel.AddGrade(gradeToAdd, studentID);
+        }
+
+
 
         #endregion
 
