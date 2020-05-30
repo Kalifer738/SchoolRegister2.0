@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="school_registerModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="SchoolRegisterModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="class">
           <Key>
             <PropertyRef Name="id" />
@@ -17,6 +17,7 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="student_id" Type="int" Nullable="false" />
           <Property Name="grade" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="students">
@@ -29,14 +30,18 @@
           <Property Name="absences" Type="float" />
           <Property Name="class_id" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="students_grades">
-          <Key>
-            <PropertyRef Name="grades_id" />
-            <PropertyRef Name="students_id" />
-          </Key>
-          <Property Name="grades_id" Type="int" Nullable="false" />
-          <Property Name="students_id" Type="int" Nullable="false" />
-        </EntityType>
+        <Association Name="fk_grades_students">
+          <End Role="students" Type="Self.students" Multiplicity="1" />
+          <End Role="grades" Type="Self.grades" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="students">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="grades">
+              <PropertyRef Name="student_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_students_class">
           <End Role="class" Type="Self.class" Multiplicity="1" />
           <End Role="students" Type="Self.students" Multiplicity="*" />
@@ -49,53 +54,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_students_grades_grades">
-          <End Role="grades" Type="Self.grades" Multiplicity="1" />
-          <End Role="students_grades" Type="Self.students_grades" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="grades">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="students_grades">
-              <PropertyRef Name="grades_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_students_grades_students">
-          <End Role="students" Type="Self.students" Multiplicity="1" />
-          <End Role="students_grades" Type="Self.students_grades" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="students">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="students_grades">
-              <PropertyRef Name="students_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="school_registerModelStoreContainer">
+        <EntityContainer Name="SchoolRegisterModelStoreContainer">
           <EntitySet Name="class" EntityType="Self.class" Schema="school_register" store:Type="Tables" />
           <EntitySet Name="grades" EntityType="Self.grades" Schema="school_register" store:Type="Tables" />
           <EntitySet Name="students" EntityType="Self.students" Schema="school_register" store:Type="Tables" />
-          <EntitySet Name="students_grades" EntityType="Self.students_grades" Schema="school_register" store:Type="Tables" />
+          <AssociationSet Name="fk_grades_students" Association="Self.fk_grades_students">
+            <End Role="students" EntitySet="students" />
+            <End Role="grades" EntitySet="grades" />
+          </AssociationSet>
           <AssociationSet Name="fk_students_class" Association="Self.fk_students_class">
             <End Role="class" EntitySet="class" />
             <End Role="students" EntitySet="students" />
-          </AssociationSet>
-          <AssociationSet Name="fk_students_grades_grades" Association="Self.fk_students_grades_grades">
-            <End Role="grades" EntitySet="grades" />
-            <End Role="students_grades" EntitySet="students_grades" />
-          </AssociationSet>
-          <AssociationSet Name="fk_students_grades_students" Association="Self.fk_students_grades_students">
-            <End Role="students" EntitySet="students" />
-            <End Role="students_grades" EntitySet="students_grades" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="school_registerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="SchoolRegisterModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="class">
           <Key>
             <PropertyRef Name="id" />
@@ -109,8 +85,9 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="student_id" Type="Int32" Nullable="false" />
           <Property Name="grade1" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="students" Relationship="Self.students_grades" FromRole="grades" ToRole="students" />
+          <NavigationProperty Name="student" Relationship="Self.fk_grades_students" FromRole="grades" ToRole="students" />
         </EntityType>
         <EntityType Name="student">
           <Key>
@@ -122,7 +99,7 @@
           <Property Name="absences" Type="Single" />
           <Property Name="class_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="class" Relationship="Self.fk_students_class" FromRole="students" ToRole="class" />
-          <NavigationProperty Name="grades" Relationship="Self.students_grades" FromRole="students" ToRole="grades" />
+          <NavigationProperty Name="grades" Relationship="Self.fk_grades_students" FromRole="students" ToRole="grades" />
         </EntityType>
         <Association Name="fk_students_class">
           <End Role="class" Type="Self.class" Multiplicity="1" />
@@ -136,11 +113,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="students_grades">
+        <Association Name="fk_grades_students">
+          <End Role="students" Type="Self.student" Multiplicity="1" />
           <End Role="grades" Type="Self.grade" Multiplicity="*" />
-          <End Role="students" Type="Self.student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="students">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="grades">
+              <PropertyRef Name="student_id" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="school_registerEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="school_register" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="classes" EntityType="Self.class" />
           <EntitySet Name="grades" EntityType="Self.grade" />
           <EntitySet Name="students" EntityType="Self.student" />
@@ -148,9 +133,9 @@
             <End Role="class" EntitySet="classes" />
             <End Role="students" EntitySet="students" />
           </AssociationSet>
-          <AssociationSet Name="students_grades" Association="Self.students_grades">
-            <End Role="grades" EntitySet="grades" />
+          <AssociationSet Name="fk_grades_students" Association="Self.fk_grades_students">
             <End Role="students" EntitySet="students" />
+            <End Role="grades" EntitySet="grades" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -158,9 +143,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="school_registerModelStoreContainer" CdmEntityContainer="school_registerEntities">
+        <EntityContainerMapping StorageEntityContainer="SchoolRegisterModelStoreContainer" CdmEntityContainer="school_register">
           <EntitySetMapping Name="classes">
-            <EntityTypeMapping TypeName="school_registerModel.class">
+            <EntityTypeMapping TypeName="SchoolRegisterModel.class">
               <MappingFragment StoreEntitySet="class">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
@@ -168,15 +153,16 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="grades">
-            <EntityTypeMapping TypeName="school_registerModel.grade">
+            <EntityTypeMapping TypeName="SchoolRegisterModel.grade">
               <MappingFragment StoreEntitySet="grades">
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="student_id" ColumnName="student_id" />
                 <ScalarProperty Name="grade1" ColumnName="grade" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="students">
-            <EntityTypeMapping TypeName="school_registerModel.student">
+            <EntityTypeMapping TypeName="SchoolRegisterModel.student">
               <MappingFragment StoreEntitySet="students">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="first_name" ColumnName="first_name" />
@@ -186,14 +172,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="students_grades" TypeName="school_registerModel.students_grades" StoreEntitySet="students_grades">
-            <EndProperty Name="grades">
-              <ScalarProperty Name="id" ColumnName="grades_id" />
-            </EndProperty>
-            <EndProperty Name="students">
-              <ScalarProperty Name="id" ColumnName="students_id" />
-            </EndProperty>
-          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

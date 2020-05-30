@@ -13,21 +13,10 @@ namespace SchoolRegisterRefactored.View
 {
     public partial class RemoveStudentForm : Form
     {
-        private bool removedStudent;
         public RemoveStudentForm()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            removedStudent = false;
-            FormClosed += UpdateDataGrid;
-        }
-
-        private void UpdateDataGrid(object sender, FormClosedEventArgs e)
-        {
-            if (removedStudent)
-            {
-                MainDisplay.RegisterController.UpdateDataGrid();
-            }
         }
 
         private void removeStudentButton_Click(object sender, EventArgs e)
@@ -51,8 +40,8 @@ namespace SchoolRegisterRefactored.View
                 MessageBox.Show("You need to select a class before you can remove students!", "No Class Selected!");
                 return;
             }
-            removedStudent = true;
             MainDisplay.RegisterController.RemoveStudent(firstNameTextBox.Text, lastNameTextBox.Text, MainDisplay.CurrentClass.id);
+            MainDisplay.RegisterController.UpdateDataGrid();
         }
     }
 }

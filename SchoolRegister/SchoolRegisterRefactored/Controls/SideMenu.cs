@@ -59,6 +59,8 @@ namespace KonstantinControls
         private SettingsForm settingsForm;
         private AddStudentForm addStudentForm;
         private RemoveStudentForm removeStudentForm;
+        private AddClassForm addClassForm;
+        private RemoveClassForm removeClassForm;
 
         private AnimatePositionControl animSideMenu;
         private AnimateSizeControl animClassDropdownMenu;
@@ -193,6 +195,8 @@ namespace KonstantinControls
             settingsForm = new SettingsForm();
             addStudentForm = new AddStudentForm();
             removeStudentForm = new RemoveStudentForm();
+            addClassForm = new AddClassForm();
+            removeClassForm = new RemoveClassForm();
         }
 
         private void InicializeOutsideBorders()
@@ -353,7 +357,7 @@ namespace KonstantinControls
 
         private void InicializeOptions()
         {
-            classOptions = new Label[4];
+            classOptions = new Label[6];
 
             classOptions[0] = new Label
             {
@@ -381,13 +385,17 @@ namespace KonstantinControls
 
             classOptions[0].Text = "Add Student";
             classOptions[1].Text = "Remove Student";
-            classOptions[2].Text = "Settings";
-            classOptions[3].Text = "Exit";
+            classOptions[2].Text = "Add Class";
+            classOptions[3].Text = "Remove Class";
+            classOptions[4].Text = "Settings";
+            classOptions[5].Text = "Exit";
 
             classOptions[0].Click += AddStudent;
             classOptions[1].Click += RemoveStudent;
-            classOptions[2].Click += ShowSettings;
-            classOptions[3].Click += ExitApplication;
+            classOptions[2].Click += AddClass;
+            classOptions[3].Click += RemoveClass;
+            classOptions[4].Click += ShowSettings;
+            classOptions[5].Click += ExitApplication;
             UpdateSpacingBetweenOptions();
         }
 
@@ -599,24 +607,22 @@ namespace KonstantinControls
             addStudentForm.Show();
         }
 
-        private void RemoveAbsence(object sender, EventArgs e)
+        private void RemoveClass(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (removeClassForm.IsDisposed == true)
+            {
+                removeClassForm = new RemoveClassForm();
+            }
+            removeClassForm.Show();
         }
 
-        private void AddAbsence(object sender, EventArgs e)
+        private void AddClass(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
-        }
-
-        private void RemoveGrade(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void AddGrade(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
+            if (addClassForm.IsDisposed == true)
+            {
+                addClassForm = new AddClassForm();
+            }
+            addClassForm.Show();
         }
 
         private void SideMenu_SizeChanged(object sender, EventArgs e)
@@ -680,29 +686,16 @@ namespace KonstantinControls
             inicialized = true;
         }
 
-        private void SetCurrentClass(string className)
+        /// <summary>
+        /// Refreshes the classes labels.
+        /// </summary>
+        public void RefreshClasses()
         {
-            if (!MainDisplay.RegisterController.DoesClassExist(className))
+            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(currentClass.Text);
+            if (classesNames.Count() == 0)
             {
-                currentClass.Text = "No Class Selected!";
+                return;
             }
-            else
-            {
-                currentClass.Text = className;
-            }
-
-            if (classes != null)
-            {
-                foreach (Label item in classes)
-                {
-                    if (!item.IsDisposed)
-                    {
-                        item.Dispose();
-                    }
-                }
-            }
-
-            string[] classesNames = MainDisplay.RegisterController.GetAllClassesExceptCurrentClass(className);
             classes = new Label[classesNames.Count()];
 
             classes[0] = new Label
@@ -739,6 +732,31 @@ namespace KonstantinControls
             }
 
             UpdateSpacingBetweenClasses();
+        }
+
+        private void SetCurrentClass(string className)
+        {
+            if (!MainDisplay.RegisterController.DoesClassExist(className))
+            {
+                currentClass.Text = "No Class Selected!";
+            }
+            else
+            {
+                currentClass.Text = className;
+            }
+
+            if (classes != null)
+            {
+                foreach (Label item in classes)
+                {
+                    if (!item.IsDisposed)
+                    {
+                        item.Dispose();
+                    }
+                }
+            }
+
+            RefreshClasses();
         }
 
         /// <summary>

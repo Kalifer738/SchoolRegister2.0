@@ -37,6 +37,7 @@ namespace SchoolRegisterRefactored.Display
             }
         }
 
+
         /// <summary>
         /// Updates the data grid.
         /// </summary>
@@ -111,10 +112,31 @@ namespace SchoolRegisterRefactored.Display
         /// Shows a message box with the error message from the exception.
         /// </summary>
         /// <param name="exception">The Exception</param>
-        public void ShowError(Exception exception)
+        public void ShowError(Exception exception, string caption , bool recommendation)
         {
-            MessageBox.Show("We recommend that you close the application and opening it before continuing!" + Environment.NewLine
-            + "Exception Message: " + exception.Message, "System Datagrid Error Exception!");
+            if (string.IsNullOrEmpty(caption))
+            {
+                caption = "Error!";
+            }
+            if (recommendation)
+            {
+                MessageBox.Show("We recommend that you close the application and opening it before continuing!" + Environment.NewLine
+                + "Exception Message: " + exception.Message + Environment.NewLine
+                + "Inner Exception Message:" + exception.InnerException.Message, caption);
+            }
+            else
+            {
+                MessageBox.Show("Exception Message: " + exception.Message + Environment.NewLine
+                + "Inner Exception Message:" + exception.InnerException.Message, caption);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the classes labels.
+        /// </summary>
+        public void RefreshClasses()
+        {
+            sideMenu.RefreshClasses();
         }
     }
 }

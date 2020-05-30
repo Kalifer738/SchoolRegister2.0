@@ -13,21 +13,10 @@ namespace SchoolRegisterRefactored.View
 {
     public partial class AddStudentForm : Form
     {
-        private bool addedStudent;
         public AddStudentForm()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            addedStudent = false;
-            FormClosed += UpdateDataGrid;
-        }
-
-        private void UpdateDataGrid(object sender, FormClosedEventArgs e)
-        {
-            if (addedStudent)
-            {
-                MainDisplay.RegisterController.UpdateDataGrid();
-            }
         }
 
         private void addStudentButton_Click(object sender, EventArgs e)
@@ -51,8 +40,8 @@ namespace SchoolRegisterRefactored.View
                 MessageBox.Show("You need to select a class before you can add students!", "No Class Selected!");
                 return;
             }
-            addedStudent = true;
             MainDisplay.RegisterController.AddStudent(firstNameTextBox.Text, lastNameTextBox.Text, MainDisplay.CurrentClass.id);
+            MainDisplay.RegisterController.UpdateDataGrid();
         }
     }
 }

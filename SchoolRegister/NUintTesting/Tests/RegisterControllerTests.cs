@@ -26,6 +26,10 @@ namespace NUintTesting.Tests
         {
             //No database to test against.
             bool myBool = controller.DoesClassExist("11г");
+            if (myBool == false)
+            {
+                Assert.Fail();
+            }
         }
     }
 }

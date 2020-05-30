@@ -88,17 +88,32 @@ namespace SchoolRegisterRefactored.Controls
                     case "absences": MainDisplay.RegisterController.UpdateStudentAbsences(studentID, (float)this[e.ColumnIndex, e.RowIndex].Value); break;
                     case "grades":
                         {
-                            int[] editedGrades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
-                            
-                            ignoreCellUpdate = true;
-                            this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
-                            ignoreCellUpdate = false;
+                            int[] editedGrades = { };
+                            if (this[e.ColumnIndex, e.RowIndex].Value == null)
+                            {
+                                ignoreCellUpdate = true;
+                                this[e.ColumnIndex, e.RowIndex].Value = "No Grades";
+                                ignoreCellUpdate = false;
+                            }
+                            else
+                            {
+                                editedGrades = GradesToArray(this[e.ColumnIndex, e.RowIndex].Value.ToString());
 
+                                ignoreCellUpdate = true;
+                                this[e.ColumnIndex, e.RowIndex].Value = GradesToString(editedGrades);
+                                ignoreCellUpdate = false;
+                            }
                             Dictionary<int, int> differenceBetweenOldAndNewGrades = ArrayDifferenceCalculator.GetDifferenceDictinary(GradesToArray(gradesBeforeGettingEdited), editedGrades);
-
-                            MainDisplay.RegisterController.UpdateStudentGrades(studentID, differenceBetweenOldAndNewGrades); break;
+                            if (differenceBetweenOldAndNewGrades == null)
+                            {
+                                this[e.ColumnIndex, e.RowIndex].Value = "No Grades"; break;
+                            }
+                            else
+                            {
+                                MainDisplay.RegisterController.UpdateStudentGrades(studentID, differenceBetweenOldAndNewGrades); break;
+                            }
                         }
-                    default: throw new Exception("You've Edited a non existant column..." + Environment.NewLine + "How...? How is that possible???? REPORT THIS!");
+                    default: MainDisplay.RegisterController.ShowError(new Exception($"You've Edited a non existant column...{Environment.NewLine}How...? How is that possible???? REPORT THIS!"), "", true); break;
                 }
             }
         }
@@ -117,7 +132,7 @@ namespace SchoolRegisterRefactored.Controls
             {
                 MessageBox.Show("You cannot place any symbols other than '.' in the Absences columns!", "Invalid input!");
             }
-            MainDisplay.RegisterController.ShowError(e.Exception);
+            MainDisplay.RegisterController.ShowError(e.Exception, "", true);
 
             e.ThrowException = false;
         }
@@ -157,20 +172,23 @@ namespace SchoolRegisterRefactored.Controls
                 return "No Grades";
             }
 
+            if (grades.Count() == 1)
+            {
+                return grades[0].grade1.ToString();
+            }
+
             int[] sortedGrades = grades.Select(x => x.grade1).ToArray();
             Array.Sort(sortedGrades);
-            string currentGrade = "";
+            string currentGrades = "";
 
-            for (int i = 0; i < sortedGrades.Count() - 1; i++)
+            for (int i = 0; i < sortedGrades.Length - 1; i++)
             {
-                currentGrade += sortedGrades[i] + ", ";
+                currentGrades += sortedGrades[i] + ", ";
             }
 
-            if (sortedGrades.Count() > 1)
-            {
-                currentGrade += sortedGrades[sortedGrades.Count() - 1];
-            }
-            return currentGrade;
+            currentGrades += sortedGrades[sortedGrades.Length - 1];
+
+            return currentGrades;
         }
 
         private string GradesToString(int[] grades)
@@ -180,6 +198,10 @@ namespace SchoolRegisterRefactored.Controls
             if (grades.Count() <= 0)
             {
                 return "No Grades";
+            }
+            if (grades.Count() == 1)
+            {
+                return grades[0].ToString();
             }
 
             for (int i = 0; i < grades.Count() - 1; i++)

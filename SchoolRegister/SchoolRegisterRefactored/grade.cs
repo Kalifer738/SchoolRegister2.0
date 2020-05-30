@@ -14,16 +14,10 @@ namespace SchoolRegisterRefactored
     
     public partial class grade
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public grade()
-        {
-            this.students = new HashSet<student>();
-        }
-    
         public int id { get; set; }
+        public int student_id { get; set; }
         public int grade1 { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<student> students { get; set; }
+        public virtual student student { get; set; }
     }
 }

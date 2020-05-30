@@ -71,7 +71,7 @@
     <Compile Include="AnimateControls\AnimateSizeControl.cs" />
     <Compile Include="AnimateControls\RotateImageDep.cs" />
     <Compile Include="class.cs">
-      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controls\DataGridDisplay.cs">
@@ -81,7 +81,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="grade.cs">
-      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\ICustomControl.cs" />
     <Compile Include="Model\DatabaseModel.cs" />
@@ -91,25 +91,31 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SideMenuResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SchoolRegisterModel.Context.cs">
+    <Compile Include="SchoolRegisterContext.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SchoolRegisterModel.Context.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterContext.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="SchoolRegisterModel.cs">
+    <Compile Include="SchoolRegisterContext.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="SchoolRegisterModel.Designer.cs">
+    <Compile Include="SchoolRegisterContext.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
+      <DependentUpon>SchoolRegisterContext.edmx</DependentUpon>
     </Compile>
     <Compile Include="Scripts\ArrayDifferenceCalculator.cs" />
     <Compile Include="Scripts\RegisterSettings.cs" />
     <Compile Include="student.cs">
-      <DependentUpon>SchoolRegisterModel.tt</DependentUpon>
+      <DependentUpon>SchoolRegisterContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="View\AddClassForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\AddClassForm.Designer.cs">
+      <DependentUpon>AddClassForm.cs</DependentUpon>
     </Compile>
     <Compile Include="View\AddStudentForm.cs">
       <SubType>Form</SubType>
@@ -125,6 +131,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\RemoveClassForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\RemoveClassForm.Designer.cs">
+      <DependentUpon>RemoveClassForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\RemoveStudentForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +153,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SideMenuResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\AddClassForm.resx">
+      <DependentUpon>AddClassForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\AddStudentForm.resx">
       <DependentUpon>AddStudentForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -156,6 +171,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\RemoveClassForm.resx">
+      <DependentUpon>RemoveClassForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\RemoveStudentForm.resx">
       <DependentUpon>RemoveStudentForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -172,12 +190,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EntityDeploy Include="SchoolRegisterModel.edmx">
+    <EntityDeploy Include="SchoolRegisterContext.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SchoolRegisterModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>SchoolRegisterContext.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="SchoolRegisterModel.edmx.diagram">
-      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
+    <None Include="SchoolRegisterContext.edmx.diagram">
+      <DependentUpon>SchoolRegisterContext.edmx</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -185,19 +203,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SideMenuButtonPicture.png" />
-    <Content Include="SchoolRegisterModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
-      <LastGenOutput>SchoolRegisterModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="SchoolRegisterModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SchoolRegisterModel.edmx</DependentUpon>
-      <LastGenOutput>SchoolRegisterModel.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SchoolRegisterContext.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SchoolRegisterContext.edmx</DependentUpon>
+      <LastGenOutput>SchoolRegisterContext.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="SchoolRegisterContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SchoolRegisterContext.edmx</DependentUpon>
+      <LastGenOutput>SchoolRegisterContext.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -16,7 +16,7 @@ namespace SchoolRegisterRefactored
     public partial class SchoolRegisterContext : DbContext
     {
         public SchoolRegisterContext()
-            : base("name=school_registerEntities")
+            : base("name=school_register")
         {
         }
     

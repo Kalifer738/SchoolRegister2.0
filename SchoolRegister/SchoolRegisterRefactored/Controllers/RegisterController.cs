@@ -33,6 +33,15 @@ namespace SchoolRegisterRefactored.Controller
             }
         }
 
+
+        /// <summary>
+        /// Refreshes the classes labels.
+        /// </summary>
+        public void RefreshClasses()
+        {
+            display.RefreshClasses();
+        }
+
         /// <summary>
         /// Represents the Controller in the MVC Design Pattern.
         /// </summary>
@@ -91,7 +100,25 @@ namespace SchoolRegisterRefactored.Controller
             return databaseModel.GetAllClassesNames();
         }
 
-        #endregion
+        /// <summary>
+        /// Adds a class to the database.
+        /// </summary>
+        /// <param name="className">The class's name.</param>
+        public void AddClass(string className)
+        {
+            databaseModel.AddClass(className);
+        }
+
+        /// <summary>
+        /// Removes a class from the database.
+        /// </summary>
+        /// <param name="className">The class's name.</param>
+        public void RemoveClass(string className)
+        {
+            databaseModel.RemoveClass(className);
+        }
+
+            #endregion
 
         #region Student Void Methods
 
@@ -176,9 +203,9 @@ namespace SchoolRegisterRefactored.Controller
         /// Shows a message box with the error message from the exception.
         /// </summary>
         /// <param name="exception">The Exception</param>
-        public void ShowError(Exception exception)
+        public void ShowError(Exception exception, string caption, bool recommendation)
         {
-            display.ShowError(exception);
+            display.ShowError(exception, caption, recommendation);
         }
 
         /// <summary>

@@ -4,6 +4,9 @@ using SchoolRegisterRefactored.Controller;
 using SchoolRegisterRefactored.Display;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Net.Mime;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
@@ -27,6 +30,8 @@ namespace SchoolRegisterRefactored.Model
 
         readonly MySqlConnection databaseConnection;
 
+        private bool addingGrades;
+
         private DispatcherTimer savingChangesTimer;
 
         public DatabaseModel(RegisterController registerController)
@@ -34,10 +39,13 @@ namespace SchoolRegisterRefactored.Model
             this.registerController = registerController;
             savingChangesTimer = new DispatcherTimer();
             context = new SchoolRegisterContext();
+            context.Database.Connection.Close();
             databaseConnection = new MySqlConnection(context.Database.Connection.ConnectionString);
         }
 
         #region Class Methods
+
+        #region Class Read Methods
 
         /// <summary>
         /// Returns true if the class exists in the database.
@@ -46,21 +54,30 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public bool DoesClassExist(string className)
         {
-            @class classToCheck;
-            try
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
             {
-                classToCheck = context.classes.First(@class => @class.name == className);
-            }
-            catch (System.InvalidOperationException)
-            {
+                if (className == "None")
+                {
+                    return false;
+                }
+                @class classToCheck;
+                try
+                {
+                    classToCheck = context.classes.First(@class => @class.name == className);
+                }
+                catch (System.InvalidOperationException)
+                {
+                    MainDisplay.RegisterController.ShowError(new Exception($"No class found with the name {className}!"), "Class Not Found!", false);
+                    return false;
+                }
+
+                if (classToCheck != null)
+                {
+                    return true;
+                }
                 return false;
             }
-
-            if (classToCheck != null)
-            {
-                return true;
-            }
-            return false;
         }
 
         /// <summary>
@@ -70,7 +87,11 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public string[] GetAllClassesExceptCurrentClass(string currentClass)
         {
-            return context.classes.Where(@class => @class.name != currentClass).Select(x => x.name).ToArray();
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                return context.classes.Where(@class => @class.name != currentClass).Select(x => x.name).ToArray();
+            }
         }
 
         /// <summary>
@@ -80,7 +101,11 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public @class GetClass(int classID)
         {
-            return context.classes.First(c => c.id == classID);
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                return context.classes.First(c => c.id == classID);
+            }
         }
 
         /// <summary>
@@ -90,7 +115,11 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public @class GetClass(string className)
         {
-            return context.classes.First(c => c.name == className);
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                return context.classes.First(c => c.name == className);
+            }
         }
 
         /// <summary>
@@ -99,7 +128,51 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public string[] GetAllClassesNames()
         {
-            return context.classes.Select(@class => @class.name).ToArray();
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                return context.classes.Select(@class => @class.name).ToArray();
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Adds a class to the database.
+        /// </summary>
+        /// <param name="className">The class's name.</param>
+        public void AddClass(string className)
+        {
+            using (context.Database.Connection)
+            {
+                @class classToAdd = new @class();
+                classToAdd.name = className;
+                context.classes.Add(classToAdd);
+            }
+            SaveChangesToDB();
+        }
+
+
+        /// <summary>
+        /// Removes a class from the database.
+        /// </summary>
+        /// <param name="className">The class's name.</param>
+        public void RemoveClass(string className)
+        {
+            using (context.Database.Connection)
+            {
+                try
+                {
+                    @class classToRemove = context.classes.First(@class => @class.name == className);
+                    context.classes.Remove(classToRemove);
+                    context.students.RemoveRange(GetAllStudentsInClass(classToRemove.id));
+                }
+                catch (System.InvalidOperationException)
+                {
+                    MainDisplay.RegisterController.ShowError(new Exception($"No Class with name {className} exists!"), "Class Not Found!", false);
+                }
+            }
+            SaveChangesToDB();
         }
 
         #endregion
@@ -111,7 +184,11 @@ namespace SchoolRegisterRefactored.Model
         /// <returns>all students in the said class</returns>
         public student[] GetAllStudentsInClass(int classID)
         {
-            return context.classes.First(@class => @class.id == classID).students.ToArray();
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                return context.classes.First(@class => @class.id == classID).students.ToArray();
+            }
         }
 
         #region Students Void Methods
@@ -124,12 +201,16 @@ namespace SchoolRegisterRefactored.Model
         /// <param name="classID">Students's class ID.</param>
         public void AddStudent(string firstName, string lastName, int classID)
         {
-            student newStudent = new student();
-            newStudent.first_name = firstName;
-            newStudent.last_name = lastName;
-            newStudent.class_id = classID;
-            context.students.Add(newStudent);
-            SaveChangesToDB();
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                student newStudent = new student();
+                newStudent.first_name = firstName;
+                newStudent.last_name = lastName;
+                newStudent.class_id = classID;
+                context.students.Add(newStudent);
+                SaveChangesToDB();
+            }
         }
 
         /// <summary>
@@ -140,22 +221,26 @@ namespace SchoolRegisterRefactored.Model
         /// <param name="lastName">Student's last name.</param>
         public void RemoveStudent(int classID, string firstName, string lastName)
         {
-            try
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
             {
-                context.students.Remove(context.students.First(x => x.first_name == firstName && x.last_name == lastName && x.class_id == classID));
-            }
-            catch (Exception e)
-            {
-                if (e.Message == "Sequence contains no elements")
+                try
                 {
-                    MessageBox.Show("Cannot delete a non existing student!", "Invalid Operation!");
+                    context.students.Remove(context.students.First(x => x.first_name == firstName && x.last_name == lastName && x.class_id == classID));
                 }
-                else
+                catch (Exception e)
                 {
-                    MainDisplay.RegisterController.ShowError(e);
+                    if (e.Message == "Sequence contains no elements")
+                    {
+                        MainDisplay.RegisterController.ShowError(new Exception("Cannot delete a non existing student!"), "Invalid Operation!", false);
+                    }
+                    else
+                    {
+                        MainDisplay.RegisterController.ShowError(e, "", true);
+                    }
                 }
             }
-            context.SaveChangesAsync();
+            SaveChangesToDB();
         }
 
         #endregion
@@ -164,39 +249,53 @@ namespace SchoolRegisterRefactored.Model
 
         public void UpdateStudentFirstName(int studentID, string value)
         {
-            foreach (student registerStudent in context.students)
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
             {
-                if (registerStudent.id == studentID)
+                foreach (student registerStudent in context.students)
                 {
-                    registerStudent.first_name = value;
+                    if (registerStudent.id == studentID)
+                    {
+                        registerStudent.first_name = value;
+                    }
                 }
             }
-            SaveChangedToDBWithDelay();
+            SaveChangesToDB();
         }
 
         public void UpdateStudentLastName(int studentID, string value)
         {
-            foreach (student registerStudent in context.students)
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
             {
-                if (registerStudent.id == studentID)
+                foreach (student registerStudent in context.students)
                 {
-                    registerStudent.last_name = value;
+                    if (registerStudent.id == studentID)
+                    {
+                        registerStudent.last_name = value;
+                    }
                 }
             }
-            SaveChangedToDBWithDelay();
+            SaveChangesToDB();
         }
 
         public void UpdateStudentAbsences(int studentID, float value)
         {
-            foreach (student registerStudent in context.students)
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
             {
-                if (registerStudent.id == studentID)
+                foreach (student registerStudent in context.students)
                 {
-                    registerStudent.absences = value;
+                    if (registerStudent.id == studentID)
+                    {
+                        registerStudent.absences = value;
+                    }
                 }
             }
-            SaveChangedToDBWithDelay();
+            SaveChangesToDB();
         }
+
+        #endregion
 
         #region Grade Methods
 
@@ -207,89 +306,124 @@ namespace SchoolRegisterRefactored.Model
             //Implement MetroFramework!!! https://thielj.github.io/MetroFramework/#Screenshots
             //It looks so much better than this ugly ass shit
 
-            foreach (int key in gradesDictinary.Keys)
+            foreach (int keyValue in gradesDictinary.Keys)
             {
-                if (gradesDictinary[key] == 0)
+                if (gradesDictinary[keyValue] == 0)
                 {
                     continue;
                 }
-                BeginAddingGrades(key, gradesDictinary[key], studentID);
+                BeginAddingGrades(keyValue, gradesDictinary[keyValue], studentID);
             }
-            SaveChangedToDBWithDelay();
         }
 
         private void BeginAddingGrades(int gradeType, int timesToAdd, int studentID)
         {
-            ThreadStart threadStart = new ThreadStart(delegate
+            addingGrades = true;
+            bool addGrades = true;
+            if (timesToAdd < 0)
             {
-                bool addGrades = true;
-                if (timesToAdd < 0)
+                addGrades = false;
+            }
+            for (int i = 0; i < Math.Abs(timesToAdd); i++)
+            {
+                if (addGrades)
                 {
-                    addGrades = false;
+                    AddGrade(gradeType, studentID);
                 }
-                for (int i = 0; i < timesToAdd; i++)
+                else
                 {
-                    if (addGrades)
-                    {
-                        AddGrade(gradeType, studentID);
-                    }
-                    else
-                    {
-                        RemoveGrade(gradeType, studentID);
-                    }
+                    RemoveGrade(gradeType, studentID);
                 }
-            });
-            Thread addingGradesThread = new Thread(threadStart);
-            addingGradesThread.Start();
+            }
+            SaveChangesToDB();
         }
 
         private void RemoveGrade(int gradeType, int studentID)
         {
             bool foundStudent = false;
-            MySqlCommand removeStudentGrade = new MySqlCommand("");
-            removeStudentGrade.Connection = databaseConnection;
+
+
 
             foreach (student studentt in context.students)
             {
                 if (studentt.id == studentID)
                 {
                     foundStudent = true;
-                    //removeStudentGrade.ExecuteNonQuery();
-                    MessageBox.Show($"Found student! But Still cannot remove {gradeType}. Not saved to database!", "Not Implemented");
+                    try
+                    {
+                        if (context.Database.Connection.State == ConnectionState.Open)
+                        {
+                            context.Database.Connection.Close();
+                        }
+                        using (context.Database.Connection)
+                        {
+                            grade newGrade = context.students.First(theStudent => theStudent.id == studentID).grades.First(x => x.grade1 == gradeType);
+                            context.students.First(theStudent => theStudent.id == studentID).grades.Remove(newGrade);
+                            context.Entry(newGrade).State = EntityState.Deleted;
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
                     break;
                 }
             }
 
             if (!foundStudent)
             {
-                MessageBox.Show($"Error! Cannot find student with studentID({studentID})", "Not Implemented");
+                MainDisplay.RegisterController.ShowError(new Exception($"Error! Cannot find student with studentID({studentID})"), "Student Doesn't Exist!", false);
             }
         }
 
         private void AddGrade(int gradeType, int studentID)
         {
             bool foundStudent = false;
-            MySqlCommand addGrades = new MySqlCommand("");
-            addGrades.Connection = databaseConnection;
+            //MySqlCommand addGrades = new MySqlCommand("");
+            //addGrades.Connection = databaseConnection;
+            grade newGrade = new grade();
+            newGrade.grade1 = gradeType;
+            newGrade.student_id = studentID;
 
             foreach (student studentt in context.students)
             {
                 if (studentt.id == studentID)
                 {
                     foundStudent = true;
-                    //removeStudentGrade.ExecuteNonQuery();
-                    MessageBox.Show($"Found student! But Still cannot add {gradeType}. Not saved to database!");
+                    try
+                    {
+                        if (context.Database.Connection.State == ConnectionState.Open)
+                        {
+                            context.Database.Connection.Close();
+                        }
+                        context.Database.Connection.Open();
+                        using (context.Database.Connection)
+                        {
+                            context.students.First(theStudent => theStudent.id == studentID).grades.Add(newGrade);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.Message == "Sequence contains no elements")
+                        {
+                            MainDisplay.RegisterController.ShowError(new Exception($"Error! Cannot find student with studentID({studentID})"), "Student Doesn't Exist!", false);
+                        }
+                        else
+                        {
+                            MainDisplay.RegisterController.ShowError(e, "", true);
+                        }
+                        throw;
+                    }
                     break;
                 }
             }
 
             if (!foundStudent)
             {
-                MessageBox.Show($"Error! Cannot find student with studentID({studentID})", "Cannot Add Grade!");
+                MainDisplay.RegisterController.ShowError(new Exception($"Error! Cannot find student with studentID({studentID})"), "Student Doesn't Exist!", false);
             }
         }
-
-        #endregion
 
         #endregion
 
@@ -322,8 +456,22 @@ namespace SchoolRegisterRefactored.Model
         /// Saves all changes done to the database.
         /// </summary>
         public void SaveChangesToDB()
-        {
-            context.SaveChanges();
+        { 
+            if (context.Database.Connection.State == ConnectionState.Closed)
+            {
+                context.Database.Connection.Open();
+                using (context.Database.Connection)
+                {
+                    context.SaveChanges();
+                }
+            }
+            else
+            {
+                using (context.Database.Connection)
+                {
+                    context.SaveChanges();
+                }
+            }
         }
     }
 }
