@@ -71,7 +71,7 @@ namespace SchoolRegisterRefactored.Controls
             {
                 return;
             }
-            CurrentClass = MainDisplay.RegisterController.GetClass(currentClassID);
+            CurrentClass = MainDisplay.CurrentClass;
         }
 
         #region Events
@@ -131,11 +131,12 @@ namespace SchoolRegisterRefactored.Controls
         {
             if (e.Exception.Message == "Input string was not in the correct format" || this.Columns[e.ColumnIndex].Name == "absences")
             {
-                MessageBox.Show("You cannot place any symbols other than '.' in the Absences columns!", "Invalid input!");
+                MainDisplay.RegisterController.ShowError(new Exception("You cannot place any symbols other than '.' in the Absences columns!"), "Invalid input!", false);
+                ignoreCellUpdate = true;
+                this[e.ColumnIndex, e.RowIndex].Value = "";
+                ignoreCellUpdate = false;
+                e.ThrowException = false;
             }
-            MainDisplay.RegisterController.ShowError(e.Exception, "", true);
-
-            e.ThrowException = false;
         }
 
         #endregion
@@ -221,6 +222,10 @@ namespace SchoolRegisterRefactored.Controls
 
         private void LoadStudents()
         {
+            if (CurrentClass == null)
+            {
+                return;
+            }
             ignoreCellUpdate = true;
             if (CurrentClass.students == null)
             {
@@ -242,9 +247,9 @@ namespace SchoolRegisterRefactored.Controls
                 }
             }
 
-            this.Columns[0].HeaderText = "First Name";
-            this.Columns[1].HeaderText = "Last Name";
-            this.Columns[2].HeaderText = "Absences";
+            this.Columns["first_name"].HeaderText = "First Name";
+            this.Columns["last_name"].HeaderText = "Last Name";
+            this.Columns["absences"].HeaderText = "Absences";
             this.Columns.Add("grades", "Grades");
             this.Columns["grades"].ReadOnly = true;
 

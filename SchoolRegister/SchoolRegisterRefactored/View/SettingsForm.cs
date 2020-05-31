@@ -1,4 +1,5 @@
 ﻿using Display.Scripts;
+using SchoolRegisterRefactored;
 using SchoolRegisterRefactored.Display;
 using System;
 using System.Collections.Generic;
@@ -48,14 +49,23 @@ namespace Display
 
         private void SaveChangesButton_Click(object sender, EventArgs e)
         {
+            bool classRetrieved = true;
             RegisterSettings settings = new RegisterSettings();
             if (!LoadLastClassCheckBox.Checked)
             {
                 string className = (string)ClassToLoadComboBox.SelectedItem;
-                settings.ClassToLoadID = MainDisplay.RegisterController.GetClass(className).id;
-                settings.ClassToLoadName = className;
+                @class classToLoad = MainDisplay.RegisterController.GetClass(className);
+                if (classToLoad == null)
+                {
+                    classRetrieved = false;
+                }
+                else
+                {
+                    settings.ClassToLoadName = className;
+                    settings.ClassToLoadID = classToLoad.id;
+                }
             }
-            else
+            if(!classRetrieved)
             {
                 settings.ClassToLoadName = "None";
                 ClassToLoadComboBox.SelectedItem = 0;

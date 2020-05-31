@@ -101,9 +101,25 @@ namespace SchoolRegisterRefactored.Model
         public @class GetClass(int classID)
         {
             context.Database.Connection.Open();
+            @class classToReturn = null;
             using (context.Database.Connection)
             {
-                return context.classes.First(c => c.id == classID);
+                try
+                {
+                    classToReturn = context.classes.First(c => c.id == classID);
+                }
+                catch (Exception e)
+                {
+                    if (e.Message == "Sequence contains no elements")
+                    {
+                        MainDisplay.RegisterController.ShowError(new Exception($"Class with classID({classID}) does not exist!"), "", false);
+                    }
+                    else
+                    {
+                        MainDisplay.RegisterController.ShowError(e, "", true);
+                    }
+                }
+                return classToReturn;
             }
         }
 
@@ -114,10 +130,30 @@ namespace SchoolRegisterRefactored.Model
         /// <returns></returns>
         public @class GetClass(string className)
         {
+            if (className == "None")
+            {
+                return null;
+            }
+            @class classToReturn = null;
             context.Database.Connection.Open();
             using (context.Database.Connection)
             {
-                return context.classes.First(c => c.name == className);
+                try
+                {
+                    classToReturn = context.classes.First(c => c.name == className);
+                }
+                catch (Exception e)
+                {
+                    if (e.Message == "Sequence contains no elements")
+                    {
+                        MainDisplay.RegisterController.ShowError(new Exception("Class with classID({classID}) does not exist!"), "", false);
+                    }
+                    else
+                    {
+                        MainDisplay.RegisterController.ShowError(e, "", true);
+                    }
+                }
+                return classToReturn;
             }
         }
 
@@ -175,8 +211,22 @@ namespace SchoolRegisterRefactored.Model
                 try
                 {
                     @class classToRemove = context.classes.First(@class => @class.name == className);
+                    student[] studentsToRemove = context.students.Where(x => x.class_id == classToRemove.id).ToArray();
+                    grade[] gradesToRemove = context.grades.Where(x => x.student.class_id == classToRemove.id).ToArray();
+
                     context.classes.Remove(classToRemove);
+                    context.grades.RemoveRange(gradesToRemove);
                     context.students.RemoveRange(GetAllStudentsInClass(classToRemove.id));
+
+                    foreach (grade gradeToRemove in gradesToRemove)
+                    {
+                        context.Entry(gradeToRemove).State = EntityState.Deleted;
+                    }
+                    foreach (student studentToRemove in studentsToRemove)
+                    {
+                        context.Entry(studentToRemove).State = EntityState.Deleted;
+                    }
+                    context.Entry(classToRemove).State = EntityState.Deleted;
                 }
                 catch (System.InvalidOperationException)
                 {
@@ -247,7 +297,6 @@ namespace SchoolRegisterRefactored.Model
 
                     context.grades.RemoveRange(studentGrades);
                     context.students.Remove(studentToRemove);
-                    
                     //And the grade entities of that student to Deleted...
                     context.Entry(studentToRemove).State = EntityState.Deleted;
                     foreach (grade studentGrade in studentGrades)
