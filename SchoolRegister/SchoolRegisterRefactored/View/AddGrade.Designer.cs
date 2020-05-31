@@ -84,9 +84,9 @@
             this.lastNameLabel.AutoSize = true;
             this.lastNameLabel.Location = new System.Drawing.Point(41, 71);
             this.lastNameLabel.Name = "lastNameLabel";
-            this.lastNameLabel.Size = new System.Drawing.Size(57, 13);
+            this.lastNameLabel.Size = new System.Drawing.Size(58, 13);
             this.lastNameLabel.TabIndex = 18;
-            this.lastNameLabel.Text = "First Name";
+            this.lastNameLabel.Text = "Last Name";
             // 
             // lastNameTextBox
             // 

@@ -194,6 +194,7 @@ namespace SchoolRegisterRefactored.Model
                     if (e.Message == "Sequence contains no elements")
                     {
                         context.classes.Add(classToAdd);
+                        SaveChangesToDB();
                         return;
                     }
                     if (returnedClass != null)
