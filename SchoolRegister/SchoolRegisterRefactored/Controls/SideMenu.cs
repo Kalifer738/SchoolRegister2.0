@@ -464,17 +464,23 @@ namespace KonstantinControls
 
         private void EnableClassesLabels()
         {
-            foreach (Label @class in classes)
+            if (classes != null)
             {
-                @class.Visible = true;
+                foreach (Label @class in classes)
+                {
+                    @class.Visible = true;
+                }
             }
         }
 
         private void DisableClassesLabels()
         {
-            foreach (Label @class in classes)
+            if (classes != null)
             {
-                @class.Visible = false;
+                foreach (Label @class in classes)
+                {
+                    @class.Visible = false;
+                }
             }
         }
 

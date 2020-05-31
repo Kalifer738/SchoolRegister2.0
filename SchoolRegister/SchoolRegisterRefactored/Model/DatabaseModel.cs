@@ -193,12 +193,18 @@ namespace SchoolRegisterRefactored.Model
                 {
                     if (e.Message == "Sequence contains no elements")
                     {
-                        MainDisplay.RegisterController.ShowError(new Exception("Class already exists!"), "Cannot Add Class!", false);
+                        context.classes.Add(classToAdd);
                         return;
                     }
-                    throw;
+                    if (returnedClass != null)
+                    {
+                        MainDisplay.RegisterController.ShowError(new Exception("Class already exists!"), "Cannot Add Class!", false);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
-                context.classes.Add(classToAdd);
             }
             SaveChangesToDB();
         }
