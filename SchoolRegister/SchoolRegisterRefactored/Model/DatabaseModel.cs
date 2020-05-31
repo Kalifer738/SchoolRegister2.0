@@ -189,10 +189,14 @@ namespace SchoolRegisterRefactored.Model
                 {
                     returnedClass = context.classes.First(x => x.name == className);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    MainDisplay.RegisterController.ShowError(new Exception("Class already exists!"), "Cannot Add Class!", false);
-                    return;
+                    if (e.Message == "Sequence contains no elements")
+                    {
+                        MainDisplay.RegisterController.ShowError(new Exception("Class already exists!"), "Cannot Add Class!", false);
+                        return;
+                    }
+                    throw;
                 }
                 context.classes.Add(classToAdd);
             }
