@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.Linq;
 using System.Net.Mime;
@@ -145,6 +146,18 @@ namespace SchoolRegisterRefactored.Model
             {
                 @class classToAdd = new @class();
                 classToAdd.name = className;
+
+                @class returnedClass = null;
+                //Added a check if the class doesn't exist.
+                try
+                {
+                    returnedClass = context.classes.First(x => x.name == className);
+                }
+                catch (Exception)
+                {
+                    MainDisplay.RegisterController.ShowError(new Exception("Class already exists!"), "Cannot Add Class!", false);
+                    return;
+                }
                 context.classes.Add(classToAdd);
             }
             SaveChangesToDB();
@@ -219,12 +232,28 @@ namespace SchoolRegisterRefactored.Model
         /// <param name="lastName">Student's last name.</param>
         public void RemoveStudent(int classID, string firstName, string lastName)
         {
+            if (context.Database.Connection.State == ConnectionState.Open)
+            {
+                context.Database.Connection.Close();
+            }
             context.Database.Connection.Open();
             using (context.Database.Connection)
             {
                 try
                 {
-                    context.students.Remove(context.students.First(x => x.first_name == firstName && x.last_name == lastName && x.class_id == classID));
+                    //Forgot to set the entity to deleted...
+                    student studentToRemove = context.students.First(x => x.first_name == firstName && x.last_name == lastName && x.class_id == classID);
+                    grade[] studentGrades = studentToRemove.grades.ToArray();
+
+                    context.grades.RemoveRange(studentGrades);
+                    context.students.Remove(studentToRemove);
+                    
+                    //And the grade entities of that student to Deleted...
+                    context.Entry(studentToRemove).State = EntityState.Deleted;
+                    foreach (grade studentGrade in studentGrades)
+                    {
+                        context.Entry(studentGrade).State = EntityState.Deleted;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -299,11 +328,6 @@ namespace SchoolRegisterRefactored.Model
 
         public void UpdateStudentGrades(int studentID, Dictionary<int, int> gradesDictinary)
         {
-            //Add a methods to remove and add a mass ammout of same grades
-            //After implemeting and fixing the side menu go ahead and make sure to test things and then to =>
-            //Implement MetroFramework!!! https://thielj.github.io/MetroFramework/#Screenshots
-            //It looks so much better than this ugly ass shit
-
             foreach (int keyValue in gradesDictinary.Keys)
             {
                 if (gradesDictinary[keyValue] == 0)
@@ -357,6 +381,7 @@ namespace SchoolRegisterRefactored.Model
                         {
                             context.Database.Connection.Close();
                         }
+                        context.Database.Connection.Open();
                         using (context.Database.Connection)
                         {
                             grade newGrade = context.students.First(theStudent => theStudent.id == studentID).grades.First(x => x.grade1 == gradeType);
@@ -464,19 +489,22 @@ namespace SchoolRegisterRefactored.Model
         /// </summary>
         public void SaveChangesToDB()
         { 
-            if (context.Database.Connection.State == ConnectionState.Closed)
+            //Changed how changes are saved to the database
+            if (context.Database.Connection.State == ConnectionState.Open)
             {
-                context.Database.Connection.Open();
-                using (context.Database.Connection)
+                context.Database.Connection.Close();
+            }
+            context.Database.Connection.Open();
+            using (context.Database.Connection)
+            {
+                try
                 {
                     context.SaveChanges();
                 }
-            }
-            else
-            {
-                using (context.Database.Connection)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    context.SaveChanges();
+                    var entry = ex.Entries.Single();
+                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
                 }
             }
         }

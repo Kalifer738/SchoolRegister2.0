@@ -126,8 +126,15 @@ namespace SchoolRegisterRefactored.Display
             }
             else
             {
-                MessageBox.Show("Exception Message: " + exception.Message + Environment.NewLine
-                + "Inner Exception Message:" + exception.InnerException.Message, caption);
+                if (exception.InnerException != null)
+                {
+                    MessageBox.Show("Exception Message: " + exception.Message + Environment.NewLine
+                    + "Inner Exception Message:" + exception.InnerException.Message, caption);
+                }
+                else
+                {
+                    MessageBox.Show("Exception Message: " + exception.Message, caption);
+                }
             }
         }
 
