@@ -702,9 +702,12 @@ namespace KonstantinControls
             DisbleExmaples();
 
             //Disabiling visibility of classes because they're not visible to the user yet.
-            foreach (Label @class in classes)
+            if (classes != null)
             {
-                @class.Visible = false;
+                foreach (Label @class in classes)
+                {
+                    @class.Visible = false;
+                }
             }
 
             settingsForm.Inicialize();
